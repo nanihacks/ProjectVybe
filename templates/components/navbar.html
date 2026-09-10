@@ -1,0 +1,96 @@
+{% load static %}
+{% load category_assets %}
+<header class="site-header">
+    <div class="container site-header__inner">
+        <a class="brand" href="{% url 'pages:home' %}" aria-label="ProjectVybe home">
+            <img class="brand__logo" src="{% static 'images/projectvybe-logo.png' %}" alt="ProjectVybe">
+        </a>
+
+        <form class="site-navigation__search site-navigation__search--mobile{% if request.GET.q %} is-expanded{% endif %}" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" data-nav-search>
+            <label class="visually-hidden" for="navigation-project-search-mobile">Search projects</label>
+            <input id="navigation-project-search-mobile" name="q" type="search" value="{{ request.GET.q|default:'' }}" placeholder="Search" autocomplete="off">
+            {% if request.GET.category %}<input type="hidden" name="category" value="{{ request.GET.category }}">{% endif %}
+            <button class="site-navigation__search-button" type="button" aria-label="Open project search" data-nav-search-button>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                    <path d="m16 16 5 5"></path>
+                </svg>
+            </button>
+        </form>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
+            <span class="menu-toggle__label">Menu</span>
+            <span class="menu-toggle__icon" aria-hidden="true">☰</span>
+        </button>
+
+        <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
+            <a class="site-navigation__link{% if request.resolver_match.url_name == 'home' %} is-active{% endif %}" href="{% url 'pages:home' %}"{% if request.resolver_match.url_name == 'home' %} aria-current="page"{% endif %}>Home</a>
+            <div class="site-navigation__dropdown{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-current{% endif %}">
+                <button class="site-navigation__link site-navigation__dropdown-toggle{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-active{% endif %}" type="button" aria-expanded="false" aria-controls="project-category-menu">
+                    <span>Projects</span>
+                    <span class="site-navigation__dropdown-chevron" aria-hidden="true">⌄</span>
+                </button>
+                <div id="project-category-menu" class="site-navigation__dropdown-menu">
+                    <div class="site-navigation__dropdown-header">
+                        <span class="site-navigation__dropdown-label"><img class="site-navigation__dropdown-brand-icon" src="{% static 'images/projectvybe-icon.png' %}" alt="" aria-hidden="true"> Browse by category</span>
+                        <a class="site-navigation__dropdown-all" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects <span aria-hidden="true">→</span></a>
+                    </div>
+                    {% if navigation_categories %}
+                        <ul class="site-navigation__category-list">
+                            {% for category in navigation_categories %}
+                                <li>
+                                    <a class="site-navigation__category-link" href="{% url 'pages:project_catalogue' %}?category={{ category.slug|urlencode }}#project-results-title">
+                                        {% category_logo_url category as category_logo %}
+                                        {% if category_logo %}
+                                            <img class="site-navigation__category-icon" src="{{ category_logo }}" alt="">
+                                        {% else %}
+                                            <span class="site-navigation__category-icon" aria-hidden="true">✦</span>
+                                        {% endif %}
+                                        <span>
+                                            <strong>{{ category.name }}</strong>
+                                            <small>{{ category.description|default:"Explore projects in this category." }}</small>
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="site-navigation__category-empty">Project categories will appear here as they are published.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <a class="site-navigation__link{% if request.resolver_match.url_name == 'services' %} is-active{% endif %}" href="{% url 'pages:services' %}"{% if request.resolver_match.url_name == 'services' %} aria-current="page"{% endif %}>Services</a>
+            <a class="site-navigation__link{% if request.resolver_match.url_name == 'about' %} is-active{% endif %}" href="{% url 'pages:about' %}"{% if request.resolver_match.url_name == 'about' %} aria-current="page"{% endif %}>About</a>
+            <a class="site-navigation__link" href="{% url 'leads:enquiry' %}">Contact</a>
+            <form class="site-navigation__search site-navigation__search--desktop{% if request.GET.q %} is-expanded{% endif %}" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" data-nav-search>
+                <label class="visually-hidden" for="navigation-project-search">Search projects</label>
+                <input id="navigation-project-search" name="q" type="search" value="{{ request.GET.q|default:'' }}" placeholder="Search projects" autocomplete="off">
+                {% if request.GET.category %}<input type="hidden" name="category" value="{{ request.GET.category }}">{% endif %}
+                <button class="site-navigation__search-button" type="button" aria-label="Open project search" data-nav-search-button>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                        <path d="m16 16 5 5"></path>
+                    </svg>
+                </button>
+            </form>
+            <a class="button button--small button--primary site-navigation__cta" href="{% url 'leads:enquiry' %}">Start a conversation</a>
+        </nav>
+    </div>
+</header>
+
+    <div class="project-search-modal" hidden aria-hidden="true" data-project-search-modal data-project-search-url="{% url 'pages:project_search' %}">
+        <div class="project-search-modal__backdrop" data-project-search-close></div>
+        <section class="project-search-modal__panel" role="dialog" aria-modal="true" aria-labelledby="project-search-modal-title">
+            <form class="project-search-modal__form" data-project-search-form>
+                <label class="visually-hidden" id="project-search-modal-title" for="project-search-modal-input">Search projects</label>
+                <svg class="project-search-modal__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                    <path d="m16 16 5 5"></path>
+                </svg>
+                <input id="project-search-modal-input" type="search" placeholder="Search projects by title, topic, or technology" autocomplete="off" data-project-search-input>
+                <button class="project-search-modal__close" type="button" aria-label="Close project search" data-project-search-close>&times;</button>
+            </form>
+            <div class="project-search-modal__status" role="status" aria-live="polite" data-project-search-status>Start typing to find a project.</div>
+            <div class="project-search-modal__results" data-project-search-results></div>
+        </section>
+    </div>

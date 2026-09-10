@@ -1,0 +1,56 @@
+<div id="project-enquiry" class="enquiry-modal" hidden aria-hidden="true">
+    <div class="enquiry-modal__backdrop" data-enquiry-close></div>
+    <section class="enquiry-modal__panel" role="dialog" aria-modal="true" aria-labelledby="project-enquiry-title">
+        <div class="enquiry-modal__header">
+            <h2 id="project-enquiry-title" data-enquiry-modal-title>Step 1: Your information</h2>
+            <button class="enquiry-modal__close" type="button" aria-label="Close enquiry form" data-enquiry-close>&times;</button>
+        </div>
+        <div class="enquiry-modal__progress" aria-hidden="true">
+            <span data-enquiry-progress></span>
+        </div>
+
+        <form class="project-enquiry-form" method="post" action="{% url 'leads:enquiry' %}" data-start-step="1">
+            {% csrf_token %}
+            <input type="hidden" name="project" value="{{ selected_project.pk }}">
+            <input type="hidden" name="project_wizard" value="1">
+
+            <div class="enquiry-wizard" data-enquiry-wizard>
+                <section class="enquiry-wizard__step" data-enquiry-step="1" aria-labelledby="modal-enquiry-step-one-title">
+                    <p class="enquiry-modal__step-count">Step 1 of 2</p>
+                    <h3 id="modal-enquiry-step-one-title" class="enquiry-wizard__title enquiry-modal__step-title">Your information</h3>
+
+                    {% include "components/forms/form_field.html" with field=form.name only %}
+                    {% include "components/forms/form_field.html" with field=form.email only %}
+                    {% include "components/forms/form_field.html" with field=form.phone only %}
+
+                    <div class="enquiry-wizard__actions">
+                        <button class="button button--outline" type="button" data-enquiry-close>Back</button>
+                        <button class="button button--primary" type="button" data-enquiry-next>Continue</button>
+                    </div>
+                </section>
+
+                <section class="enquiry-wizard__step" data-enquiry-step="2" aria-labelledby="modal-enquiry-step-two-title">
+                    <p class="enquiry-modal__step-count">Step 2 of 2</p>
+                    <h3 id="modal-enquiry-step-two-title" class="enquiry-wizard__title enquiry-modal__step-title">Choose project add-ons</h3>
+
+                    <div class="enquiry-context" role="status">
+                        <strong>Project selected</strong>
+                        <span>{{ selected_project.title }}</span>
+                    </div>
+
+                    {% include "components/forms/form_field.html" with field=form.selected_addons only %}
+                    {% include "components/forms/form_field.html" with field=form.message only %}
+
+                    <div class="form-honeypot" aria-hidden="true">
+                        {{ form.website }}
+                    </div>
+
+                    <div class="enquiry-wizard__actions">
+                        <button class="button button--outline" type="button" data-enquiry-back>Back</button>
+                        <button class="button button--primary" type="submit">Continue to WhatsApp</button>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </section>
+</div>

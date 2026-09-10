@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI, ML &amp; Software Projects | ProjectVybe{% endblock %}
+{% block meta_description %}ProjectVybe brings together practical technology projects, learning support, mentorship, and software services.{% endblock %}
+{% block og_title %}ProjectVybe | Build. Learn. Grow.{% endblock %}
+{% block og_description %}ProjectVybe brings together practical technology projects, learning support, mentorship, and software services.{% endblock %}
+
+{% block content %}
+<section class="section section--dark section--hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+        <div class="hero__content">
+            <p class="eyebrow">ProjectVybe</p>
+            <h1 id="hero-title">Build. Learn. Grow.</h1>
+            <p class="hero-copy">Practical technology projects, training, mentorship, and software services to help you turn ideas into working solutions.</p>
+            <div class="hero__actions">
+                <a class="button button--primary" href="{{ projects_anchor }}">Explore projects</a>
+                <a class="button button--outline button--on-dark" href="{{ services_url }}">Our services</a>
+            </div>
+            <p class="hero__note">AI/ML · Software · Development · Training · Mentorship · Publications</p>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+            <div class="hero__visual-card">
+                <img class="hero__visual-mark" src="{% static 'images/projectvybe-icon.png' %}" alt="">
+                <span class="hero__visual-label">ProjectVybe</span>
+                <strong class="hero__visual-title"><span>Ideas into</span><span>working</span><span>solutions.</span></strong>
+                <span class="hero__visual-rule"></span>
+                <span class="hero__visual-footer">Build / Learn / Grow</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="offers-title">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">What ProjectVybe offers</p>
+            <h2 id="offers-title">Support for the work behind the idea.</h2>
+            <p class="muted">ProjectVybe brings project development, technology learning, and practical software support into one clear place.</p>
+        </div>
+        <div class="grid grid--three offer-grid">
+            <article class="offer-card">
+                <span class="offer-card__number">01</span>
+                <span class="offer-card__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="m9 8-4 4 4 4M15 8l4 4-4 4M13 5l-2 14"></path>
+                    </svg>
+                </span>
+                <h3>Project development</h3>
+                <p>Explore AI/ML, computer science, final-year, and software project directions managed through the ProjectVybe catalogue.</p>
+            </article>
+            <article class="offer-card">
+                <span class="offer-card__number">02</span>
+                <span class="offer-card__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="m3 9 9-4 9 4-9 4-9-4Z"></path>
+                        <path d="M6 11.2V15c1.7 1.7 3.7 2.5 6 2.5s4.3-.8 6-2.5v-3.8M21 9v6"></path>
+                    </svg>
+                </span>
+                <h3>Learn with clarity</h3>
+                <p>Build understanding through training, mentorship, documentation, and presentation support around practical project work.</p>
+            </article>
+            <article class="offer-card">
+                <span class="offer-card__number">03</span>
+                <span class="offer-card__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                        <circle cx="12" cy="12" r="3.5"></circle>
+                        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"></path>
+                    </svg>
+                </span>
+                <h3>Software services</h3>
+                <p>Find a focused starting point for software development and other technology services as the catalogue grows.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="projects" class="section section--muted" aria-labelledby="categories-title">
+    <div class="container">
+        <div class="section-heading section-heading--stacked">
+            <div>
+                <p class="eyebrow">Explore by area</p>
+                <h2 id="categories-title">Find a direction<br class="home-heading-break">for your next project.</h2>
+            </div>
+            <p class="muted">Explore practical project directions across AI/ML, cybersecurity, data science, IoT, mobile, and web development.</p>
+        </div>
+
+        {% if navigation_categories %}
+            {% url 'pages:project_catalogue' as project_catalogue_url %}
+            {% with displayed_categories=navigation_categories|slice:":6" %}
+                <div class="category-carousel" data-category-carousel>
+                    <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous categories" data-category-prev disabled>
+                        <span aria-hidden="true">&larr;</span>
+                    </button>
+                    <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
+                        <div class="category-carousel__track">
+                            {% for category in displayed_categories %}
+                                {% with category_url=project_catalogue_url|add:"?category="|add:category.slug|add:"#project-results-title" %}
+                                    {% include "components/cards/category_card.html" with category=category category_url=category_url homepage_image=True homepage_card=True only %}
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next categories" data-category-next>
+                        <span aria-hidden="true">&rarr;</span>
+                    </button>
+                    <div class="category-carousel__footer">
+                        <p class="category-carousel__counter" aria-live="polite"><span data-category-current>01</span><span aria-hidden="true"> / </span><span data-category-total>01</span></p>
+                        <div class="category-carousel__dots" data-category-dots role="tablist" aria-label="Choose category slide"></div>
+                        <a class="category-carousel__view-all text-link" href="{% url 'pages:project_catalogue' %}">View all <span aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+            {% endwith %}
+        {% else %}
+            <div class="empty-state" role="status">
+                <h3>Project categories are being prepared.</h3>
+                <p class="muted">New categories will appear here as they are added through the ProjectVybe Admin.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section" aria-labelledby="featured-title">
+    <div class="container">
+        <div class="section-heading section-heading--stacked">
+            <div>
+                <p class="eyebrow">Featured projects</p>
+                <h2 id="featured-title">A closer look at<br class="home-heading-break">selected work.</h2>
+            </div>
+            <p class="muted">Published, featured projects appear here when they are ready to share.</p>
+        </div>
+
+        {% if featured_projects %}
+            <div class="grid grid--three">
+                {% for project in featured_projects %}
+                    {% include "components/cards/project_card.html" with project=project project_image_url=project.render_thumbnail_url project_url=projects_anchor project_cta_label="View project" homepage_card=True only %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state" role="status">
+                <h3>Featured projects will appear here.</h3>
+                <p class="muted">The catalogue is ready for published projects selected through Django Admin.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section id="services" class="section section--dark" aria-labelledby="services-title">
+    <div class="container">
+        <div class="section-heading section-heading--stacked">
+            <div>
+                <p class="eyebrow">Services</p>
+                <h2 id="services-title">Practical support for<br class="home-heading-break">technology work.</h2>
+            </div>
+            <p class="muted">Find practical training, mentorship, documentation, and software support for your next technology project.</p>
+        </div>
+
+        {% if services %}
+            <div class="category-carousel service-carousel" data-service-carousel>
+                <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous services" data-service-prev disabled>
+                    <span aria-hidden="true">&larr;</span>
+                </button>
+                <div class="category-carousel__viewport" data-service-scroller tabindex="0" aria-label="ProjectVybe services">
+                    <div class="category-carousel__track">
+                        {% for service in services %}
+                            {% include "components/cards/service_card.html" with service=service service_image_url=service.render_image_url service_url=services_url service_cta_label="Explore services" homepage_card=True only %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next services" data-service-next>
+                    <span aria-hidden="true">&rarr;</span>
+                </button>
+                <div class="category-carousel__footer">
+                    <p class="category-carousel__counter" aria-live="polite"><span data-service-current>01</span><span aria-hidden="true"> / </span><span data-service-total>01</span></p>
+                    <div class="category-carousel__dots" data-service-dots role="tablist" aria-label="Choose service slide"></div>
+                    <a class="category-carousel__view-all text-link" href="{{ services_url }}">View all <span aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state empty-state--dark" role="status">
+                <h3>Services will appear here as they are published.</h3>
+                <p class="muted">The service catalogue is ready for real ProjectVybe content.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section" aria-labelledby="process-title">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">How it works</p>
+            <h2 id="process-title">A straightforward path from idea to action.</h2>
+        </div>
+        <ol class="step-list">
+            <li class="step">
+                <span class="step__number">01</span>
+                <div><h3>Explore</h3><p class="muted">Browse the projects and services that fit your direction.</p></div>
+            </li>
+            <li class="step">
+                <span class="step__number">02</span>
+                <div><h3>Choose</h3><p class="muted">Identify the project or support that matches your requirement.</p></div>
+            </li>
+            <li class="step">
+                <span class="step__number">03</span>
+                <div><h3>Connect</h3><p class="muted">Reach out with the context needed to start a useful conversation.</p></div>
+            </li>
+            <li class="step">
+                <span class="step__number">04</span>
+                <div><h3>Build</h3><p class="muted">Move forward with focused project or service support.</p></div>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section class="section section--muted" aria-labelledby="value-title">
+    <div class="container value-grid">
+        <div class="section-heading">
+            <p class="eyebrow">Why ProjectVybe</p>
+            <h2 id="value-title">Technology support grounded in practical work.</h2>
+        </div>
+        <ul class="value-list">
+            <li>Practical project focus</li>
+            <li>Clear documentation and presentation support</li>
+            <li>Technology-focused learning and mentorship</li>
+            <li>Software development support across multiple domains</li>
+        </ul>
+    </div>
+</section>
+
+{% if reviews %}
+    <section class="section reviews-section" aria-labelledby="reviews-title">
+        <div class="container">
+            <div class="section-heading section-heading--stacked">
+                <div>
+                    <p class="eyebrow">What people say</p>
+                    <h2 id="reviews-title">Clear support for<br class="home-heading-break">practical project work.</h2>
+                </div>
+                <p class="muted">A few words from people who have worked with ProjectVybe.</p>
+            </div>
+            <div class="category-carousel review-carousel" data-review-carousel>
+                <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous reviews" data-review-prev disabled>
+                    <span aria-hidden="true">&larr;</span>
+                </button>
+                <div class="category-carousel__viewport" data-review-scroller tabindex="0" aria-label="ProjectVybe reviews">
+                    <div class="category-carousel__track">
+                        {% for review in reviews %}
+                            <article class="review-card">
+                                <span class="review-card__mark" aria-hidden="true">“</span>
+                                <p class="review-card__quote">{{ review.message|linebreaksbr }}</p>
+                                <footer class="review-card__author">
+                                    <strong>{{ review.reviewer_name }}</strong>
+                                    {% if review.reviewer_role %}<span>{{ review.reviewer_role }}</span>{% endif %}
+                                </footer>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next reviews" data-review-next>
+                    <span aria-hidden="true">&rarr;</span>
+                </button>
+                <div class="category-carousel__footer">
+                    <p class="category-carousel__counter" aria-live="polite"><span data-review-current>01</span><span aria-hidden="true"> / </span><span data-review-total>01</span></p>
+                    <div class="category-carousel__dots" data-review-dots role="tablist" aria-label="Choose review slide"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+<section id="contact" class="section section--cta" aria-labelledby="cta-title">
+    <div class="container cta-panel">
+        <div>
+            <p class="eyebrow">Start with a direction</p>
+            <h2 id="cta-title">Ready to build your next project?</h2>
+            <p class="muted">Explore the growing catalogue or learn more about the services available through ProjectVybe.</p>
+        </div>
+        <div class="cta-panel__actions">
+            <a class="button button--primary" href="{{ projects_anchor }}">Explore projects</a>
+            <a class="button button--outline" href="{% url 'leads:enquiry' %}">Contact ProjectVybe</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

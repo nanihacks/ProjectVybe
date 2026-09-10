@@ -1,0 +1,6 @@
+Django>=6.0,<6.1
+django-environ>=0.12,<1.0
+cloudinary>=1.44,<2.0
+psycopg[binary]>=3.2,<4.0
+gunicorn>=23,<24
+whitenoise[brotli]>=6.9,<7.0

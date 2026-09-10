@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | ProjectVybe{% endblock %}
+{% block meta_description %}{{ project.short_description }}{% endblock %}
+{% block og_title %}{{ project.title }} | ProjectVybe{% endblock %}
+{% block og_description %}{{ project.short_description }}{% endblock %}
+{% block twitter_title %}{{ project.title }} | ProjectVybe{% endblock %}
+{% block twitter_description %}{{ project.short_description }}{% endblock %}
+
+{% block content %}
+<article class="project-detail">
+    {% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+    <section class="section project-detail__body" aria-labelledby="project-overview-title">
+        <div class="container">
+            <div class="project-detail__layout">
+                <div class="project-detail__visual-column">
+                    <div class="project-detail__media media-frame media-frame--project">
+                        {% if thumbnail_url %}
+                            <img src="{{ thumbnail_url }}" alt="{{ project.title }} thumbnail" decoding="async">
+                        {% else %}
+                            <div class="media-placeholder" aria-label="No project image available">Project image coming soon</div>
+                        {% endif %}
+                    </div>
+
+                    {% if gallery_media %}
+                        <section class="project-gallery" aria-labelledby="project-gallery-title">
+                            <div class="section-heading">
+                                <p class="eyebrow">Project media</p>
+                                <h2 id="project-gallery-title">A closer look.</h2>
+                            </div>
+                            <div class="project-gallery__grid">
+                                {% for gallery_image in gallery_media %}
+                                    <figure class="project-gallery__item">
+                                        {% if gallery_image.url %}
+                                            <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt_text }}" loading="lazy" decoding="async">
+                                        {% else %}
+                                            <div class="media-placeholder" aria-label="{{ gallery_image.alt_text }}">{{ gallery_image.alt_text }}</div>
+                                        {% endif %}
+                                    </figure>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+
+                    <div class="project-detail__actions project-detail__visual-actions">
+                        <div class="project-detail__inline-actions">
+                            <a class="button button--primary" href="#project-enquiry" data-enquiry-open>Get this project</a>
+                            {% if youtube_embed_url %}
+                                <button class="button button--outline" type="button" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">Watch demo</button>
+                            {% endif %}
+                        </div>
+                        <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Back to projects</a>
+                    </div>
+
+                    <div class="project-detail__mobile-sticky-actions{% if youtube_embed_url %} project-detail__mobile-sticky-actions--with-demo{% endif %}" aria-label="Project actions">
+                        <a class="button button--primary" href="#project-enquiry" data-enquiry-open>Get this project</a>
+                        {% if youtube_embed_url %}
+                            <button class="button button--outline" type="button" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">Watch demo</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="project-detail__content">
+                    <header class="project-detail__heading" aria-labelledby="project-title">
+                        <span class="badge badge--category">{{ project.category.name }}</span>
+                        <h1 id="project-title">{{ project.title }}</h1>
+                        <p class="project-detail__summary">{{ project.short_description }}</p>
+                    </header>
+
+                    <section aria-labelledby="project-overview-title">
+                        <p class="eyebrow">Project overview</p>
+                        <h2 id="project-overview-title">What this project is about.</h2>
+                        <div class="project-detail__prose">{{ project.description|linebreaks }}</div>
+                    </section>
+
+                    {% if features %}
+                        <section aria-labelledby="project-features-title">
+                            <h2 id="project-features-title">Key features</h2>
+                            <ul class="detail-list">
+                                {% for feature in features %}<li>{{ feature }}</li>{% endfor %}
+                            </ul>
+                        </section>
+                    {% endif %}
+
+                    {% if technology_stack %}
+                        <section aria-labelledby="project-technology-title">
+                            <h2 id="project-technology-title">Technology stack</h2>
+                            <p class="technology-list" aria-label="Technology stack">
+                                {% for technology in technology_stack %}{{ technology }}{% if not forloop.last %}<span class="technology-list__separator" aria-hidden="true">·</span>{% endif %}{% endfor %}
+                            </p>
+                        </section>
+                    {% endif %}
+
+                    {% if project.usage %}
+                        <section aria-labelledby="project-usage-title">
+                            <h2 id="project-usage-title">Usage and use case</h2>
+                            <div class="project-detail__prose">{{ project.usage|linebreaks }}</div>
+                        </section>
+                    {% endif %}
+
+                    {% if project.requirements %}
+                        <section aria-labelledby="project-requirements-title">
+                            <h2 id="project-requirements-title">Requirements</h2>
+                            <div class="project-detail__prose">{{ project.requirements|linebreaks }}</div>
+                        </section>
+                    {% endif %}
+
+                    {% if addon_enquiries %}
+                        <section class="project-support" aria-labelledby="project-support-title">
+                            <div class="section-heading">
+                                <p class="eyebrow">Project add-ons</p>
+                                <h2 id="project-support-title">Additional add-ons for this project.</h2>
+                                <p class="muted">Ask about project-specific add-ons through the ProjectVybe enquiry channel.</p>
+                            </div>
+
+                            <div class="grid grid--cards grid--three project-addons">
+                                {% for item in addon_enquiries %}
+                                    {% include "components/cards/addon_card.html" with addon=item.addon addon_url=item.enquiry_url only %}
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+
+                    <section class="project-detail__faq" aria-labelledby="project-faq-title">
+                        <p class="eyebrow">Frequently asked questions</p>
+                        <h2 id="project-faq-title">Questions about this project.</h2>
+                        <div class="faq-list">
+                            <details class="faq-item">
+                                <summary>How can I ask about this project?</summary>
+                                <p>Use the enquiry button to share the project context and the kind of support you are looking for. ProjectVybe will review the enquiry and respond directly.</p>
+                            </details>
+                            <details class="faq-item">
+                                <summary>Is a demo available?</summary>
+                                <p>{% if youtube_embed_url %}Yes. Use the YouTube demo button above to play the configured demonstration.{% else %}A YouTube demo has not been added for this project yet.{% endif %}</p>
+                            </details>
+                            <details class="faq-item">
+                                <summary>Can I request changes or additional support?</summary>
+                                <p>Yes. Describe your requested changes or learning goals in an enquiry so the ProjectVybe team can review them.</p>
+                            </details>
+                            <details class="faq-item">
+                                <summary>Are project add-ons available?</summary>
+                                <p>{% if addon_enquiries %}The available project add-ons are listed above and can be selected when you send an enquiry.{% else %}No project-specific add-ons are currently listed for this project.{% endif %} Add-ons are enquiry-based; no online checkout or public pricing is provided.</p>
+                            </details>
+                            <details class="faq-item">
+                                <summary>How do I get started?</summary>
+                                <p>Review the project information, then use the enquiry button to send the details you would like to discuss.</p>
+                            </details>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if related_projects %}
+        <section class="section" aria-labelledby="related-projects-title">
+            <div class="container">
+                <div class="related-projects-heading">
+                    <div>
+                        <p class="eyebrow">Keep exploring</p>
+                        <h2 id="related-projects-title">Related projects.</h2>
+                    </div>
+                    <a class="button button--outline button--small" href="{% url 'pages:project_catalogue' %}">View all projects <span aria-hidden="true">&rarr;</span></a>
+                </div>
+                <div class="grid grid--cards grid--three">
+                    {% for related_project in related_projects %}
+                        {% url 'pages:project_detail' related_project.slug as related_project_url %}
+                        {% include "components/cards/project_card.html" with project=related_project project_image_url=related_project.render_thumbnail_url project_url=related_project_url project_cta_label="View project" only %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="section section--cta" aria-labelledby="project-final-cta-title">
+        <div class="container cta-panel">
+            <div>
+                <p class="eyebrow">Build. Learn. Grow.</p>
+                <h2 id="project-final-cta-title">Ready to discuss this project?</h2>
+                <p class="muted">Send ProjectVybe the project context you are exploring, or continue browsing the published catalogue.</p>
+            </div>
+            <div class="cta-panel__actions">
+                <a class="button button--primary" href="#project-enquiry" data-enquiry-open>Get this project</a>
+                <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Explore more projects</a>
+            </div>
+        </div>
+    </section>
+</article>
+{% include "components/forms/project_enquiry_modal.html" with form=enquiry_form selected_project=project %}
+
+{% if youtube_embed_url %}
+    <div class="video-modal" hidden aria-hidden="true" data-video-modal>
+        <div class="video-modal__backdrop" data-video-close></div>
+        <section class="video-modal__panel" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+            <div class="video-modal__header">
+                <h2 id="video-modal-title" data-video-modal-title>Project demo</h2>
+                <button class="video-modal__close" type="button" aria-label="Close project demo" data-video-close>&times;</button>
+            </div>
+            <div class="video-modal__content">
+                <div class="video-modal__frame">
+                    <iframe data-video-frame title="Project demo" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endif %}
+{% endblock %}

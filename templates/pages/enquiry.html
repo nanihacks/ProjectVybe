@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Contact ProjectVybe | Enquiry{% endblock %}
+{% block meta_description %}Send ProjectVybe an enquiry about a project, service, documentation, presentation support, or mentorship.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block og_title %}Contact ProjectVybe | Enquiry{% endblock %}
+{% block og_description %}Send ProjectVybe an enquiry about a project or technology service.{% endblock %}
+
+{% block content %}
+<section class="section section--muted enquiry-intro" aria-labelledby="enquiry-title">
+    <div class="container">
+        <p class="eyebrow">Start a conversation</p>
+        <h1 id="enquiry-title">Let's discuss your project.</h1>
+        {% if project_enquiry %}
+            <p class="enquiry-intro__copy">Share your contact details and project requirements. You will continue to WhatsApp with the project details after submitting.</p>
+        {% else %}
+            <p class="enquiry-intro__copy">Share your contact details and a little context. Your enquiry will be sent to our email for review.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section" aria-labelledby="enquiry-form-title">
+    <div class="container enquiry-layout">
+        <div class="card enquiry-form-card">
+            <div class="card__body">
+                <div class="section-heading">
+                    <p class="eyebrow">Enquiry form</p>
+                    <h2 id="enquiry-form-title">Tell us what you need.</h2>
+                    <p class="muted">Fields marked as required are needed to submit the form.</p>
+                </div>
+
+                {% if enquiry_submitted %}
+                    <div class="enquiry-success__panel" role="status" aria-labelledby="enquiry-success-title">
+                        <p class="eyebrow">Thank you</p>
+                        <h2 id="enquiry-success-title">We've received your enquiry.</h2>
+                        {% if project_whatsapp_only %}
+                            <p class="enquiry-success__copy">Your project enquiry was saved, but WhatsApp is not configured yet. Please contact ProjectVybe directly so the project details can be shared.</p>
+                        {% elif email_sent %}
+                            <p class="enquiry-success__copy">Your enquiry has been sent to our email and safely recorded. {% if whatsapp_url %}You can also send the same project details through WhatsApp.{% else %}We will review it and get back to you.{% endif %}</p>
+                        {% else %}
+                            <p class="enquiry-success__copy">Your enquiry is safely recorded in ProjectVybe Admin. {% if whatsapp_url %}You can also send the project details through WhatsApp.{% else %}We will review it and get back to you.{% endif %}</p>
+                        {% endif %}
+                        <div class="hero__actions">
+                            {% if whatsapp_url %}
+                                <a class="button button--primary" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Continue on WhatsApp</a>
+                            {% endif %}
+                            {% if selected_project %}
+                                <a class="button button--outline" href="{% url 'pages:project_detail' selected_project.slug %}">Back to project</a>
+                            {% endif %}
+                            <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
+                        </div>
+                    </div>
+                {% else %}
+                {% if selected_project %}
+                    <div class="enquiry-context" role="status">
+                        <strong>Project selected</strong>
+                        <span>{{ selected_project.title }}</span>
+                    </div>
+                {% endif %}
+
+                {% if selected_addon %}
+                    <div class="enquiry-context" role="status">
+                        <strong>Project add-on selected</strong>
+                        <span>{{ selected_addon.name }}</span>
+                    </div>
+                {% endif %}
+
+                <form class="{% if project_enquiry %}project-enquiry-form{% endif %}" method="post" action="{% url 'leads:enquiry' %}"{% if project_enquiry %} data-start-step="{% if form.errors and not form.name.errors and not form.email.errors and not form.phone.errors %}2{% else %}1{% endif %}"{% endif %}>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form-errors" role="alert">
+                            {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if project_enquiry %}
+                        <div class="enquiry-wizard" data-enquiry-wizard>
+                            <section class="enquiry-wizard__step" data-enquiry-step="1" aria-labelledby="enquiry-step-one-title">
+                                <p class="eyebrow">Step 1 of 2</p>
+                                <h3 id="enquiry-step-one-title" class="enquiry-wizard__title">Your information</h3>
+                                <p class="muted">Tell us how ProjectVybe can contact you about this project.</p>
+
+                                {% include "components/forms/form_field.html" with field=form.name only %}
+                                {% include "components/forms/form_field.html" with field=form.email only %}
+                                {% include "components/forms/form_field.html" with field=form.phone only %}
+
+                                <div class="enquiry-wizard__actions">
+                                    <button class="button button--primary" type="button" data-enquiry-next>Continue</button>
+                                </div>
+                            </section>
+
+                            <section class="enquiry-wizard__step" data-enquiry-step="2" aria-labelledby="enquiry-step-two-title">
+                                <p class="eyebrow">Step 2 of 2</p>
+                                <h3 id="enquiry-step-two-title" class="enquiry-wizard__title">Choose project support</h3>
+                                <input type="hidden" name="project_wizard" value="1">
+
+                                <div class="enquiry-context" role="status">
+                                    <strong>Project selected</strong>
+                                    <span>{{ selected_project.title }}</span>
+                                </div>
+                                {{ form.project.as_hidden }}
+                                {% if form.project.errors %}
+                                    <div class="form-errors" role="alert">
+                                        {% for error in form.project.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% include "components/forms/form_field.html" with field=form.selected_addons only %}
+                                {% include "components/forms/form_field.html" with field=form.selected_services only %}
+                                {% include "components/forms/form_field.html" with field=form.message only %}
+
+                                <div class="form-honeypot" aria-hidden="true">
+                                    {{ form.website }}
+                                </div>
+
+                                <div class="enquiry-wizard__actions">
+                                    <button class="button button--outline" type="button" data-enquiry-back>Back</button>
+                        <button class="button button--primary" type="submit">Continue to WhatsApp</button>
+                                </div>
+                            </section>
+                        </div>
+                    {% else %}
+                        {% include "components/forms/form_field.html" with field=form.name only %}
+                        {% include "components/forms/form_field.html" with field=form.email only %}
+                        {% include "components/forms/form_field.html" with field=form.phone only %}
+                        {% include "components/forms/form_field.html" with field=form.message only %}
+
+                        {% if selected_project %}{{ form.project.as_hidden }}{% endif %}
+                        {% if selected_service %}<input type="hidden" name="selected_services" value="{{ selected_service.pk }}">{% endif %}
+                        {% if selected_addon %}<input type="hidden" name="selected_addons" value="{{ selected_addon.pk }}">{% endif %}
+
+                        {% if form.project.errors or form.selected_services.errors or form.selected_addons.errors %}
+                            <div class="form-errors" role="alert">
+                                {% for error in form.project.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                                {% for error in form.selected_services.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                                {% for error in form.selected_addons.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-honeypot" aria-hidden="true">
+                            {{ form.website }}
+                        </div>
+
+                        <button class="button button--primary" type="submit">Submit enquiry</button>
+                    {% endif %}
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <aside class="enquiry-aside" aria-labelledby="enquiry-next-title">
+            <div class="offer-card">
+                <p class="eyebrow">What happens next</p>
+                <h2 id="enquiry-next-title">A simple next step.</h2>
+                <ol class="step-list enquiry-step-list">
+                    <li class="step"><span class="step__number">01</span><div><h3>Share context</h3><p class="muted">Tell us which project, service, or add-on you are exploring.</p></div></li>
+                    <li class="step"><span class="step__number">02</span><div><h3>We review</h3><p class="muted">Your enquiry is saved securely for the ProjectVybe team.</p></div></li>
+                    {% if project_enquiry %}
+                        <li class="step"><span class="step__number">03</span><div><h3>Continue on WhatsApp</h3><p class="muted">Send the prepared project details through WhatsApp to continue the conversation.</p></div></li>
+                    {% else %}
+                        <li class="step"><span class="step__number">03</span><div><h3>We get back to you</h3><p class="muted">The ProjectVybe team will review your email enquiry and respond.</p></div></li>
+                    {% endif %}
+                </ol>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

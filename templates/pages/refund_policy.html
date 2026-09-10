@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Refund / Cancellation Policy | ProjectVybe{% endblock %}
+{% block meta_description %}Read the ProjectVybe refund and cancellation policy for its current enquiry-led website model.{% endblock %}
+{% block og_title %}Refund / Cancellation Policy | ProjectVybe{% endblock %}
+{% block og_description %}How refund and cancellation questions are handled when ProjectVybe enquiries are discussed without online checkout.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section section--dark section--hero policy-hero" aria-labelledby="refund-title">
+    <div class="container">
+        <p class="eyebrow">ProjectVybe information</p>
+        <h1 id="refund-title">Refund / Cancellation Policy</h1>
+        <p class="hero-copy">This policy explains how refund and cancellation questions relate to the current ProjectVybe enquiry and engagement process.</p>
+        <p class="policy-updated">Last updated: September 9, 2026</p>
+    </div>
+</section>
+
+<section class="section policy-page" aria-labelledby="refund-content-title">
+    <div class="container policy-content">
+        <p id="refund-content-title" class="policy-intro">The current ProjectVybe website functions primarily as a project and service enquiry platform. It does not currently provide an online payment gateway, checkout, subscription billing, or automatic refund process.</p>
+
+        <section class="policy-section" aria-labelledby="refund-enquiry-title">
+            <h2 id="refund-enquiry-title">Enquiries are not online transactions</h2>
+            <p>Submitting an enquiry does not itself create a payment transaction, purchase, contract, or confirmed paid engagement. Project and service requirements, availability, scope, and commercial terms are discussed and agreed separately before an engagement begins.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="refund-agreement-title">
+            <h2 id="refund-agreement-title">Agreed engagement terms</h2>
+            <p>If a project or service engagement is agreed, any applicable payment, cancellation, refund, rescheduling, revision, or service-specific terms should be clearly communicated and recorded in the agreement or other written communication for that engagement.</p>
+            <p>Those agreed terms will govern the particular engagement.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="refund-contact-title">
+            <h2 id="refund-contact-title">Questions about an engagement</h2>
+            <p>For questions about an agreed project or service engagement, contact <a href="mailto:support@projectvybe.com">support@projectvybe.com</a> with enough context to identify the relevant conversation or engagement.</p>
+            <p>No fixed refund percentage, cancellation period, or universal refund outcome is stated here because the current website does not have one universal commercial policy.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="refund-changes-title">
+            <h2 id="refund-changes-title">Future changes</h2>
+            <p>If ProjectVybe introduces online payments or changes its commercial process, this policy will be reviewed and updated to reflect the actual process.</p>
+        </section>
+    </div>
+</section>
+{% endblock %}

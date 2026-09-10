@@ -1,0 +1,35 @@
+{% load static %}
+<footer class="site-footer">
+    <div class="container site-footer__grid">
+        <div class="site-footer__brand">
+            <a class="brand" href="{% url 'pages:home' %}" aria-label="ProjectVybe home">
+                <img class="brand__logo" src="{% static 'images/projectvybe-logo.png' %}" alt="ProjectVybe">
+            </a>
+            <p class="site-footer__slogan">Build. Learn. Grow.</p>
+            <p class="site-footer__description">A technology-focused space for thoughtful software projects, practical learning, and steady progress.</p>
+            {% if public_contact_email %}
+                <a class="site-footer__email" href="mailto:{{ public_contact_email }}">{{ public_contact_email }}</a>
+            {% endif %}
+        </div>
+
+        <nav class="site-footer__nav" aria-label="Footer navigation">
+            <p class="site-footer__heading">Explore</p>
+            <a href="{% url 'pages:home' %}">Home</a>
+            <a href="{% url 'pages:project_catalogue' %}">Projects</a>
+            <a href="{% url 'pages:services' %}">Services</a>
+            <a href="{% url 'pages:about' %}">About</a>
+            <a href="{% url 'leads:enquiry' %}">Contact</a>
+        </nav>
+
+        <nav class="site-footer__nav" aria-label="Legal navigation">
+            <p class="site-footer__heading">Information</p>
+            <a href="{% url 'pages:privacy_policy' %}">Privacy policy</a>
+            <a href="{% url 'pages:terms' %}">Terms &amp; conditions</a>
+            <a href="{% url 'pages:refund_policy' %}">Refund / cancellation policy</a>
+            <a href="{% url 'pages:cookies' %}">Cookie policy</a>
+        </nav>
+    </div>
+    <div class="container site-footer__bottom">
+        <p>&copy; {% now "Y" %} ProjectVybe</p>
+    </div>
+</footer>

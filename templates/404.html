@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found | ProjectVybe{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="not-found-title">
+    <div class="container reading-width">
+        <p class="eyebrow">404</p>
+        <h1 id="not-found-title">That page could not be found.</h1>
+        <p class="muted">Try returning to the ProjectVybe home page.</p>
+        <a class="button button--primary" href="{% url 'pages:home' %}">Go home</a>
+    </div>
+</section>
+{% endblock %}

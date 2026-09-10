@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Cookie Policy | ProjectVybe{% endblock %}
+{% block meta_description %}Learn about the necessary cookies used by the current ProjectVybe website.{% endblock %}
+{% block og_title %}Cookie Policy | ProjectVybe{% endblock %}
+{% block og_description %}Information about necessary Django cookies used for ProjectVybe forms and website functionality.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section section--dark section--hero policy-hero" aria-labelledby="cookies-title">
+    <div class="container">
+        <p class="eyebrow">ProjectVybe information</p>
+        <h1 id="cookies-title">Cookie Policy</h1>
+        <p class="hero-copy">The current ProjectVybe website uses cookies and similar browser storage only where needed for core website functionality.</p>
+        <p class="policy-updated">Last updated: September 9, 2026</p>
+    </div>
+</section>
+
+<section class="section policy-page" aria-labelledby="cookies-content-title">
+    <div class="container policy-content">
+        <p id="cookies-content-title" class="policy-intro">A cookie is a small piece of information stored by your browser. ProjectVybe does not currently use analytics, advertising, marketing, or social tracking cookies.</p>
+
+        <section class="policy-section" aria-labelledby="cookies-necessary-title">
+            <h2 id="cookies-necessary-title">Necessary cookies</h2>
+            <p>Django may use a session cookie when the website needs to maintain information between requests, including during the enquiry and confirmation flow.</p>
+            <p>The website may also use a CSRF cookie to help protect form submissions against cross-site request forgery.</p>
+            <p>These cookies support core website functionality and are not used to build an advertising or analytics profile.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="cookies-third-party-title">
+            <h2 id="cookies-third-party-title">Third-party content and services</h2>
+            <p>Public website and project images may be delivered through Cloudinary. Project demonstration links may take you to YouTube.</p>
+            <p>When your browser loads or interacts with third-party content or follows an external link, those services may use their own cookies or similar technologies. Their respective privacy and cookie policies apply to their services.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="cookies-control-title">
+            <h2 id="cookies-control-title">Your browser controls</h2>
+            <p>You can manage, block, or delete cookies through your browser settings.</p>
+            <p>Blocking necessary cookies may prevent some website functionality, including enquiry forms or confirmation steps, from working correctly.</p>
+        </section>
+
+        <section class="policy-section" aria-labelledby="cookies-contact-title">
+            <h2 id="cookies-contact-title">Questions</h2>
+            <p>Questions about this Cookie Policy can be sent to <a href="mailto:support@projectvybe.com">support@projectvybe.com</a>.</p>
+        </section>
+    </div>
+</section>
+{% endblock %}
