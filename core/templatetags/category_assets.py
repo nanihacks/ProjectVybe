@@ -41,4 +41,5 @@ def _cloudinary_image_url(category, field_name):
 
 
 def _local_category_logo(category):
-    return static(LOCAL_CATEGORY_LOGOS.get(getattr(category, "slug", ""), ""))
+    asset_path = LOCAL_CATEGORY_LOGOS.get(getattr(category, "slug", ""), "")
+    return static(asset_path) if asset_path else ""
