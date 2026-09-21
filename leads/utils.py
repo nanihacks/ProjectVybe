@@ -22,14 +22,35 @@ def send_enquiry_email(cleaned_data):
     if project:
         subject = f"New ProjectVybe enquiry: {project.title}"
 
-    email = EmailMessage(
+    notification = EmailMessage(
         subject=subject,
         body=build_enquiry_message(cleaned_data),
         from_email=settings.DEFAULT_FROM_EMAIL or recipient,
         to=[recipient],
         reply_to=[cleaned_data["email"]] if cleaned_data.get("email") else None,
     )
-    email.send(fail_silently=False)
+    notification.send(fail_silently=False)
+
+    visitor_email = cleaned_data.get("email", "").strip()
+    if visitor_email:
+        confirmation = EmailMessage(
+            subject="We received your ProjectVybe enquiry",
+            body=(
+                f"Hello {cleaned_data.get('name', '').strip() or 'there'},\n\n"
+                "Thank you for contacting ProjectVybe. We have received your "
+                "enquiry and will review it before getting back to you.\n\n"
+                "For your reference, we received:\n\n"
+                f"{build_enquiry_message(cleaned_data)}\n\n"
+                "If you need to add anything, reply to this email.\n\n"
+                "ProjectVybe\n"
+                f"{recipient}"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL or recipient,
+            to=[visitor_email],
+            reply_to=[recipient],
+        )
+        confirmation.send(fail_silently=False)
+
     return True
 
 

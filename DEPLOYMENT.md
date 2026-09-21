@@ -329,7 +329,7 @@ Do not use a private video, because visitors will not be able to watch it. The b
 
 The current flow is intentionally separated:
 
-- General enquiry: saves the lead and sends an email.
+- General enquiry: saves the lead, sends an email to ProjectVybe, and sends a confirmation email to the visitor.
 - Project enquiry: saves the lead and opens WhatsApp.
 - Project enquiry does not require email delivery.
 
@@ -378,6 +378,7 @@ Submit the general enquiry form and confirm:
 
 - A `Lead` record appears in Django Admin.
 - The email arrives at `support@projectvybe.com`.
+- A confirmation email arrives at the visitor's submitted email address.
 - Replying to the email addresses the visitor.
 - A project enquiry opens WhatsApp and does not send a duplicate enquiry email.
 
