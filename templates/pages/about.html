@@ -110,7 +110,7 @@
                 <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
                     <div class="category-carousel__track">
                         {% for item in category_cards %}
-                            {% include "components/cards/category_card.html" with category=item.category category_url=item.category_url only %}
+                            {% include "components/cards/category_card.html" with category=item.category category_url=item.category_url homepage_image=True homepage_card=True only %}
                         {% endfor %}
                     </div>
                 </div>

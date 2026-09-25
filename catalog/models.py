@@ -14,6 +14,11 @@ class Category(models.Model):
     name = models.CharField(max_length=120)
     slug = models.SlugField(max_length=140, unique=True)
     description = models.TextField(blank=True)
+    dropdown_description = models.CharField(
+        max_length=160,
+        blank=True,
+        help_text="Short text shown in the navbar dropdown. Falls back to Description.",
+    )
     image = CloudinaryField(
         "image",
         blank=True,

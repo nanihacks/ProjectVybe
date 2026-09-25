@@ -48,7 +48,7 @@
                                         {% endif %}
                                         <span>
                                             <strong>{{ category.name }}</strong>
-                                            <small>{{ category.description|default:"Explore projects in this category." }}</small>
+                                            <small>{{ category.dropdown_description|default:category.description|default:"Explore projects in this category." }}</small>
                                         </span>
                                     </a>
                                 </li>

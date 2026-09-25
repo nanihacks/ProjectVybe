@@ -57,7 +57,16 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ("is_active",)
     ordering = ("name",)
     fieldsets = (
-        ("Category", {"fields": ("name", "slug", "description", "is_active")}),
+        (
+            "Category",
+            {
+                "fields": ("name", "slug", "description", "dropdown_description", "is_active"),
+                "description": (
+                    "Description is shown on the home and about category cards. "
+                    "Dropdown description is the shorter text in the navbar dropdown."
+                ),
+            },
+        ),
         (
             "Images",
             {
