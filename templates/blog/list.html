@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}{% if category %}{{ category.name }} | Blog | ProjectVybe{% elif tag %}{{ tag.name }} | Blog | ProjectVybe{% else %}Blog | ProjectVybe{% endif %}{% endblock %}
+{% block meta_description %}{% if intro %}{{ intro }}{% else %}Practical writing on projects, learning and building software from ProjectVybe.{% endif %}{% endblock %}
+{% block og_title %}{{ heading }} | ProjectVybe Blog{% endblock %}
+{% block og_description %}{% if intro %}{{ intro }}{% else %}Practical writing on projects, learning and building software.{% endif %}{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact" aria-labelledby="blog-title">
+    <div class="container">
+        <p class="pill">{% icon "file-text" 16 %} {{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }}</p>
+        <h1 id="blog-title">{{ heading }}</h1>
+        {% if intro %}<p class="page-hero__lead">{{ intro }}</p>{% endif %}
+        {% if categories %}
+            <ul class="blog-topics" aria-label="Topics">
+                <li><a class="filter-chip{% if not category and not tag %} is-active{% endif %}" href="{% url 'blog:list' %}">All posts</a></li>
+                {% for topic in categories %}
+                    <li><a class="filter-chip{% if category == topic %} is-active{% endif %}" href="{{ topic.get_absolute_url }}">{{ topic.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section blog-section" aria-labelledby="blog-results-title">
+    <div class="container">
+        <h2 id="blog-results-title" class="visually-hidden">Posts</h2>
+        {% if page_obj.object_list %}
+            <ul class="post-rows" data-reveal="stagger">
+                {% for post in page_obj %}
+                    <li>
+                        <article class="post-row">
+                            <a class="post-row__media" href="{{ post.get_absolute_url }}" tabindex="-1" aria-hidden="true">
+                                {% if post.render_cover_url %}<img src="{{ post.render_cover_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">{% else %}<span class="media-placeholder__label">{{ post.category.name }}</span>{% endif %}
+                            </a>
+                            <div class="post-row__body">
+                                <p class="eyebrow">{{ post.category.name }} · {{ post.publish_at|date:"j M Y" }} · {{ post.reading_minutes }} min read</p>
+                                <h3 class="post-row__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                                <p class="muted">{{ post.excerpt }}</p>
+                            </div>
+                        </article>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {% if page_obj.has_other_pages %}
+                <nav class="pagination" aria-label="Blog pages">
+                    <div class="pagination__controls">
+                        {% if page_obj.has_previous %}<a class="button button--outline" href="?page={{ page_obj.previous_page_number }}" rel="prev">Newer</a>{% endif %}
+                    </div>
+                    <p class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                    <div class="pagination__controls">
+                        {% if page_obj.has_next %}<a class="button button--outline" href="?page={{ page_obj.next_page_number }}" rel="next">Older</a>{% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="empty-state" role="status">
+                <h3>Nothing here yet.</h3>
+                <p class="muted">We're writing our first posts. In the meantime, <a href="{% url 'pages:project_catalogue' %}">browse the projects</a>.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
