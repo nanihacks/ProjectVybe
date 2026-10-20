@@ -317,7 +317,11 @@
         });
 
         if (modalTitle) {
-            modalTitle.textContent = stepNumber === 2 ? "Step 2: Project Add-ons" : "Step 1: Your Information";
+            modalTitle.textContent = stepNumber === 2 ? "Add-ons and message" : "Your details";
+        }
+        const stepLabel = form.closest(".enquiry-modal")?.querySelector("[data-enquiry-step-label]");
+        if (stepLabel) {
+            stepLabel.textContent = "Step " + stepNumber + " of 2";
         }
         if (modalProgress) {
             modalProgress.style.width = stepNumber === 2 ? "100%" : "50%";

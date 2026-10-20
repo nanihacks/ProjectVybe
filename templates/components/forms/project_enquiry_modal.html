@@ -1,12 +1,24 @@
+{% load pricing icons %}
 <div id="project-enquiry" class="enquiry-modal" hidden aria-hidden="true">
     <div class="enquiry-modal__backdrop" data-enquiry-close></div>
     <section class="enquiry-modal__panel" role="dialog" aria-modal="true" aria-labelledby="project-enquiry-title">
         <div class="enquiry-modal__header">
-            <h2 id="project-enquiry-title" data-enquiry-modal-title>Step 1: Your information</h2>
+            <div>
+                <p class="enquiry-modal__eyebrow">Enquiry &middot; <span data-enquiry-step-label>Step 1 of 2</span></p>
+                <h2 id="project-enquiry-title" data-enquiry-modal-title>Your details</h2>
+            </div>
             <button class="enquiry-modal__close" type="button" aria-label="Close enquiry form" data-enquiry-close>&times;</button>
         </div>
         <div class="enquiry-modal__progress" aria-hidden="true">
             <span data-enquiry-progress></span>
+        </div>
+
+        <div class="enquiry-project">
+            {% if thumbnail_url %}<img class="enquiry-project__thumb" src="{{ thumbnail_url }}" alt="" width="64" height="48" decoding="async">{% endif %}
+            <div class="enquiry-project__text">
+                <strong>{{ selected_project.title }}</strong>
+                <span>{{ selected_project.category.name }}{% if selected_project.effective_price %} &middot; {{ selected_project.effective_price|inr }}{% endif %}</span>
+            </div>
         </div>
 
         <form class="project-enquiry-form" method="post" action="{% url 'leads:enquiry' %}" data-start-step="1">
@@ -20,24 +32,21 @@
                     <h3 id="modal-enquiry-step-one-title" class="enquiry-wizard__title enquiry-modal__step-title">Your information</h3>
 
                     {% include "components/forms/form_field.html" with field=form.name only %}
-                    {% include "components/forms/form_field.html" with field=form.email only %}
-                    {% include "components/forms/form_field.html" with field=form.phone only %}
+                    <div class="enquiry-row">
+                        {% include "components/forms/form_field.html" with field=form.email only %}
+                        {% include "components/forms/form_field.html" with field=form.phone only %}
+                    </div>
                     {% include "components/forms/consent_fields.html" %}
 
                     <div class="enquiry-wizard__actions">
-                        <button class="button button--outline" type="button" data-enquiry-close>Back</button>
-                        <button class="button button--primary" type="button" data-enquiry-next>Continue</button>
+                        <button class="enquiry-wizard__cancel" type="button" data-enquiry-close>Cancel</button>
+                        <button class="button button--primary" type="button" data-enquiry-next>Continue {% icon "arrow-right" 16 %}</button>
                     </div>
                 </section>
 
                 <section class="enquiry-wizard__step" data-enquiry-step="2" aria-labelledby="modal-enquiry-step-two-title">
                     <p class="enquiry-modal__step-count">Step 2 of 2</p>
                     <h3 id="modal-enquiry-step-two-title" class="enquiry-wizard__title enquiry-modal__step-title">Choose project add-ons</h3>
-
-                    <div class="enquiry-context" role="status">
-                        <strong>Project selected</strong>
-                        <span>{{ selected_project.title }}</span>
-                    </div>
 
                     {% include "components/forms/form_field.html" with field=form.selected_addons only %}
                     {% include "components/forms/form_field.html" with field=form.message only %}
@@ -49,9 +58,10 @@
                     {% include "components/forms/turnstile.html" %}
 
                     <div class="enquiry-wizard__actions">
-                        <button class="button button--outline" type="button" data-enquiry-back>Back</button>
+                        <button class="enquiry-wizard__cancel" type="button" data-enquiry-back>Back</button>
                         <button class="button button--primary" type="submit">Continue to WhatsApp</button>
                     </div>
+                    <p class="enquiry-modal__note">No payment is taken at this step.</p>
                 </section>
             </div>
         </form>

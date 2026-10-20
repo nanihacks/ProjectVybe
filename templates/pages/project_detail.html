@@ -224,7 +224,7 @@
         </section>
     {% endif %}
 </article>
-{% if not checkout_url %}{% include "components/forms/project_enquiry_modal.html" with form=enquiry_form selected_project=project %}{% endif %}
+{% if not checkout_url %}{% include "components/forms/project_enquiry_modal.html" with form=enquiry_form selected_project=project thumbnail_url=thumbnail_url %}{% endif %}
 
 {% if youtube_embed_url %}
     <div class="video-modal" hidden aria-hidden="true" data-video-modal>

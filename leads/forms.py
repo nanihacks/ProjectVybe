@@ -91,9 +91,11 @@ class LeadForm(forms.ModelForm):
             "message",
         )
         widgets = {
-            "name": forms.TextInput(attrs={"autocomplete": "name"}),
-            "email": forms.EmailInput(attrs={"autocomplete": "email"}),
-            "phone": forms.TextInput(attrs={"autocomplete": "tel"}),
+            "name": forms.TextInput(attrs={"autocomplete": "name", "placeholder": "Your full name"}),
+            "email": forms.EmailInput(attrs={"autocomplete": "email", "placeholder": "you@example.com"}),
+            "phone": forms.TextInput(
+                attrs={"autocomplete": "tel", "inputmode": "tel", "placeholder": "WhatsApp or mobile number"}
+            ),
         }
 
     def __init__(self, *args, project=None, **kwargs):

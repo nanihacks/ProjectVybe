@@ -2694,3 +2694,272 @@ body {
 .breadcrumbs + article > .page-hero--compact:first-child {
     padding-top: calc(var(--crumb-h) + clamp(1.75rem, 3.5vw, 2.75rem));
 }
+
+/* ===== Enquiry pop-up: summary strip, compact fields, sticky actions, phone sheet ===================== */
+
+.enquiry-modal__panel {
+    border-radius: 1.1rem;
+    box-shadow: var(--shadow-lift);
+}
+
+.enquiry-modal__header {
+    align-items: center;
+    padding: 1.1rem 1.5rem 0.9rem;
+}
+
+.enquiry-modal__eyebrow {
+    margin: 0 0 0.2rem;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.enquiry-project {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 1.5rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+}
+
+.enquiry-project__thumb {
+    width: 4rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.enquiry-project__text {
+    display: grid;
+    min-width: 0;
+    gap: 0.1rem;
+}
+
+.enquiry-project__text strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.enquiry-project__text span {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.enquiry-modal .project-enquiry-form {
+    padding: 1.1rem 1.5rem 0;
+}
+
+.enquiry-modal .form-field {
+    margin-bottom: 0.9rem;
+}
+
+.enquiry-modal .form-field label {
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.enquiry-modal .form-field input,
+.enquiry-modal .form-field select,
+.enquiry-modal .form-field textarea {
+    padding: 0.6rem 0.8rem;
+}
+
+.enquiry-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+    .enquiry-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* The consent wording is unchanged; it just takes less room. */
+.enquiry-modal .consent {
+    margin: 0.25rem 0 0;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+}
+
+.enquiry-modal .consent__legend {
+    padding: 0 0.3rem;
+    font-size: 0.9rem;
+}
+
+.enquiry-modal .consent__notice {
+    margin-bottom: 0.6rem;
+    font-size: 0.82rem;
+}
+
+.enquiry-modal .consent__label {
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.enquiry-modal .enquiry-wizard__actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem -1.5rem 0;
+    padding: 0.85rem 1.5rem;
+    border-top: 1px solid var(--color-hairline);
+    background: #fff;
+}
+
+.enquiry-modal .enquiry-wizard__actions .button--primary {
+    width: auto;
+    min-width: 11rem;
+    flex: 1 1 auto;
+    max-width: 18rem;
+    color: #fff;
+}
+
+.enquiry-wizard__cancel {
+    padding: 0.6rem 0.4rem;
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.enquiry-wizard__cancel:hover,
+.enquiry-wizard__cancel:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.enquiry-modal__note {
+    margin: 0;
+    padding: 0 0 0.9rem;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* Phones: a bottom sheet that fills the height, with the buttons always in reach. */
+@media (max-width: 41.99rem) {
+    .enquiry-modal {
+        place-items: end center;
+        padding: 0;
+    }
+
+    .enquiry-modal__panel {
+        width: 100%;
+        max-height: 94dvh;
+        border-radius: 1.1rem 1.1rem 0 0;
+    }
+
+    .enquiry-project,
+    .enquiry-modal__header {
+        margin-inline: 1rem;
+    }
+
+    .enquiry-modal__header {
+        margin-inline: 0;
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .project-enquiry-form {
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions {
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .button--primary {
+        max-width: none;
+    }
+}
+
+.enquiry-modal__panel {
+    max-height: min(92vh, 52rem);
+}
+
+.enquiry-project {
+    margin-top: 0.9rem;
+}
+
+/* Add-on choices in the pop-up: tidy two-column tick rows instead of stacked boxes. */
+.enquiry-modal #id_selected_addons {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+    .enquiry-modal #id_selected_addons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.enquiry-modal #id_selected_addons label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.enquiry-modal #id_selected_addons label:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.enquiry-modal #id_selected_addons input[type="checkbox"] {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: none;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--color-primary);
+}
+
+.enquiry-modal .form-field textarea {
+    min-height: 5.5rem;
+}
+
+.enquiry-modal .form-field textarea {
+    height: 6rem;
+    resize: vertical;
+}
+
+@media (max-width: 41.99rem) {
+    .enquiry-modal .enquiry-wizard__actions {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .enquiry-wizard__cancel {
+        width: auto;
+        flex: none;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .button--primary {
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
