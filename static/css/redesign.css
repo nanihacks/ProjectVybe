@@ -3161,3 +3161,10 @@ body {
         white-space: nowrap;
     }
 }
+
+/* Project card: picture and text each take exactly half. */
+@media (min-width: 62rem) {
+    .pd-card {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
