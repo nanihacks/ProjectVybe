@@ -3029,11 +3029,6 @@ body {
 }
 
 /* Overview and usage stack in one column. */
-.pd-top .project-detail__prose,
-.pd-top .point-list {
-    max-width: 62rem;
-}
-
 /* Sticky buy bar: appears once the top card has scrolled away, hides again at the footer. */
 .pd-sticky {
     position: fixed;
