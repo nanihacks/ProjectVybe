@@ -15,7 +15,7 @@
     <section class="pd-hero" aria-labelledby="project-title">
         <div class="container">
             <div class="pd-card">
-                <div class="pd-card__media">
+                <div class="pd-card__media"{% if thumbnail_url %} style="--pd-bg: url('{{ thumbnail_url }}')"{% endif %}>
                     <div class="project-detail__media media-frame media-frame--project">
                         {% if thumbnail_url %}
                             <img src="{{ thumbnail_url }}" alt="{{ project.title }} thumbnail" width="1200" height="750" fetchpriority="high" decoding="async">

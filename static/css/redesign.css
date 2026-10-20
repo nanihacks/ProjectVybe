@@ -2982,3 +2982,35 @@ body {
         margin-top: clamp(0.9rem, 3vh, 1.75rem);
     }
 }
+
+/* Project picture: shown whole, over a soft blurred copy of itself instead of flat grey bars. */
+.pd-card__media {
+    position: relative;
+    overflow: hidden;
+}
+
+.pd-card__media::before {
+    content: "";
+    position: absolute;
+    inset: -2rem;
+    background: var(--pd-bg, none) center / cover no-repeat;
+    filter: blur(28px) saturate(1.15);
+    opacity: 0.6;
+}
+
+.pd-card__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.pd-card__media .project-detail__media {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+.pd-card__media img {
+    box-shadow: 0 0.6rem 2rem rgba(12, 24, 48, 0.18);
+}
