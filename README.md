@@ -155,7 +155,7 @@ The repository uses one small build script and one application-server declaratio
 - Start command: `gunicorn config.wsgi:application`
 - Health-check path: `/health/`
 
-`build.sh` runs `collectstatic --noinput` only. Database migrations are intentionally a separate controlled step and must not run automatically during the build:
+`build.sh` installs the dependencies from `requirements.txt` and runs `collectstatic --noinput`. Database migrations are intentionally a separate controlled step and must not run automatically during the build:
 
 ```powershell
 python manage.py migrate --noinput
