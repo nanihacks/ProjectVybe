@@ -721,3 +721,67 @@
         }).observe(footer);
     }
 })();
+
+(function () {
+    document.querySelectorAll("[data-gallery]").forEach(function (gallery) {
+        const track = gallery.querySelector("[data-gallery-track]");
+        const prev = gallery.querySelector("[data-gallery-prev]");
+        const next = gallery.querySelector("[data-gallery-next]");
+        const count = gallery.querySelector("[data-gallery-count]");
+        const dotsBox = gallery.querySelector("[data-gallery-dots]");
+        if (!track || !prev || !next) return;
+
+        const items = Array.from(track.children);
+        const dots = items.map(function (item, index) {
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "pd-gallery__dot";
+            dot.setAttribute("aria-label", "Show image " + (index + 1));
+            dot.addEventListener("click", function () {
+                track.scrollTo({ left: item.offsetLeft - items[0].offsetLeft });
+            });
+            if (dotsBox) dotsBox.appendChild(dot);
+            return dot;
+        });
+
+        const currentIndex = function () {
+            let best = 0;
+            let bestDistance = Infinity;
+            items.forEach(function (item, index) {
+                const distance = Math.abs(item.offsetLeft - items[0].offsetLeft - track.scrollLeft);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    best = index;
+                }
+            });
+            return best;
+        };
+
+        const update = function () {
+            const max = track.scrollWidth - track.clientWidth - 2;
+            prev.disabled = track.scrollLeft <= 2;
+            next.disabled = track.scrollLeft >= max;
+            const atEnd = track.scrollLeft >= max;
+            const index = atEnd ? items.length - 1 : currentIndex();
+            dots.forEach(function (dot, i) {
+                dot.classList.toggle("is-active", i === index);
+                dot.setAttribute("aria-current", i === index ? "true" : "false");
+            });
+            if (count) count.textContent = index + 1 + " / " + items.length;
+            gallery.classList.toggle("is-single", track.scrollWidth <= track.clientWidth + 2);
+        };
+        const move = function (direction) {
+            const index = Math.max(0, Math.min(items.length - 1, currentIndex() + direction));
+            track.scrollTo({ left: items[index].offsetLeft - items[0].offsetLeft });
+        };
+
+        prev.addEventListener("click", function () { move(-1); });
+        next.addEventListener("click", function () { move(1); });
+        track.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        track.querySelectorAll("img").forEach(function (img) {
+            img.addEventListener("load", update);
+        });
+        update();
+    });
+})();

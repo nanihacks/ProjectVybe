@@ -3,6 +3,7 @@ import re
 from django import forms
 
 from catalog.models import Project, ProjectAddon, Service
+from core.validators import StrictEmailField, StrictPhoneField
 
 from .models import Lead, PrivacyRequest
 
@@ -41,6 +42,8 @@ class LeadForm(forms.ModelForm):
         label="Project add-ons",
         help_text="Tick any add-ons you'd like to discuss.",
     )
+    email = StrictEmailField(label="Email")
+    phone = StrictPhoneField(required=False, label="Phone")
     message = forms.CharField(
         min_length=10,
         label="Message",
@@ -92,10 +95,6 @@ class LeadForm(forms.ModelForm):
         )
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "name", "placeholder": "Your full name"}),
-            "email": forms.EmailInput(attrs={"autocomplete": "email", "placeholder": "you@example.com"}),
-            "phone": forms.TextInput(
-                attrs={"autocomplete": "tel", "inputmode": "tel", "placeholder": "WhatsApp or mobile number"}
-            ),
         }
 
     def __init__(self, *args, project=None, **kwargs):
@@ -132,15 +131,6 @@ class LeadForm(forms.ModelForm):
                 continue
             if field.help_text:
                 field.widget.attrs["aria-describedby"] = f"id_{field_name}_help"
-
-    def clean_phone(self):
-        phone = self.cleaned_data.get("phone", "").strip()
-        if phone and (
-            not re.fullmatch(r"[0-9+().\-\s]{7,40}", phone)
-            or len(re.sub(r"\D", "", phone)) < 7
-        ):
-            raise forms.ValidationError("Enter a valid phone number or leave this field blank.")
-        return phone
 
     def clean_message(self):
         message = self.cleaned_data.get("message", "").strip()
@@ -184,6 +174,10 @@ class PrivacyRequestForm(forms.ModelForm):
         label="What would you like us to do?",
         error_messages={"required": "Please choose one option."},
     )
+    email = StrictEmailField(
+        label="Your email address",
+        help_text="The address you used when you contacted us. We will reply here.",
+    )
     reference = forms.CharField(
         required=False,
         max_length=20,
@@ -207,14 +201,9 @@ class PrivacyRequestForm(forms.ModelForm):
         model = PrivacyRequest
         fields = ("kind", "email", "reference", "message")
         labels = {
-            "email": "Your email address",
             "message": "Anything else we should know (optional)",
         }
-        help_texts = {
-            "email": "The address you used when you contacted us. We will reply here.",
-        }
         widgets = {
-            "email": forms.EmailInput(attrs={"autocomplete": "email"}),
             "message": forms.Textarea(attrs={"rows": 4}),
         }
 

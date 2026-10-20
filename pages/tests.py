@@ -1216,3 +1216,13 @@ class AdminUrlTests(TestCase):
         finally:
             importlib.reload(config.urls)
             clear_url_caches()
+
+
+class HomeHeroSearchTests(TestCase):
+    def test_hero_has_a_working_project_search_form(self):
+        response = self.client.get(reverse("pages:home"), secure=True)
+
+        self.assertContains(response, 'id="hero-project-search"')
+        self.assertContains(response, 'name="q"')
+        self.assertContains(response, 'action="/projects/#project-results-title"')
+        self.assertContains(response, 'class="device__tile-link"')
