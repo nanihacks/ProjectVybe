@@ -123,19 +123,25 @@
                     <h2 id="project-gallery-title">A closer look.</h2>
                 </div>
                 <div class="pd-gallery" data-gallery>
-                    <button class="pd-gallery__arrow pd-gallery__arrow--prev" type="button" aria-label="Previous images" data-gallery-prev disabled>{% icon "arrow-right" 20 %}</button>
-                    <div class="pd-gallery__track" tabindex="0" role="group" aria-label="Project images" data-gallery-track>
-                        {% for gallery_image in gallery_media %}
-                            <figure class="pd-gallery__item">
-                                {% if gallery_image.url %}
-                                    <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt_text }}" width="1200" height="750" loading="lazy" decoding="async">
-                                {% else %}
-                                    <div class="media-placeholder" aria-label="{{ gallery_image.alt_text }}">{{ gallery_image.alt_text }}</div>
-                                {% endif %}
-                            </figure>
-                        {% endfor %}
+                    <div class="pd-gallery__stage">
+                        <button class="pd-gallery__arrow pd-gallery__arrow--prev" type="button" aria-label="Previous image" data-gallery-prev disabled>{% icon "arrow-right" 18 %}</button>
+                        <div class="pd-gallery__track" tabindex="0" role="group" aria-label="Project images" data-gallery-track>
+                            {% for gallery_image in gallery_media %}
+                                <figure class="pd-gallery__item">
+                                    {% if gallery_image.url %}
+                                        <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt_text }}" width="1200" height="750" loading="lazy" decoding="async">
+                                    {% else %}
+                                        <div class="media-placeholder" aria-label="{{ gallery_image.alt_text }}">{{ gallery_image.alt_text }}</div>
+                                    {% endif %}
+                                </figure>
+                            {% endfor %}
+                        </div>
+                        <button class="pd-gallery__arrow pd-gallery__arrow--next" type="button" aria-label="Next image" data-gallery-next>{% icon "arrow-right" 18 %}</button>
                     </div>
-                    <button class="pd-gallery__arrow pd-gallery__arrow--next" type="button" aria-label="Next images" data-gallery-next>{% icon "arrow-right" 20 %}</button>
+                    <div class="pd-gallery__footer">
+                        <p class="pd-gallery__count" data-gallery-count aria-live="polite"></p>
+                        <div class="pd-gallery__dots" data-gallery-dots></div>
+                    </div>
                 </div>
             </div>
         </section>

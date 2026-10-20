@@ -25,19 +25,24 @@
         </div>
 
         <div class="hero2__visual">
-            <div class="device" aria-hidden="true">
-                <div class="device__bar"><span></span><span></span><span></span><em>projectvybe.com/projects</em></div>
+            <div class="device">
+                <div class="device__bar" aria-hidden="true"><span></span><span></span><span></span><em>projectvybe.com/projects</em></div>
                 <div class="device__body">
                     <p class="device__title">Find your next project</p>
-                    <div class="device__search">{% icon "search" 16 %} <span>Search by topic or technology</span></div>
+                    <form class="device__search" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" role="search">
+                        <label class="visually-hidden" for="hero-project-search">Search projects</label>
+                        {% icon "search" 16 %}
+                        <input id="hero-project-search" name="q" type="search" placeholder="Search by topic or technology" autocomplete="off" maxlength="80">
+                        <button class="device__search-go" type="submit" aria-label="Search projects">{% icon "arrow-right" 16 %}</button>
+                    </form>
                     <ul class="device__tiles">
                         {% for category in navigation_categories|slice:":4" %}
-                            <li><span class="device__tile-icon">{% icon "code" 18 %}</span><strong>{{ category.name }}</strong><i></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}?category={{ category.slug|urlencode }}#project-results-title">{{ category.name }}</a></strong><i aria-hidden="true"></i></li>
                         {% empty %}
-                            <li><span class="device__tile-icon">{% icon "cpu" 18 %}</span><strong>AI &amp; ML</strong><i></i></li>
-                            <li><span class="device__tile-icon">{% icon "globe" 18 %}</span><strong>Web</strong><i></i></li>
-                            <li><span class="device__tile-icon">{% icon "shield" 18 %}</span><strong>Security</strong><i></i></li>
-                            <li><span class="device__tile-icon">{% icon "phone-mobile" 18 %}</span><strong>Mobile</strong><i></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "cpu" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">AI &amp; ML</a></strong><i aria-hidden="true"></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "globe" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Web</a></strong><i aria-hidden="true"></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "shield" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Security</a></strong><i aria-hidden="true"></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "phone-mobile" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Mobile</a></strong><i aria-hidden="true"></i></li>
                         {% endfor %}
                     </ul>
                 </div>
