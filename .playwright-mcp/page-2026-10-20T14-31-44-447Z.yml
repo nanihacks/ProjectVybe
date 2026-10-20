@@ -1,0 +1,388 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "ProjectVybe home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "ProjectVybe" [ref=e6]
+      - navigation "Primary navigation" [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - button "Projects" [ref=e10] [cursor=pointer]
+        - link "Services" [ref=e14] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=e15] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=e16] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=e17] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=e18] [cursor=pointer]:
+          - /url: /enquiry/
+        - generic [ref=e19]:
+          - generic [ref=e20]: Search projects
+          - searchbox "Search projects"
+          - button "Open project search" [ref=e21] [cursor=pointer]
+        - link "Start a conversation" [ref=e25] [cursor=pointer]:
+          - /url: /enquiry/
+  - main [ref=e26]:
+    - region [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - paragraph [ref=e30]: ProjectVybe
+          - heading "Build. Learn. Grow." [level=1] [ref=e33]
+          - paragraph [ref=e34]: Practical technology projects, training, mentorship, and software services to help you turn ideas into working solutions.
+          - generic [ref=e35]:
+            - link "Explore projects" [ref=e36] [cursor=pointer]:
+              - /url: /#projects
+            - link "Our services" [ref=e39] [cursor=pointer]:
+              - /url: /services/
+          - list "What we cover" [ref=e40]:
+            - listitem [ref=e41]: AI/ML
+            - listitem [ref=e44]: Software
+            - listitem [ref=e47]: Development
+            - listitem [ref=e50]: Training
+            - listitem [ref=e53]: Mentorship
+            - listitem [ref=e56]: Publications
+        - generic [ref=e59]:
+          - generic [aria-hidden] [ref=e60]:
+            - emphasis [ref=e65]: projectvybe.com/projects
+            - generic [ref=e67]:
+              - strong [ref=e68]: "RoadBond: Holding Road Contractors Accountable, On the Blockchain"
+              - generic [ref=e69]: Blockchain
+          - generic [aria-hidden] [ref=e70]: Documentation included
+          - generic [aria-hidden] [ref=e73]: Mentor guidance
+    - region [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - paragraph [ref=e79]: What we do
+          - heading "Support for the work behind the idea." [level=2] [ref=e80]
+          - paragraph [ref=e81]: Project development, technology learning and practical software support in one place.
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - heading "Project development" [level=3] [ref=e87]
+            - paragraph [ref=e88]: AI/ML, computer science, final-year and software projects you can learn from and build on.
+            - link "Browse projects →" [ref=e89] [cursor=pointer]:
+              - /url: /#projects
+          - listitem [ref=e90]:
+            - heading "Learn with clarity" [level=3] [ref=e94]
+            - paragraph [ref=e95]: Training, mentorship, documentation and presentation support around real project work.
+            - link "See how we help →" [ref=e96] [cursor=pointer]:
+              - /url: /services/
+          - listitem [ref=e97]:
+            - heading "Software services" [level=3] [ref=e101]
+            - paragraph [ref=e102]: A focused starting point for software development and other technology work.
+            - link "View services →" [ref=e103] [cursor=pointer]:
+              - /url: /services/
+    - region [ref=e104]:
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - paragraph [ref=e108]: Explore by area
+            - heading "Find a direction for your next project." [level=2] [ref=e109]
+          - paragraph [ref=e110]: Practical project directions across AI/ML, cybersecurity, mobile and web development.
+        - generic [ref=e111]:
+          - button "Previous categories" [disabled] [ref=e112]:
+            - generic [aria-hidden] [ref=e113]: ←
+          - generic "Project categories" [ref=e114]:
+            - generic [ref=e115]:
+              - article [ref=e116]:
+                - img "AI & ML category" [ref=e118]
+                - generic [ref=e119]:
+                  - heading "AI & ML" [level=3] [ref=e120]
+                  - paragraph [ref=e121]: Explore intelligent projects using neural networks, predictive models, and automation, ideal for learning practical machine learning, building real-world AI applications.
+                  - link "Explore projects" [ref=e122] [cursor=pointer]:
+                    - /url: /projects/?category=ai-machine-learning#project-results-title
+                    - text: Explore projects →
+              - article [ref=e123]:
+                - img "Blockchain category" [ref=e125]
+                - generic [ref=e126]:
+                  - heading "Blockchain" [level=3] [ref=e127]
+                  - paragraph [ref=e128]: Explore smart contracts, decentralized apps, and digital ledgers, learning how blockchain enables transparent, tamper-proof transactions in finance and supply chains.
+                  - link "Explore projects" [ref=e129] [cursor=pointer]:
+                    - /url: /projects/?category=blockchain#project-results-title
+                    - text: Explore projects →
+              - article [ref=e130]:
+                - img "Computer Vision category" [ref=e132]
+                - generic [ref=e133]:
+                  - heading "Computer Vision" [level=3] [ref=e134]
+                  - paragraph [ref=e135]: Build image and video analysis projects using object detection, face recognition, and deep learning to help machines see and understand.
+                  - link "Explore projects" [ref=e136] [cursor=pointer]:
+                    - /url: /projects/?category=computer-vision#project-results-title
+                    - text: Explore projects →
+              - article [ref=e137]:
+                - img "Cybersecurity category" [ref=e139]
+                - generic [ref=e140]:
+                  - heading "Cybersecurity" [level=3] [ref=e141]
+                  - paragraph [ref=e142]: Discover projects on threat detection, encryption, secure authentication, and vulnerability testing that teach how to protect systems, networks, and data.
+                  - link "Explore projects" [ref=e143] [cursor=pointer]:
+                    - /url: /projects/?category=cybersecurity#project-results-title
+                    - text: Explore projects →
+              - article [ref=e144]:
+                - img "Mobile Applications category" [ref=e146]
+                - generic [ref=e147]:
+                  - heading "Mobile Applications" [level=3] [ref=e148]
+                  - paragraph [ref=e149]: Create Android and iOS apps with clean interfaces, device features, and cloud connectivity, from simple utilities to complete mobile products.
+                  - link "Explore projects" [ref=e150] [cursor=pointer]:
+                    - /url: /projects/?category=mobile-applications#project-results-title
+                    - text: Explore projects →
+              - article [ref=e151]:
+                - img "Web Development category" [ref=e153]
+                - generic [ref=e154]:
+                  - heading "Web Development" [level=3] [ref=e155]
+                  - paragraph [ref=e156]: Design and build fast, responsive websites and full-stack applications using modern frontend, backend, and database tools, ready for real users.
+                  - link "Explore projects" [ref=e157] [cursor=pointer]:
+                    - /url: /projects/?category=web-development#project-results-title
+                    - text: Explore projects →
+          - button "Next categories" [ref=e158] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e159]: →
+          - generic [ref=e160]:
+            - paragraph [ref=e161]: 01 / 02
+            - tablist "Choose category slide" [ref=e162]:
+              - tab "Go to category page 1" [selected] [ref=e163] [cursor=pointer]
+              - tab "Go to category page 2" [ref=e164] [cursor=pointer]
+            - link "View all →" [ref=e165] [cursor=pointer]:
+              - /url: /projects/
+    - region [ref=e166]:
+      - generic [ref=e167]:
+        - generic [ref=e168]:
+          - generic [ref=e169]:
+            - paragraph [ref=e170]: Featured projects
+            - heading "A closer look at selected work." [level=2] [ref=e171]
+          - link "All projects" [ref=e172] [cursor=pointer]:
+            - /url: /projects/
+        - generic [ref=e175]:
+          - article [ref=e176]:
+            - generic [ref=e177]:
+              - generic [ref=e178]: Blockchain
+              - 'img "RoadBond: Holding Road Contractors Accountable, On the Blockchain thumbnail" [ref=e179]'
+            - generic [ref=e180]:
+              - 'heading "RoadBond: Holding Road Contractors Accountable, On the Blockchain" [level=3] [ref=e181]'
+              - paragraph [ref=e182]: Citizens report potholes; blockchain escrow automatically penalises contractors who miss repair deadlines.
+              - link "View project" [ref=e183] [cursor=pointer]:
+                - /url: /projects/roadbond/
+                - text: View project
+                - generic [aria-hidden] [ref=e184]: →
+          - article [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: AI & ML
+              - img "QuizForge AI – Intelligent Quiz Generation & Assessment Platform thumbnail" [ref=e188]
+            - generic [ref=e189]:
+              - heading "QuizForge AI – Intelligent Quiz Generation & Assessment Platform" [level=3] [ref=e190]
+              - paragraph [ref=e191]: AI-powered quiz platform that transforms study materials into interactive quizzes with automated assessment and analytics.
+              - link "View project" [ref=e192] [cursor=pointer]:
+                - /url: /projects/quizforge-ai/
+                - text: View project
+                - generic [aria-hidden] [ref=e193]: →
+          - article [ref=e194]:
+            - generic [ref=e195]:
+              - generic [ref=e196]: AI & ML
+              - img "CineScope AI – Intelligent Streaming Content Analytics & Genre Prediction System thumbnail" [ref=e197]
+            - generic [ref=e198]:
+              - heading "CineScope AI – Intelligent Streaming Content Analytics & Genre Prediction System" [level=3] [ref=e199]
+              - paragraph [ref=e200]: AI-powered streaming content analytics system for exploring titles and predicting genres from descriptions using machine learning.
+              - link "View project" [ref=e201] [cursor=pointer]:
+                - /url: /projects/cinescope-ai-intelligent-streaming-content-analytics-genre-prediction-system/
+                - text: View project
+                - generic [aria-hidden] [ref=e202]: →
+    - region [ref=e203]:
+      - generic [ref=e204]:
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - paragraph [ref=e207]: Services
+            - heading "Practical support for technology work." [level=2] [ref=e208]
+          - paragraph [ref=e209]: Training, mentorship, documentation and software support for your next technology project.
+        - generic [ref=e210]:
+          - button "Previous services" [disabled] [ref=e211]:
+            - generic [aria-hidden] [ref=e212]: ←
+          - generic "ProjectVybe services" [ref=e213]:
+            - generic [ref=e214]:
+              - article [ref=e215]:
+                - img "AI & Machine Learning Solutions" [ref=e217]
+                - generic [ref=e218]:
+                  - heading "AI & Machine Learning Solutions" [level=3] [ref=e219]
+                  - paragraph [ref=e220]: Build practical AI and machine learning solutions for academic and real-world applications.
+                  - link "Explore services" [ref=e221] [cursor=pointer]:
+                    - /url: /services/
+              - article [ref=e222]:
+                - img "Software Development" [ref=e224]
+                - generic [ref=e225]:
+                  - heading "Software Development" [level=3] [ref=e226]
+                  - paragraph [ref=e227]: Custom software development for web applications, business solutions, and technology products.
+                  - link "Explore services" [ref=e228] [cursor=pointer]:
+                    - /url: /services/
+              - article [ref=e229]:
+                - img "Project Development" [ref=e231]
+                - generic [ref=e232]:
+                  - heading "Project Development" [level=3] [ref=e233]
+                  - paragraph [ref=e234]: End-to-end development support for academic, AI/ML, and software projects.
+                  - link "Explore services" [ref=e235] [cursor=pointer]:
+                    - /url: /services/
+              - article [ref=e236]:
+                - img "Training & Mentorship" [ref=e238]
+                - generic [ref=e239]:
+                  - heading "Training & Mentorship" [level=3] [ref=e240]
+                  - paragraph [ref=e241]: Practical guidance to help you understand, develop, and confidently present your project.
+                  - link "Explore services" [ref=e242] [cursor=pointer]:
+                    - /url: /services/
+              - article [ref=e243]:
+                - img "Research & Publication Support" [ref=e245]
+                - generic [ref=e246]:
+                  - heading "Research & Publication Support" [level=3] [ref=e247]
+                  - paragraph [ref=e248]: Technical guidance for preparing project work for research papers and academic publications.
+                  - link "Explore services" [ref=e249] [cursor=pointer]:
+                    - /url: /services/
+              - article [ref=e250]:
+                - img "Project Consultancy" [ref=e252]
+                - generic [ref=e253]:
+                  - heading "Project Consultancy" [level=3] [ref=e254]
+                  - paragraph [ref=e255]: Get practical technical guidance for choosing the right idea, technologies, architecture, development approach, and project direction.
+                  - link "Explore services" [ref=e256] [cursor=pointer]:
+                    - /url: /services/
+          - button "Next services" [ref=e257] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e258]: →
+          - generic [ref=e259]:
+            - paragraph [ref=e260]: 01 / 02
+            - tablist "Choose service slide" [ref=e261]:
+              - tab "Go to service page 1" [selected] [ref=e262] [cursor=pointer]
+              - tab "Go to service page 2" [ref=e263] [cursor=pointer]
+            - link "View all →" [ref=e264] [cursor=pointer]:
+              - /url: /services/
+    - region [ref=e265]:
+      - generic [ref=e266]:
+        - generic [ref=e267]:
+          - paragraph [ref=e268]: How it works
+          - heading "From idea to working project in four steps." [level=2] [ref=e269]
+        - list [ref=e270]:
+          - listitem [ref=e271]:
+            - generic [ref=e272]: "1"
+            - heading "Explore" [level=3] [ref=e273]
+            - paragraph [ref=e274]: Browse the projects and services that fit your direction.
+          - listitem [ref=e275]:
+            - generic [ref=e276]: "2"
+            - heading "Choose" [level=3] [ref=e277]
+            - paragraph [ref=e278]: Pick the project or support that matches what you need.
+          - listitem [ref=e279]:
+            - generic [ref=e280]: "3"
+            - heading "Connect" [level=3] [ref=e281]
+            - paragraph [ref=e282]: Send a short enquiry, or pay online where it is available.
+          - listitem [ref=e283]:
+            - generic [ref=e284]: "4"
+            - heading "Build" [level=3] [ref=e285]
+            - paragraph [ref=e286]: Move forward with focused project or service support.
+    - region [ref=e287]:
+      - generic [ref=e288]:
+        - generic [ref=e289]:
+          - paragraph [ref=e290]: Why ProjectVybe
+          - heading "Technology support grounded in practical work." [level=2] [ref=e291]
+        - list [ref=e292]:
+          - listitem [ref=e293]:
+            - heading "Practical project focus" [level=3] [ref=e297]
+            - paragraph [ref=e298]: Work you can run, explain and build on.
+          - listitem [ref=e299]:
+            - heading "Clear documentation" [level=3] [ref=e303]
+            - paragraph [ref=e304]: Reports and presentation support that make sense.
+          - listitem [ref=e305]:
+            - heading "Learning and mentorship" [level=3] [ref=e309]
+            - paragraph [ref=e310]: Guidance from people who build software.
+          - listitem [ref=e311]:
+            - heading "Across domains" [level=3] [ref=e315]
+            - paragraph [ref=e316]: AI/ML, web, mobile, security and more.
+    - region [ref=e317]:
+      - generic [ref=e318]:
+        - generic [ref=e319]:
+          - paragraph [ref=e320]: FAQ
+          - heading "Questions we hear often" [level=2] [ref=e321]
+          - link "Ask us something else →" [ref=e322] [cursor=pointer]:
+            - /url: /enquiry/
+        - generic [ref=e323]:
+          - group [ref=e324]:
+            - generic "How do I get a project?" [ref=e325] [cursor=pointer]
+          - group [ref=e330]:
+            - generic "How will I receive my order?" [ref=e331] [cursor=pointer]
+          - group [ref=e336]:
+            - generic "Can I get a refund?" [ref=e337] [cursor=pointer]
+          - group [ref=e342]:
+            - generic "Do you offer courses?" [ref=e343] [cursor=pointer]
+    - region [ref=e348]:
+      - generic [ref=e350]:
+        - generic [ref=e351]:
+          - heading "Tell us what you're building." [level=2] [ref=e352]
+          - paragraph [ref=e353]: Browse the projects, or send a short note and we'll suggest a starting point.
+        - generic [ref=e354]:
+          - link "Start a conversation" [ref=e355] [cursor=pointer]:
+            - /url: /enquiry/
+          - link "Explore projects" [ref=e356] [cursor=pointer]:
+            - /url: /#projects
+  - contentinfo [ref=e357]:
+    - generic [ref=e358]:
+      - generic [ref=e359]:
+        - link "ProjectVybe home" [ref=e360] [cursor=pointer]:
+          - /url: /
+          - img "ProjectVybe" [ref=e361]
+        - paragraph [ref=e362]: Build. Learn. Grow.
+        - paragraph [ref=e363]: A technology-focused space for thoughtful software projects, practical learning, and steady progress.
+        - list [ref=e364]:
+          - listitem [ref=e365]:
+            - link "support@projectvybe.com" [ref=e368] [cursor=pointer]:
+              - /url: mailto:support@projectvybe.com
+        - list "ProjectVybe on social media" [ref=e369]:
+          - listitem [ref=e370]:
+            - link "Instagram" [ref=e371] [cursor=pointer]:
+              - /url: https://www.instagram.com/projectvybe/
+          - listitem [ref=e374]:
+            - link "LinkedIn" [ref=e375] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/projectvybe/
+          - listitem [ref=e378]:
+            - link "YouTube" [ref=e379] [cursor=pointer]:
+              - /url: https://www.youtube.com/@projectvybe
+          - listitem [ref=e382]:
+            - link "GitHub" [ref=e383] [cursor=pointer]:
+              - /url: https://github.com/projectvybe
+          - listitem [ref=e386]:
+            - link "Facebook" [ref=e387] [cursor=pointer]:
+              - /url: https://www.facebook.com/projectvybe
+          - listitem [ref=e390]:
+            - link "X (Twitter)" [ref=e391] [cursor=pointer]:
+              - /url: https://x.com/projectvybe
+          - listitem [ref=e394]:
+            - link "WhatsApp" [ref=e395] [cursor=pointer]:
+              - /url: https://wa.me/918008661928
+      - navigation "Footer navigation" [ref=e398]:
+        - paragraph [ref=e399]: Explore
+        - link "Home" [ref=e400] [cursor=pointer]:
+          - /url: /
+        - link "Projects" [ref=e401] [cursor=pointer]:
+          - /url: /projects/
+        - link "Services" [ref=e402] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=e403] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=e404] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=e405] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=e406] [cursor=pointer]:
+          - /url: /enquiry/
+      - navigation "Legal navigation" [ref=e407]:
+        - paragraph [ref=e408]: Information
+        - link "Privacy policy" [ref=e409] [cursor=pointer]:
+          - /url: /privacy/
+        - link "Terms & conditions" [ref=e410] [cursor=pointer]:
+          - /url: /terms/
+        - link "Refund / cancellation policy" [ref=e411] [cursor=pointer]:
+          - /url: /refund-policy/
+        - link "Cookie policy" [ref=e412] [cursor=pointer]:
+          - /url: /cookies/
+        - link "Grievance redressal" [ref=e413] [cursor=pointer]:
+          - /url: /grievance-redressal/
+        - link "Shipping & delivery policy" [ref=e414] [cursor=pointer]:
+          - /url: /shipping-delivery-policy/
+        - link "Academic integrity policy" [ref=e415] [cursor=pointer]:
+          - /url: /academic-integrity/
+        - link "Privacy request" [ref=e416] [cursor=pointer]:
+          - /url: /privacy/request/
+    - generic [ref=e417]:
+      - paragraph [ref=e418]: © 2026 ProjectVybe
+      - paragraph [ref=e419]: Build. Learn. Grow.

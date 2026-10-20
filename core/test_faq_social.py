@@ -169,3 +169,28 @@ class AddonPanelTests(TestCase):
         self.assertContains(response, f"addon={self.unpriced.slug}")
         self.assertNotContains(response, 'class="addon2__input"')
         self.assertNotContains(response, "data-addons-continue")
+
+
+class SocialVisibilityAndAddonIconTests(TestCase):
+    def test_unticked_social_link_is_hidden_but_kept(self):
+        from .models import SiteSettings
+
+        settings_row = SiteSettings.get_solo()
+        settings_row.instagram_url = "https://instagram.com/projectvybe"
+        settings_row.github_url = "https://github.com/projectvybe"
+        settings_row.show_github = False
+        settings_row.save()
+
+        keys = [key for key, _, _ in SiteSettings.get_solo().social_items]
+        self.assertIn("instagram", keys)
+        self.assertNotIn("github", keys)
+        self.assertEqual(SiteSettings.get_solo().github_url, "https://github.com/projectvybe")
+
+    def test_addon_icon_follows_the_name(self):
+        from .templatetags.icons import addon_icon
+
+        self.assertEqual(addon_icon("Documentation support"), "file-text")
+        self.assertEqual(addon_icon("Presentation support"), "presentation")
+        self.assertEqual(addon_icon("Publication support"), "book-open")
+        self.assertEqual(addon_icon("1:1 mentorship"), "users")
+        self.assertEqual(addon_icon("Something else"), "layers")

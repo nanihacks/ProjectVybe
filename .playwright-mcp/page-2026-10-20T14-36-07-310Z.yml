@@ -1,0 +1,253 @@
+- generic [active] [ref=f2e1]:
+  - link "Skip to content" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - link "ProjectVybe home" [ref=f2e5] [cursor=pointer]:
+        - /url: /
+        - img "ProjectVybe" [ref=f2e6]
+      - navigation "Primary navigation" [ref=f2e7]:
+        - link "Home" [ref=f2e8] [cursor=pointer]:
+          - /url: /
+        - button "Projects" [ref=f2e10] [cursor=pointer]
+        - link "Services" [ref=f2e14] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=f2e15] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=f2e16] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=f2e17] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=f2e18] [cursor=pointer]:
+          - /url: /enquiry/
+        - generic [ref=f2e19]:
+          - generic [ref=f2e20]: Search projects
+          - searchbox "Search projects"
+          - button "Open project search" [ref=f2e21] [cursor=pointer]
+        - link "Start a conversation" [ref=f2e25] [cursor=pointer]:
+          - /url: /enquiry/
+  - main [ref=f2e26]:
+    - article [ref=f2e27]:
+      - navigation "Breadcrumb" [ref=f2e28]:
+        - list [ref=f2e29]:
+          - listitem [ref=f2e30]:
+            - link "Home" [ref=f2e31] [cursor=pointer]:
+              - /url: /
+          - listitem [aria-hidden] [ref=f2e32]: /
+          - listitem [ref=f2e33]:
+            - link "Projects" [ref=f2e34] [cursor=pointer]:
+              - /url: /projects/
+          - listitem [aria-hidden] [ref=f2e35]: /
+          - listitem [ref=f2e36]: Smart Attendance System
+      - region [ref=f2e37]:
+        - generic [ref=f2e38]:
+          - generic [ref=f2e39]:
+            - img "Smart Attendance System" [ref=f2e42]:
+              - generic [ref=f2e43]: AI & Machine Learning
+            - generic [ref=f2e44]:
+              - generic [ref=f2e45]: AI & Machine Learning
+              - heading "Smart Attendance System" [level=1] [ref=f2e46]
+              - paragraph [ref=f2e47]: Face-recognition attendance tracker with a web dashboard, built with Python, OpenCV and Django.
+              - paragraph [ref=f2e48]:
+                - generic [ref=f2e49]:
+                  - generic [ref=f2e50]: Original price
+                  - text: ₹4,999
+                - strong [ref=f2e51]:
+                  - generic [ref=f2e52]: Now
+                  - text: ₹3,999
+                - generic [ref=f2e53]: Source code, setup guide and walkthrough video
+              - link "Get this project" [ref=f2e55] [cursor=pointer]:
+                - /url: "#project-enquiry"
+              - generic [ref=f2e59]:
+                - term [ref=f2e60]: Technology stack
+                - definition [ref=f2e63]:
+                  - list "Technology stack" [ref=f2e64]:
+                    - listitem [ref=f2e65]: Python
+                    - listitem [ref=f2e66]: Django
+                    - listitem [ref=f2e67]: OpenCV
+                    - listitem [ref=f2e68]: PostgreSQL
+          - paragraph [ref=f2e69]:
+            - link "← Back to projects" [ref=f2e70] [cursor=pointer]:
+              - /url: /projects/
+      - region [ref=f2e71]:
+        - generic [ref=f2e72]:
+          - generic [ref=f2e73]:
+            - region [ref=f2e74]:
+              - paragraph [ref=f2e75]: Project overview
+              - heading "What this project is about." [level=2] [ref=f2e76]
+              - generic [ref=f2e77]:
+                - paragraph [ref=f2e78]: "A complete attendance system: it recognises faces from a webcam, marks attendance automatically and gives teachers a dashboard with daily and monthly reports."
+                - paragraph [ref=f2e79]: Includes the full source code, a setup guide and a short walkthrough video.
+            - region [ref=f2e80]:
+              - paragraph [ref=f2e81]: Who it is for
+              - heading "Usage and use case" [level=2] [ref=f2e82]
+              - list [ref=f2e83]:
+                - listitem [ref=f2e84]: Colleges and training centres that want to replace paper registers.
+          - region [ref=f2e85]:
+            - paragraph [ref=f2e86]: What you get
+            - heading "Key features" [level=2] [ref=f2e87]
+            - list [ref=f2e88]:
+              - listitem [ref=f2e89]:
+                - generic [ref=f2e92]: Face recognition with OpenCV
+              - listitem [ref=f2e93]:
+                - generic [ref=f2e96]: Teacher dashboard with reports
+              - listitem [ref=f2e97]:
+                - generic [ref=f2e100]: Export to CSV and PDF
+              - listitem [ref=f2e101]:
+                - generic [ref=f2e104]: Role-based login
+          - region [ref=f2e105]:
+            - paragraph [ref=f2e106]: Before you start
+            - heading "Requirements" [level=2] [ref=f2e107]
+            - paragraph [ref=f2e109]: Python 3.11 or newer and a webcam.
+      - region [ref=f2e110]:
+        - region [ref=f2e112]:
+          - generic [ref=f2e113]:
+            - paragraph [ref=f2e114]: Optional extras
+            - heading "Boost your project" [level=2] [ref=f2e115]
+            - paragraph [ref=f2e116]: Optional extras to help you document, present and understand your work. Mention the ones you like when you enquire.
+          - list [ref=f2e117]:
+            - listitem [ref=f2e118]:
+              - article [ref=f2e119]:
+                - generic [ref=f2e120]:
+                  - strong [ref=f2e125]: 1:1 mentor session
+                  - generic [ref=f2e126]: A 45 minute call to walk through the code.
+                  - list [ref=f2e127]:
+                    - listitem [ref=f2e128]: Live code walkthrough
+                    - listitem [ref=f2e131]: Q&A on your viva
+                  - generic [ref=f2e134]: +₹499
+            - listitem [ref=f2e136]:
+              - article [ref=f2e137]:
+                - generic [ref=f2e138]:
+                  - generic [ref=f2e139]: Popular
+                  - strong [ref=f2e144]: Project report and PPT
+                  - generic [ref=f2e145]: A ready-to-submit report and presentation.
+                  - list [ref=f2e146]:
+                    - listitem [ref=f2e147]: Project report (40+ pages)
+                    - listitem [ref=f2e150]: PPT slides
+                    - listitem [ref=f2e153]: Viva question bank
+                  - generic [ref=f2e156]: +₹999
+            - listitem [ref=f2e158]:
+              - article [ref=f2e159]:
+                - generic [ref=f2e160]:
+                  - strong [ref=f2e165]: Remote setup help
+                  - generic [ref=f2e166]: We help you install and run it on your machine.
+                  - generic [ref=f2e167]: +₹299
+      - region [ref=f2e169]:
+        - generic [ref=f2e170]:
+          - generic [ref=f2e171]:
+            - paragraph [ref=f2e172]: FAQ
+            - heading "Questions about this project" [level=2] [ref=f2e173]
+            - link "Ask us something else →" [ref=f2e174] [cursor=pointer]:
+              - /url: /enquiry/
+          - generic [ref=f2e175]:
+            - group [ref=f2e176]:
+              - generic "How do I get a project?" [ref=f2e177] [cursor=pointer]
+            - group [ref=f2e182]:
+              - generic "Can a project be changed to fit my requirements?" [ref=f2e183] [cursor=pointer]
+            - group [ref=f2e188]:
+              - generic "Are add-ons available?" [ref=f2e189] [cursor=pointer]
+            - group [ref=f2e194]:
+              - generic "How will I receive my order?" [ref=f2e195] [cursor=pointer]
+            - group [ref=f2e200]:
+              - generic "Is there a demo?" [ref=f2e201] [cursor=pointer]
+            - group [ref=f2e206]:
+              - generic "Can I get a refund?" [ref=f2e207] [cursor=pointer]
+      - region [ref=f2e212]:
+        - generic [ref=f2e213]:
+          - generic [ref=f2e214]:
+            - heading "Related projects" [level=2] [ref=f2e215]
+            - link "All projects →" [ref=f2e216] [cursor=pointer]:
+              - /url: /projects/
+          - list [ref=f2e217]:
+            - listitem [ref=f2e218]:
+              - link "AI & Machine Learning AI & Machine Learning Sample Smart Study Planner Sample AI project record for local UI testing." [ref=f2e219] [cursor=pointer]:
+                - /url: /projects/sample-smart-study-planner/
+                - generic [ref=f2e220]: AI & Machine Learning
+                - generic [ref=f2e222]:
+                  - generic [ref=f2e223]: AI & Machine Learning
+                  - strong [ref=f2e224]: Sample Smart Study Planner
+                  - generic [ref=f2e225]: Sample AI project record for local UI testing.
+            - listitem [ref=f2e226]:
+              - link "Cybersecurity Cybersecurity Sample Secure Notes Vault A secure web-based notes vault that demonstrates encrypted note storage, user authentication, access control, and basic security monitoring using Django." [ref=f2e227] [cursor=pointer]:
+                - /url: /projects/sample-secure-notes/
+                - generic [ref=f2e228]: Cybersecurity
+                - generic [ref=f2e230]:
+                  - generic [ref=f2e231]: Cybersecurity
+                  - strong [ref=f2e232]: Sample Secure Notes Vault
+                  - generic [ref=f2e233]: A secure web-based notes vault that demonstrates encrypted note storage, user authentication, access control, and basic security monitoring using Django.
+            - listitem [ref=f2e234]:
+              - link "IoT & Embedded Systems IoT & Embedded Systems Sample Home Monitor Sample IoT project record for local UI testing." [ref=f2e235] [cursor=pointer]:
+                - /url: /projects/sample-home-monitor/
+                - generic [ref=f2e236]: IoT & Embedded Systems
+                - generic [ref=f2e238]:
+                  - generic [ref=f2e239]: IoT & Embedded Systems
+                  - strong [ref=f2e240]: Sample Home Monitor
+                  - generic [ref=f2e241]: Sample IoT project record for local UI testing.
+  - contentinfo [ref=f2e242]:
+    - generic [ref=f2e243]:
+      - generic [ref=f2e244]:
+        - link "ProjectVybe home" [ref=f2e245] [cursor=pointer]:
+          - /url: /
+          - img "ProjectVybe" [ref=f2e246]
+        - paragraph [ref=f2e247]: Build. Learn. Grow.
+        - paragraph [ref=f2e248]: A technology-focused space for thoughtful software projects, practical learning, and steady progress.
+        - list [ref=f2e249]:
+          - listitem [ref=f2e250]:
+            - link "support@projectvybe.com" [ref=f2e253] [cursor=pointer]:
+              - /url: mailto:support@projectvybe.com
+        - list "ProjectVybe on social media" [ref=f2e254]:
+          - listitem [ref=f2e255]:
+            - link "Instagram" [ref=f2e256] [cursor=pointer]:
+              - /url: https://www.instagram.com/projectvybe/
+          - listitem [ref=f2e259]:
+            - link "LinkedIn" [ref=f2e260] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/projectvybe/
+          - listitem [ref=f2e263]:
+            - link "YouTube" [ref=f2e264] [cursor=pointer]:
+              - /url: https://www.youtube.com/@projectvybe
+          - listitem [ref=f2e267]:
+            - link "GitHub" [ref=f2e268] [cursor=pointer]:
+              - /url: https://github.com/projectvybe
+          - listitem [ref=f2e271]:
+            - link "Facebook" [ref=f2e272] [cursor=pointer]:
+              - /url: https://www.facebook.com/projectvybe
+          - listitem [ref=f2e275]:
+            - link "X (Twitter)" [ref=f2e276] [cursor=pointer]:
+              - /url: https://x.com/projectvybe
+      - navigation "Footer navigation" [ref=f2e279]:
+        - paragraph [ref=f2e280]: Explore
+        - link "Home" [ref=f2e281] [cursor=pointer]:
+          - /url: /
+        - link "Projects" [ref=f2e282] [cursor=pointer]:
+          - /url: /projects/
+        - link "Services" [ref=f2e283] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=f2e284] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=f2e285] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=f2e286] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=f2e287] [cursor=pointer]:
+          - /url: /enquiry/
+      - navigation "Legal navigation" [ref=f2e288]:
+        - paragraph [ref=f2e289]: Information
+        - link "Privacy policy" [ref=f2e290] [cursor=pointer]:
+          - /url: /privacy/
+        - link "Terms & conditions" [ref=f2e291] [cursor=pointer]:
+          - /url: /terms/
+        - link "Refund / cancellation policy" [ref=f2e292] [cursor=pointer]:
+          - /url: /refund-policy/
+        - link "Cookie policy" [ref=f2e293] [cursor=pointer]:
+          - /url: /cookies/
+        - link "Grievance redressal" [ref=f2e294] [cursor=pointer]:
+          - /url: /grievance-redressal/
+        - link "Shipping & delivery policy" [ref=f2e295] [cursor=pointer]:
+          - /url: /shipping-delivery-policy/
+        - link "Academic integrity policy" [ref=f2e296] [cursor=pointer]:
+          - /url: /academic-integrity/
+        - link "Privacy request" [ref=f2e297] [cursor=pointer]:
+          - /url: /privacy/request/
+    - generic [ref=f2e298]:
+      - paragraph [ref=f2e299]: © 2026 ProjectVybe
+      - paragraph [ref=f2e300]: Build. Learn. Grow.

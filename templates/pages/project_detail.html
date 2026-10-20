@@ -61,33 +61,37 @@
     </div>
 
     <section class="section pd-body" aria-labelledby="project-overview-title">
-        <div class="container pd-body__grid">
-            <section class="pd-block" aria-labelledby="project-overview-title" data-reveal>
-                <p class="eyebrow">Project overview</p>
-                <h2 id="project-overview-title">What this project is about.</h2>
-                <div class="project-detail__prose">{{ project.description|linebreaks }}</div>
-            </section>
+        <div class="container pd-stack">
+            <div class="pd-top">
+                <section class="pd-block" aria-labelledby="project-overview-title" data-reveal>
+                    <p class="eyebrow">Project overview</p>
+                    <h2 id="project-overview-title">What this project is about.</h2>
+                    <div class="project-detail__prose">{{ project.description|linebreaks }}</div>
+                </section>
+
+                {% if usage_points %}
+                    <section class="pd-block" aria-labelledby="project-usage-title" data-reveal>
+                        <p class="eyebrow">Who it is for</p>
+                        <h2 id="project-usage-title">Usage and use case</h2>
+                        <ul class="point-list">
+                            {% for point in usage_points %}<li>{{ point }}</li>{% endfor %}
+                        </ul>
+                    </section>
+                {% endif %}
+            </div>
 
             {% if features %}
-                <section class="pd-block" aria-labelledby="project-features-title" data-reveal>
+                <section class="pd-block pd-block--wide" aria-labelledby="project-features-title" data-reveal>
                     <p class="eyebrow">What you get</p>
                     <h2 id="project-features-title">Key features</h2>
-                    <ul class="check-list check-list--single">
-                        {% for feature in features %}<li>{% icon "check-circle" 20 %}<span>{{ feature }}</span></li>{% endfor %}
+                    <ul class="feature-list">
+                        {% for feature in features %}<li>{% icon "check-circle" 18 %}<span>{{ feature }}</span></li>{% endfor %}
                     </ul>
                 </section>
             {% endif %}
 
-            {% if project.usage %}
-                <section class="pd-block" aria-labelledby="project-usage-title" data-reveal>
-                    <p class="eyebrow">Who it is for</p>
-                    <h2 id="project-usage-title">Usage and use case</h2>
-                    <div class="project-detail__prose">{{ project.usage|linebreaks }}</div>
-                </section>
-            {% endif %}
-
             {% if project.requirements %}
-                <section class="pd-block" aria-labelledby="project-requirements-title" data-reveal>
+                <section class="pd-block pd-block--wide" aria-labelledby="project-requirements-title" data-reveal>
                     <p class="eyebrow">Before you start</p>
                     <h2 id="project-requirements-title">Requirements</h2>
                     <div class="project-detail__prose">{{ project.requirements|linebreaks }}</div>
@@ -136,7 +140,7 @@
                                                 <input class="addon2__input" type="checkbox" value="{{ item.addon.pk }}" data-price="{{ item.amount }}" data-addon-name="{{ item.addon.name }}">
                                                 <span class="addon2__box">
                                                     <span class="addon2__top">
-                                                        <span class="addon2__icon">{% icon "file-text" 20 %}</span>
+                                                        <span class="addon2__icon">{% icon item.addon.name|addon_icon 20 %}</span>
                                                         {% if item.addon.is_popular %}<span class="addon2__badge">Popular</span>{% endif %}
                                                         <span class="addon2__check" aria-hidden="true">{% icon "check" 14 %}</span>
                                                     </span>
@@ -157,7 +161,7 @@
                                             <article class="addon2 addon2--static">
                                                 <span class="addon2__box">
                                                     <span class="addon2__top">
-                                                        <span class="addon2__icon">{% icon "file-text" 20 %}</span>
+                                                        <span class="addon2__icon">{% icon item.addon.name|addon_icon 20 %}</span>
                                                         {% if item.addon.is_popular %}<span class="addon2__badge">Popular</span>{% endif %}
                                                     </span>
                                                     <strong class="addon2__name">{{ item.addon.name }}</strong>

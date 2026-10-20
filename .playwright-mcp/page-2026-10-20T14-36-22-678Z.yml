@@ -1,0 +1,170 @@
+- generic [active] [ref=f3e1]:
+  - link "Skip to content" [ref=f3e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - link "ProjectVybe home" [ref=f3e5] [cursor=pointer]:
+        - /url: /
+        - img "ProjectVybe" [ref=f3e6]
+      - navigation "Primary navigation" [ref=f3e7]:
+        - link "Home" [ref=f3e8] [cursor=pointer]:
+          - /url: /
+        - button "Projects" [ref=f3e10] [cursor=pointer]
+        - link "Services" [ref=f3e14] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=f3e15] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=f3e16] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=f3e17] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=f3e18] [cursor=pointer]:
+          - /url: /enquiry/
+        - generic [ref=f3e19]:
+          - generic [ref=f3e20]: Search projects
+          - searchbox "Search projects"
+          - button "Open project search" [ref=f3e21] [cursor=pointer]
+        - link "Start a conversation" [ref=f3e25] [cursor=pointer]:
+          - /url: /enquiry/
+  - main [ref=f3e26]:
+    - navigation "Breadcrumb" [ref=f3e27]:
+      - list [ref=f3e28]:
+        - listitem [ref=f3e29]:
+          - link "Home" [ref=f3e30] [cursor=pointer]:
+            - /url: /
+        - listitem [aria-hidden] [ref=f3e31]: /
+        - listitem [ref=f3e32]: Blog
+    - region [ref=f3e33]:
+      - generic [ref=f3e34]:
+        - paragraph [ref=f3e35]: 4 posts
+        - heading "Blog" [level=1] [ref=f3e38]
+        - paragraph [ref=f3e39]: Practical writing on projects, learning and building software.
+        - list "Topics" [ref=f3e40]:
+          - listitem [ref=f3e41]:
+            - link "All posts" [ref=f3e42] [cursor=pointer]:
+              - /url: /blog/
+          - listitem [ref=f3e43]:
+            - link "Guides" [ref=f3e44] [cursor=pointer]:
+              - /url: /blog/category/guides/
+          - listitem [ref=f3e45]:
+            - link "Career tips" [ref=f3e46] [cursor=pointer]:
+              - /url: /blog/category/career-tips/
+          - listitem [ref=f3e47]:
+            - link "Tutorials" [ref=f3e48] [cursor=pointer]:
+              - /url: /blog/category/tutorials/
+    - region [ref=f3e49]:
+      - generic [ref=f3e50]:
+        - heading "Posts" [level=2] [ref=f3e51]
+        - list [ref=f3e52]:
+          - listitem [ref=f3e53]:
+            - article [ref=f3e54]:
+              - link [aria-hidden] [ref=f3e55] [cursor=pointer]:
+                - /url: /blog/how-to-choose-a-final-year-project/
+                - generic [ref=f3e56]: Guides
+              - generic [ref=f3e57]:
+                - paragraph [ref=f3e58]: Guides · 17 Oct 2026 · 1 min read
+                - heading [level=3] [ref=f3e59]:
+                  - link "How to choose a final-year project you can actually finish" [ref=f3e60] [cursor=pointer]:
+                    - /url: /blog/how-to-choose-a-final-year-project/
+                - paragraph [ref=f3e61]: A practical checklist for picking a project that is interesting, achievable and easy to explain in your viva.
+          - listitem [ref=f3e62]:
+            - article [ref=f3e63]:
+              - link [aria-hidden] [ref=f3e64] [cursor=pointer]:
+                - /url: /blog/django-project-structure-for-beginners/
+                - generic [ref=f3e65]: Tutorials
+              - generic [ref=f3e66]:
+                - paragraph [ref=f3e67]: Tutorials · 14 Oct 2026 · 1 min read
+                - heading [level=3] [ref=f3e68]:
+                  - link "Django project structure for beginners" [ref=f3e69] [cursor=pointer]:
+                    - /url: /blog/django-project-structure-for-beginners/
+                - paragraph [ref=f3e70]: What each folder and file in a Django project does, and how to keep a growing project tidy.
+          - listitem [ref=f3e71]:
+            - article [ref=f3e72]:
+              - link [aria-hidden] [ref=f3e73] [cursor=pointer]:
+                - /url: /blog/build-a-portfolio-that-gets-noticed/
+                - generic [ref=f3e74]: Career tips
+              - generic [ref=f3e75]:
+                - paragraph [ref=f3e76]: Career tips · 10 Oct 2026 · 1 min read
+                - heading [level=3] [ref=f3e77]:
+                  - link "Build a portfolio that gets you noticed" [ref=f3e78] [cursor=pointer]:
+                    - /url: /blog/build-a-portfolio-that-gets-noticed/
+                - paragraph [ref=f3e79]: Three projects, one clear story. How to present your work so recruiters understand it in a minute.
+          - listitem [ref=f3e80]:
+            - article [ref=f3e81]:
+              - link [aria-hidden] [ref=f3e82] [cursor=pointer]:
+                - /url: /blog/your-first-machine-learning-model/
+                - generic [ref=f3e83]: Tutorials
+              - generic [ref=f3e84]:
+                - paragraph [ref=f3e85]: Tutorials · 5 Oct 2026 · 1 min read
+                - heading [level=3] [ref=f3e86]:
+                  - link "Your first machine learning model in 30 minutes" [ref=f3e87] [cursor=pointer]:
+                    - /url: /blog/your-first-machine-learning-model/
+                - paragraph [ref=f3e88]: Train, test and understand a simple classifier, without needing a maths degree.
+  - contentinfo [ref=f3e89]:
+    - generic [ref=f3e90]:
+      - generic [ref=f3e91]:
+        - link "ProjectVybe home" [ref=f3e92] [cursor=pointer]:
+          - /url: /
+          - img "ProjectVybe" [ref=f3e93]
+        - paragraph [ref=f3e94]: Build. Learn. Grow.
+        - paragraph [ref=f3e95]: A technology-focused space for thoughtful software projects, practical learning, and steady progress.
+        - list [ref=f3e96]:
+          - listitem [ref=f3e97]:
+            - link "support@projectvybe.com" [ref=f3e100] [cursor=pointer]:
+              - /url: mailto:support@projectvybe.com
+        - list "ProjectVybe on social media" [ref=f3e101]:
+          - listitem [ref=f3e102]:
+            - link "Instagram" [ref=f3e103] [cursor=pointer]:
+              - /url: https://www.instagram.com/projectvybe/
+          - listitem [ref=f3e106]:
+            - link "LinkedIn" [ref=f3e107] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/projectvybe/
+          - listitem [ref=f3e110]:
+            - link "YouTube" [ref=f3e111] [cursor=pointer]:
+              - /url: https://www.youtube.com/@projectvybe
+          - listitem [ref=f3e114]:
+            - link "GitHub" [ref=f3e115] [cursor=pointer]:
+              - /url: https://github.com/projectvybe
+          - listitem [ref=f3e118]:
+            - link "Facebook" [ref=f3e119] [cursor=pointer]:
+              - /url: https://www.facebook.com/projectvybe
+          - listitem [ref=f3e122]:
+            - link "X (Twitter)" [ref=f3e123] [cursor=pointer]:
+              - /url: https://x.com/projectvybe
+      - navigation "Footer navigation" [ref=f3e126]:
+        - paragraph [ref=f3e127]: Explore
+        - link "Home" [ref=f3e128] [cursor=pointer]:
+          - /url: /
+        - link "Projects" [ref=f3e129] [cursor=pointer]:
+          - /url: /projects/
+        - link "Services" [ref=f3e130] [cursor=pointer]:
+          - /url: /services/
+        - link "Courses" [ref=f3e131] [cursor=pointer]:
+          - /url: /courses/
+        - link "Blog" [ref=f3e132] [cursor=pointer]:
+          - /url: /blog/
+        - link "About" [ref=f3e133] [cursor=pointer]:
+          - /url: /about/
+        - link "Contact" [ref=f3e134] [cursor=pointer]:
+          - /url: /enquiry/
+      - navigation "Legal navigation" [ref=f3e135]:
+        - paragraph [ref=f3e136]: Information
+        - link "Privacy policy" [ref=f3e137] [cursor=pointer]:
+          - /url: /privacy/
+        - link "Terms & conditions" [ref=f3e138] [cursor=pointer]:
+          - /url: /terms/
+        - link "Refund / cancellation policy" [ref=f3e139] [cursor=pointer]:
+          - /url: /refund-policy/
+        - link "Cookie policy" [ref=f3e140] [cursor=pointer]:
+          - /url: /cookies/
+        - link "Grievance redressal" [ref=f3e141] [cursor=pointer]:
+          - /url: /grievance-redressal/
+        - link "Shipping & delivery policy" [ref=f3e142] [cursor=pointer]:
+          - /url: /shipping-delivery-policy/
+        - link "Academic integrity policy" [ref=f3e143] [cursor=pointer]:
+          - /url: /academic-integrity/
+        - link "Privacy request" [ref=f3e144] [cursor=pointer]:
+          - /url: /privacy/request/
+    - generic [ref=f3e145]:
+      - paragraph [ref=f3e146]: © 2026 ProjectVybe
+      - paragraph [ref=f3e147]: Build. Learn. Grow.

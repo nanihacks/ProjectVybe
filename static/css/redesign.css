@@ -2527,3 +2527,170 @@ body {
 .svc .svc__body > .price {
     margin-bottom: var(--space-3);
 }
+
+/* ===== Round 4 fixes ================================================================================== */
+
+/* Cards in a carousel or grid keep their link on one line, whatever the text length. */
+.card--category,
+.card--service,
+.card--project {
+    display: flex;
+    flex-direction: column;
+}
+
+.card--category .card__body,
+.card--service .card__body,
+.card--project .card__body {
+    flex: 1;
+}
+
+.card__body > .text-link {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-3);
+}
+
+/* Project page: show the whole picture at its own shape instead of cropping it. */
+.pd-card__media {
+    align-items: center;
+    justify-content: center;
+}
+
+.pd-card__media .project-detail__media,
+.pd-card__media .project-detail__media.media-frame--project {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: auto;
+}
+
+.pd-card__media img {
+    width: 100%;
+    height: auto;
+    max-height: 36rem;
+    object-fit: contain;
+}
+
+.project-gallery__item {
+    aspect-ratio: 16 / 10;
+    background: var(--color-surface-muted);
+}
+
+.project-gallery__item img {
+    object-fit: contain;
+}
+
+/* Project page body: overview and usage side by side, then full-width feature list. */
+.pd-stack {
+    display: grid;
+    gap: var(--space-8);
+}
+
+.pd-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7) var(--space-8);
+}
+
+@media (min-width: 62rem) {
+    .pd-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
+.feature-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 var(--space-7);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 42rem) {
+    .feature-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-hairline);
+    line-height: 1.5;
+}
+
+.feature-list .icon {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-success);
+}
+
+.point-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.point-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.point-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.62em;
+    left: 0.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+}
+
+/* Breadcrumbs sit on top of the page hero, so its grid background starts right under the navbar. */
+:root {
+    --crumb-h: 3.25rem;
+}
+
+.breadcrumbs {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: var(--crumb-h);
+    align-items: center;
+    padding-block: 0;
+}
+
+.breadcrumbs__list {
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.breadcrumbs__list li:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumbs + .page-hero,
+.breadcrumbs + article > .page-hero:first-child {
+    margin-top: calc(-1 * var(--crumb-h));
+    padding-top: calc(var(--crumb-h) + clamp(2.5rem, 5vw, 4.25rem));
+}
+
+.breadcrumbs + .page-hero--compact,
+.breadcrumbs + article > .page-hero--compact:first-child {
+    padding-top: calc(var(--crumb-h) + clamp(1.75rem, 3.5vw, 2.75rem));
+}

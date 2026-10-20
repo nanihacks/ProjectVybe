@@ -38,7 +38,28 @@ STROKE = {
     "chevron-down": "m6 9 6 6 6-6",
     "search": "M10.8 17.6a6.8 6.8 0 1 0 0-13.6 6.8 6.8 0 0 0 0 13.6ZM16 16l5 5",
     "download": "M12 4v11M7.5 11 12 15.5 16.5 11M5 19.5h14",
+    "presentation": "M3.5 4.5h17v11h-17zM12 15.5v4M8 19.5h8M7.5 12l3-3 2.5 2 3.5-4",
+    "book-open": "M12 6.5C10.5 5 8 4.5 4.5 4.5V18c3.5 0 6 .5 7.5 2 1.5-1.5 4-2 7.5-2V4.5C16 4.5 13.5 5 12 6.5ZM12 6.5V20",
+    "award": "M12 14a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11ZM8.5 13.2 7.5 21l4.5-2.5 4.5 2.5-1-7.8",
+    "rocket": "M14 4.5c3 0 5.5 2.5 5.5 5.5-1.5 4-4.5 6.5-8 7.5l-4.5-4.5C8 9.5 10.5 6 14 4.5ZM9 17.5l-3 .5.5-3M15 9.5h.01",
+    "wrench": "M14.5 6.5a4 4 0 0 0 4.8 4.8l-9.5 9.5a2.1 2.1 0 0 1-3-3l9.5-9.5a4 4 0 0 0-1.8-1.8Z",
+    "chart": "M4.5 19.5V5M4.5 19.5h15M8.5 16v-4M12.5 16V8.5M16.5 16v-6",
 }
+
+# Which icon an add-on shows, picked from its name so each extra looks different.
+ADDON_ICONS = (
+    (("document", "report", "readme", "write"), "file-text"),
+    (("present", "slide", "ppt", "viva", "demo"), "presentation"),
+    (("publication", "paper", "research", "journal", "thesis"), "book-open"),
+    (("mentor", "guidance", "1:1", "coach", "training", "session", "call"), "users"),
+    (("code", "source", "explain", "review"), "code"),
+    (("video", "record", "walkthrough"), "video"),
+    (("deploy", "hosting", "install", "setup", "set up", "configur"), "rocket"),
+    (("support", "bug", "fix", "maintenance", "customi"), "wrench"),
+    (("certificate", "award"), "award"),
+    (("analytic", "report card", "dashboard", "data"), "chart"),
+    (("security", "secure"), "shield"),
+)
 
 # Filled brand glyphs (simplified shapes).
 FILLED = {
@@ -55,6 +76,16 @@ BRAND_STROKE = {
     "facebook": "M17.5 3.5h-2.7a4.3 4.3 0 0 0-4.3 4.3v2.7H7.5v3.8h3V21h3.9v-6.7h2.9l.7-3.8h-3.6V8a.9.9 0 0 1 .9-.9h2.2z",
     "whatsapp": "M3.5 20.5 5 16A8.5 8.5 0 1 1 8.2 19L3.5 20.5ZM9.2 8.8c-.3.8-.2 1.8.6 3.1s1.9 2.2 3.1 2.7c.8.3 1.5.1 1.9-.5l.4-.7-1.9-1-.7.7a3.7 3.7 0 0 1-1.8-1.8l.7-.7-.9-2z",
 }
+
+
+@register.filter
+def addon_icon(name):
+    """The icon name for an add-on, chosen from words in its title."""
+    lowered = str(name or "").lower()
+    for words, icon_name in ADDON_ICONS:
+        if any(word in lowered for word in words):
+            return icon_name
+    return "layers"
 
 
 @register.simple_tag
