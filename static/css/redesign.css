@@ -2963,3 +2963,25 @@ body {
         min-width: 0;
     }
 }
+
+/* Home hero: fills the first screen under the header and sits in the middle of it. */
+@media (min-width: 62rem) {
+    .hero2 {
+        display: flex;
+        align-items: center;
+        min-height: calc(100svh - 5rem);
+        padding-block: clamp(1.5rem, 5vh, 3.5rem);
+    }
+
+    .hero2 h1 {
+        font-size: clamp(2.5rem, min(1.5rem + 4.6vw, 10.5vh), 4.9rem);
+    }
+
+    .hero2__lead {
+        margin-bottom: clamp(1rem, 3vh, 1.75rem);
+    }
+
+    .chip-row {
+        margin-top: clamp(0.9rem, 3vh, 1.75rem);
+    }
+}
