@@ -689,3 +689,35 @@
     boxes.forEach(function (box) { box.addEventListener("change", update); });
     update();
 })();
+
+(function () {
+    const bar = document.querySelector("[data-pd-sticky]");
+    const card = document.querySelector(".pd-card");
+    if (!bar || !card || !("IntersectionObserver" in window)) return;
+
+    const footer = document.querySelector(".site-footer");
+    let cardVisible = true;
+    let footerVisible = false;
+    const focusable = bar.querySelectorAll("a, button");
+
+    const update = function () {
+        const show = !cardVisible && !footerVisible;
+        bar.classList.toggle("is-visible", show);
+        bar.setAttribute("aria-hidden", String(!show));
+        focusable.forEach(function (item) {
+            item.tabIndex = show ? 0 : -1;
+        });
+    };
+
+    new IntersectionObserver(function (entries) {
+        cardVisible = entries[entries.length - 1].isIntersecting;
+        update();
+    }).observe(card);
+
+    if (footer) {
+        new IntersectionObserver(function (entries) {
+            footerVisible = entries[entries.length - 1].isIntersecting;
+            update();
+        }).observe(footer);
+    }
+})();

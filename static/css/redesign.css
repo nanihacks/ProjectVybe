@@ -2594,13 +2594,6 @@ body {
     gap: var(--space-7) var(--space-8);
 }
 
-@media (min-width: 62rem) {
-    .pd-top {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-items: start;
-    }
-}
-
 .feature-list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -2980,5 +2973,191 @@ body {
 
     .chip-row {
         margin-top: clamp(0.9rem, 3vh, 1.75rem);
+    }
+}
+
+/* Project picture: shown whole, over a soft blurred copy of itself instead of flat grey bars. */
+.pd-card__media {
+    position: relative;
+    overflow: hidden;
+}
+
+.pd-card__media::before {
+    content: "";
+    position: absolute;
+    inset: -2rem;
+    background: var(--pd-bg, none) center / cover no-repeat;
+    filter: blur(28px) saturate(1.15);
+    opacity: 0.6;
+}
+
+.pd-card__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.pd-card__media .project-detail__media {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+.pd-card__media img {
+    box-shadow: 0 0.6rem 2rem rgba(12, 24, 48, 0.18);
+}
+
+/* Project card: the picture gets the larger share, and the card stays about as tall as the picture. */
+@media (min-width: 62rem) {
+    .pd-card {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+}
+
+.pd-card__media {
+    min-height: 20rem;
+}
+
+.pd-card__info h1 {
+    font-size: clamp(1.7rem, 1.2rem + 1.7vw, 2.5rem);
+}
+
+.pd-block .eyebrow .icon {
+    margin-right: 0.25rem;
+    vertical-align: -0.15em;
+}
+
+/* Overview and usage stack in one column. */
+.pd-top .project-detail__prose,
+.pd-top .point-list {
+    max-width: 62rem;
+}
+
+/* Sticky buy bar: appears once the top card has scrolled away, hides again at the footer. */
+.pd-sticky {
+    position: fixed;
+    z-index: 19;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid var(--color-hairline);
+    background: color-mix(in srgb, #fff 95%, transparent);
+    box-shadow: 0 -0.75rem 2rem rgba(12, 24, 48, 0.12);
+    backdrop-filter: blur(0.75rem);
+    transform: translateY(110%);
+    transition: transform 220ms ease;
+    visibility: hidden;
+}
+
+.pd-sticky.is-visible {
+    transform: none;
+    visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pd-sticky {
+        transition: none;
+    }
+}
+
+.pd-sticky__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: 0.7rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+}
+
+.pd-sticky__summary {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.pd-sticky__thumb {
+    width: 4rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.pd-sticky__text {
+    display: grid;
+    min-width: 0;
+    gap: 0.1rem;
+}
+
+.pd-sticky__text > strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pd-sticky .price {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.pd-sticky .price__note {
+    display: none;
+}
+
+.pd-sticky__actions {
+    display: flex;
+    flex: none;
+    gap: var(--space-3);
+}
+
+@media (max-width: 41.99rem) {
+    .pd-sticky__thumb,
+    .pd-sticky__text > strong {
+        display: none;
+    }
+
+    .pd-sticky__inner {
+        gap: var(--space-3);
+    }
+
+    .pd-sticky__actions {
+        flex: 1 1 auto;
+    }
+
+    .pd-sticky__actions .button {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline: 0.6rem;
+        font-size: 0.88rem;
+        white-space: nowrap;
+    }
+}
+
+.project-detail {
+    padding-bottom: 0;
+}
+
+.pd-sticky .price__now {
+    font-size: 1.15rem;
+}
+
+.pd-sticky .price__was {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 41.99rem) {
+    .pd-sticky__summary {
+        flex: none;
+    }
+
+    .pd-sticky .price__was,
+    .pd-sticky .price__prefix {
+        display: none;
+    }
+
+    .pd-sticky .price__now {
+        font-size: 1.1rem;
+        white-space: nowrap;
     }
 }

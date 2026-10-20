@@ -15,7 +15,7 @@
     <section class="pd-hero" aria-labelledby="project-title">
         <div class="container">
             <div class="pd-card">
-                <div class="pd-card__media">
+                <div class="pd-card__media"{% if thumbnail_url %} style="--pd-bg: url('{{ thumbnail_url }}')"{% endif %}>
                     <div class="project-detail__media media-frame media-frame--project">
                         {% if thumbnail_url %}
                             <img src="{{ thumbnail_url }}" alt="{{ project.title }} thumbnail" width="1200" height="750" fetchpriority="high" decoding="async">
@@ -38,26 +38,33 @@
                         {% endif %}
                     </div>
 
-                    <dl class="pd-facts">
-                        {% if checkout_url %}<div><dt>{% icon "clock" 16 %} Delivery</dt><dd>{{ delivery_promise }}</dd></div>{% endif %}
-                        {% if technology_stack %}
-                            <div>
-                                <dt>{% icon "code" 16 %} Technology stack</dt>
-                                <dd><ul class="stack-chips" aria-label="Technology stack">{% for technology in technology_stack %}<li>{{ technology }}</li>{% endfor %}</ul></dd>
-                            </div>
-                        {% endif %}
-                    </dl>
+                    {% if checkout_url %}
+                        <dl class="pd-facts">
+                            <div><dt>{% icon "clock" 16 %} Delivery</dt><dd>{{ delivery_promise }}</dd></div>
+                        </dl>
+                    {% endif %}
                 </div>
             </div>
             <p class="pd-back"><a class="text-link text-link--back" href="{% url 'pages:project_catalogue' %}">Back to projects</a></p>
         </div>
     </section>
 
-    <div class="project-detail__mobile-sticky-actions{% if youtube_embed_url %} project-detail__mobile-sticky-actions--with-demo{% endif %}" aria-label="Project actions">
-        <a class="button button--primary" {% if checkout_url %}href="{{ checkout_url }}" data-checkout-link{% else %}href="#project-enquiry" data-enquiry-open{% endif %}>{% if checkout_url %}Buy this project{% else %}Get this project{% endif %}</a>
-        {% if youtube_embed_url %}
-            <button class="button button--outline" type="button" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">Watch demo</button>
-        {% endif %}
+    <div class="pd-sticky" data-pd-sticky aria-label="Project actions" aria-hidden="true">
+        <div class="container pd-sticky__inner">
+            <div class="pd-sticky__summary">
+                {% if thumbnail_url %}<img class="pd-sticky__thumb" src="{{ thumbnail_url }}" alt="" width="64" height="48" loading="lazy" decoding="async">{% endif %}
+                <div class="pd-sticky__text">
+                    <strong>{{ project.title }}</strong>
+                    {% include "components/price.html" with item=project only %}
+                </div>
+            </div>
+            <div class="pd-sticky__actions">
+                {% if youtube_embed_url %}
+                    <button class="button button--outline" type="button" tabindex="-1" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">{% icon "video" 16 %} Watch demo</button>
+                {% endif %}
+                <a class="button button--primary" tabindex="-1" {% if checkout_url %}href="{{ checkout_url }}" data-checkout-link{% else %}href="#project-enquiry" data-enquiry-open{% endif %}>{% if checkout_url %}Buy this project{% else %}Get this project{% endif %} {% icon "arrow-right" 16 %}</a>
+            </div>
+        </div>
     </div>
 
     <section class="section pd-body" aria-labelledby="project-overview-title">
@@ -79,6 +86,14 @@
                     </section>
                 {% endif %}
             </div>
+
+            {% if technology_stack %}
+                <section class="pd-block pd-block--wide" aria-labelledby="project-stack-title" data-reveal>
+                    <p class="eyebrow">{% icon "code" 14 %} Built with</p>
+                    <h2 id="project-stack-title">Technology stack</h2>
+                    <ul class="stack-chips" aria-label="Technology stack">{% for technology in technology_stack %}<li>{{ technology }}</li>{% endfor %}</ul>
+                </section>
+            {% endif %}
 
             {% if features %}
                 <section class="pd-block pd-block--wide" aria-labelledby="project-features-title" data-reveal>
