@@ -2964,15 +2964,12 @@ body {
     }
 }
 
-/* Home hero: fills the first screen under the header and sits in the middle of it. */
-@media (min-width: 62rem) {
-    .hero2 {
-        display: flex;
-        align-items: center;
-        min-height: calc(100svh - 5rem);
-        padding-block: clamp(1.5rem, 5vh, 3.5rem);
-    }
+/* Home hero: content sits close under the header, with equal space above and below. */
+.hero2 {
+    padding-block: clamp(2rem, 5vh, 3.25rem);
+}
 
+@media (min-width: 62rem) {
     .hero2 h1 {
         font-size: clamp(2.5rem, min(1.5rem + 4.6vw, 10.5vh), 4.9rem);
     }
