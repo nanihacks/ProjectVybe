@@ -3014,3 +3014,23 @@ body {
 .pd-card__media img {
     box-shadow: 0 0.6rem 2rem rgba(12, 24, 48, 0.18);
 }
+
+/* Project card: the picture gets the larger share, and the card stays about as tall as the picture. */
+@media (min-width: 62rem) {
+    .pd-card {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+}
+
+.pd-card__media {
+    min-height: 20rem;
+}
+
+.pd-card__info h1 {
+    font-size: clamp(1.7rem, 1.2rem + 1.7vw, 2.5rem);
+}
+
+.pd-block .eyebrow .icon {
+    margin-right: 0.25rem;
+    vertical-align: -0.15em;
+}

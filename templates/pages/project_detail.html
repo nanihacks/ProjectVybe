@@ -38,15 +38,11 @@
                         {% endif %}
                     </div>
 
-                    <dl class="pd-facts">
-                        {% if checkout_url %}<div><dt>{% icon "clock" 16 %} Delivery</dt><dd>{{ delivery_promise }}</dd></div>{% endif %}
-                        {% if technology_stack %}
-                            <div>
-                                <dt>{% icon "code" 16 %} Technology stack</dt>
-                                <dd><ul class="stack-chips" aria-label="Technology stack">{% for technology in technology_stack %}<li>{{ technology }}</li>{% endfor %}</ul></dd>
-                            </div>
-                        {% endif %}
-                    </dl>
+                    {% if checkout_url %}
+                        <dl class="pd-facts">
+                            <div><dt>{% icon "clock" 16 %} Delivery</dt><dd>{{ delivery_promise }}</dd></div>
+                        </dl>
+                    {% endif %}
                 </div>
             </div>
             <p class="pd-back"><a class="text-link text-link--back" href="{% url 'pages:project_catalogue' %}">Back to projects</a></p>
@@ -79,6 +75,14 @@
                     </section>
                 {% endif %}
             </div>
+
+            {% if technology_stack %}
+                <section class="pd-block pd-block--wide" aria-labelledby="project-stack-title" data-reveal>
+                    <p class="eyebrow">{% icon "code" 14 %} Built with</p>
+                    <h2 id="project-stack-title">Technology stack</h2>
+                    <ul class="stack-chips" aria-label="Technology stack">{% for technology in technology_stack %}<li>{{ technology }}</li>{% endfor %}</ul>
+                </section>
+            {% endif %}
 
             {% if features %}
                 <section class="pd-block pd-block--wide" aria-labelledby="project-features-title" data-reveal>
