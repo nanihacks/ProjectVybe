@@ -12,20 +12,31 @@
     <meta property="og:title" content="{% block og_title %}{{ site_name }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ site_description }}{% endblock %}">
     <meta property="og:url" content="{% block og_url %}{{ canonical_url }}{% endblock %}">
-    {% if og_image_url %}<meta property="og:image" content="{{ og_image_url }}">{% endif %}
-    <meta name="twitter:card" content="{% if og_image_url %}summary_large_image{% else %}summary{% endif %}">
+    {% with share_image_url=og_image_url|default:default_og_image_url %}
+    {% if share_image_url %}<meta property="og:image" content="{{ share_image_url }}">{% endif %}
+    <meta name="twitter:card" content="{% if share_image_url %}summary_large_image{% else %}summary{% endif %}">
     <meta name="twitter:title" content="{% block twitter_title %}{{ site_name }}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{{ site_description }}{% endblock %}">
-    {% if og_image_url %}<meta name="twitter:image" content="{{ og_image_url }}">{% endif %}
-    <link rel="icon" type="image/png" href="{% static 'images/projectvybe-icon.png' %}?v=1">
-    <link rel="apple-touch-icon" href="{% static 'images/projectvybe-icon.png' %}?v=1">
+    {% if share_image_url %}<meta name="twitter:image" content="{{ share_image_url }}">{% endif %}
+    {% endwith %}
+    {% block extra_meta %}{% endblock %}
+    <link rel="alternate" type="application/rss+xml" title="{{ site_name }} blog" href="{% url 'blog:feed' %}">
+    <link rel="icon" href="{% static 'images/brand/favicon.ico' %}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{% static 'images/brand/favicon-32.png' %}" sizes="32x32">
+    <link rel="apple-touch-icon" href="{% static 'images/brand/apple-touch-icon.png' %}">
     <title>{% block title %}{{ site_name }}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/components.css' %}?v=20260910-3">
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preload" href="{% static 'fonts/bricolage-grotesque-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/instrument-sans-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261021-21">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}?v=20261021-21">
+    <link rel="stylesheet" href="{% static 'css/redesign.css' %}?v=20261021-21">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
+
+    {% include "components/announcement.html" %}
 
     {% include "components/navbar.html" %}
 
@@ -37,7 +48,7 @@
 
     {% include "components/footer.html" %}
 
-    <script src="{% static 'js/site.js' %}?v=20260910-3" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261021-21" defer></script>
     {% block extra_js %}{% endblock %}
     {% if structured_data_json %}<script type="application/ld+json">{{ structured_data_json|safe }}</script>{% endif %}
 </body>

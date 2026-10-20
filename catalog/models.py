@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from cloudinary.models import CloudinaryField
 
@@ -7,6 +9,7 @@ from .cloudinary import (
     project_gallery_asset_folder,
     service_asset_folder,
 )
+from .pricing import PricedModel
 from .validators import validate_youtube_url
 
 
@@ -42,10 +45,24 @@ class Category(models.Model):
         return self.name
 
 
-class ProjectAddon(models.Model):
+class ProjectAddon(PricedModel):
     name = models.CharField(max_length=160)
     slug = models.SlugField(max_length=180, unique=True)
     description = models.TextField(blank=True)
+    benefit = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="One line on what the customer gets, shown on the card.",
+    )
+    inclusions = models.TextField(
+        blank=True,
+        help_text="What is included, one per line. The first three are shown on the card.",
+    )
+    extra_delivery_hours = models.PositiveSmallIntegerField(
+        default=0,
+        help_text="Hours added to the delivery promise when this add-on is chosen.",
+    )
+    is_popular = models.BooleanField(default=False, help_text="Shows a 'Popular' badge.")
     is_active = models.BooleanField(default=True)
     ordering = models.PositiveIntegerField(default=0)
 
@@ -56,8 +73,12 @@ class ProjectAddon(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def inclusion_lines(self):
+        return [line.strip() for line in self.inclusions.splitlines() if line.strip()]
 
-class Project(models.Model):
+
+class Project(PricedModel):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True)
     short_description = models.CharField(max_length=300)
@@ -89,6 +110,18 @@ class Project(models.Model):
         blank=True,
         related_name="projects",
     )
+    accept_online_payment = models.BooleanField(
+        default=False,
+        help_text=(
+            "Visitors can pay for this project online. Also needs a price, "
+            "'payments enabled' in Site Settings and the Razorpay keys."
+        ),
+    )
+    delivery_hours = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        help_text="Delivery promise in hours for this project. Leave blank to use the Site Settings value.",
+    )
     featured = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,6 +136,56 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    def addon_pricing(self, addon):
+        """Price of `addon` on this project as (amount, included_free).
+
+        A price set for this project wins over the add-on's own price. `amount` is
+        None when there is no price to show or charge. Prefetch `addon_prices` to
+        avoid one query per add-on.
+        """
+        override = next(
+            (row for row in self.addon_prices.all() if row.addon_id == addon.id), None
+        )
+        if override is not None:
+            if override.included_free:
+                return Decimal("0"), True
+            if override.price_override is not None:
+                return override.price_override, False
+        return addon.effective_price, False
+
+
+class ProjectAddonPrice(models.Model):
+    """A price for one add-on on one project, replacing the add-on's default price."""
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="addon_prices")
+    addon = models.ForeignKey(ProjectAddon, on_delete=models.CASCADE, related_name="project_prices")
+    price_override = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text="Replaces the add-on's own price for this project. Leave empty to use the default.",
+    )
+    included_free = models.BooleanField(
+        default=False,
+        help_text="This add-on comes free with this project (shown as 'Included').",
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["project", "addon"], name="unique_addon_price_per_project"),
+        ]
+        verbose_name = "add-on price for this project"
+        verbose_name_plural = "add-on prices for this project"
+
+    def __str__(self):
+        return f"{self.addon.name} on {self.project.title}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # A priced add-on must also be one of the project's add-ons.
+        self.project.addons.add(self.addon)
 
 
 class ProjectImage(models.Model):
@@ -126,7 +209,7 @@ class ProjectImage(models.Model):
         return f"{self.project.title} image {self.pk}"
 
 
-class Service(models.Model):
+class Service(PricedModel):
     name = models.CharField(max_length=160)
     slug = models.SlugField(max_length=180, unique=True)
     short_description = models.CharField(max_length=300)

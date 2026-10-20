@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}Privacy request | ProjectVybe{% endblock %}
+{% block meta_description %}Ask ProjectVybe to show, correct or delete your information, or to stop contacting you.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block og_title %}Privacy request | ProjectVybe{% endblock %}
+{% block og_description %}Ask ProjectVybe to show, correct or delete your information.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact" aria-labelledby="privacy-request-title">
+    <div class="container">
+        <p class="pill">{% icon "shield" 16 %} Your information</p>
+        <h1 id="privacy-request-title">Make a privacy request.</h1>
+        <p class="page-hero__lead">Tell us what you would like us to do with the information you gave us. We will check it is you and reply by email, normally within one month. See our <a href="{% url 'pages:privacy_policy' %}">Privacy Policy</a> for how we handle information.</p>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="privacy-request-form-title">
+    <div class="container reading-width">
+        <div class="form-card">
+            <div>
+                <h2 id="privacy-request-form-title" class="visually-hidden">Privacy request form</h2>
+                <form method="post" action="{% url 'pages:privacy_request' %}">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form-errors" role="alert">
+                            {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% include "components/forms/form_field.html" with field=form.kind only %}
+                    {% include "components/forms/form_field.html" with field=form.email only %}
+                    {% include "components/forms/form_field.html" with field=form.reference only %}
+                    {% include "components/forms/form_field.html" with field=form.message only %}
+
+                    <div class="form-honeypot" aria-hidden="true">
+                        {{ form.website }}
+                    </div>
+
+                    {% include "components/forms/turnstile.html" %}
+
+                    <button class="button button--primary" type="submit">Send request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

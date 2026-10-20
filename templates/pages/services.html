@@ -1,71 +1,84 @@
 {% extends "base.html" %}
+{% load icons textutils faq %}
 
 {% block title %}Software Development &amp; Student Project Services | ProjectVybe{% endblock %}
-{% block meta_description %}Explore ProjectVybe's active technology, project, learning, and development support services.{% endblock %}
+{% block meta_description %}Explore ProjectVybe's technology, project, learning and development support services.{% endblock %}
 {% block og_title %}Services | ProjectVybe{% endblock %}
-{% block og_description %}Explore ProjectVybe's active technology and project support services.{% endblock %}
+{% block og_description %}Explore ProjectVybe's technology and project support services.{% endblock %}
 
 {% block content %}
-<section class="section section--dark section--hero supporting-hero" aria-labelledby="services-title">
-    <div class="container">
-        <p class="eyebrow">ProjectVybe services</p>
-        <h1 id="services-title" class="services-hero__title" aria-label="Practical support for technology work."><span>Practical support for</span><span>technology work.</span></h1>
-        <p class="hero-copy">Explore the active services maintained through ProjectVybe Admin. Each service is enquiry-led and connected to the same simple ProjectVybe conversation flow.</p>
-        <div class="hero__actions">
-            <a class="button button--primary" href="#service-list">Explore services</a>
-            <a class="button button--outline button--on-dark" href="{% url 'leads:enquiry' %}">Make an enquiry</a>
+<section class="page-hero" aria-labelledby="services-title">
+    <div class="container page-hero__grid">
+        <div>
+            <p class="pill">{% icon "layers" 16 %} Services</p>
+            <h1 id="services-title">Practical support for technology work.</h1>
+            <p class="page-hero__lead">From project training to software development, each service starts with a short conversation so we understand what you need before anything is agreed.</p>
+            <div class="hero2__actions">
+                <a class="button button--primary button--large" href="#service-list">Explore services</a>
+                <a class="button button--outline button--large" href="{% url 'leads:enquiry' %}">Make an enquiry</a>
+            </div>
         </div>
+        <aside class="panel" aria-labelledby="how-we-work">
+            <h2 id="how-we-work" class="panel__title">How we work</h2>
+            <ol class="panel-steps">
+                <li><span class="panel-steps__icon">{% icon "message" 18 %}</span><div><strong>Tell us what you need</strong><p class="muted">A short message is enough to begin.</p></div></li>
+                <li><span class="panel-steps__icon">{% icon "file-text" 18 %}</span><div><strong>We agree scope and price</strong><p class="muted">You see both before any work starts.</p></div></li>
+                <li><span class="panel-steps__icon">{% icon "check-circle" 18 %}</span><div><strong>We deliver</strong><p class="muted">By email, WhatsApp or a shared link.</p></div></li>
+            </ol>
+        </aside>
     </div>
 </section>
 
-<section id="service-list" class="section" aria-labelledby="service-list-title">
+<section id="service-list" class="section service-section" aria-labelledby="service-list-title">
     <div class="container">
-        <div class="section-heading">
-            <p class="eyebrow">Available support</p>
-            <h2 id="service-list-title">Find a useful<br class="services-heading-break">starting point.</h2>
-            <p class="muted">Explore practical support for project training, one-to-one mentorship, documentation, and software development.</p>
+        <div class="section-head" data-reveal>
+            <p class="eyebrow">What we offer</p>
+            <h2 id="service-list-title">Find a useful starting point.</h2>
         </div>
 
         {% if service_cards %}
-            <div class="grid grid--cards grid--three service-catalogue-grid">
+            <div class="svc-grid" data-reveal="stagger">
                 {% for item in service_cards %}
-                    {% include "components/cards/service_card.html" with service=item.service service_image_url=item.image_url service_url=item.enquiry_url service_cta_label="Enquire about this service" only %}
+                    <article id="service-{{ item.service.slug }}" class="svc">
+                        <div class="svc__media">
+                            {% if item.service.image %}
+                                <img src="{% if item.image_url %}{{ item.image_url }}{% else %}{{ item.service.image.url }}{% endif %}" alt="{{ item.service.name }}" width="640" height="360" loading="lazy" decoding="async">
+                            {% else %}
+                                <span class="svc__mono" role="img" aria-label="{{ item.service.name }}">{{ item.service.name|initial }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="svc__body">
+                            <h3>{{ item.service.name }}</h3>
+                            <p class="muted">{{ item.service.short_description }}</p>
+                            {% include "components/price.html" with item=item.service only %}
+                            <a class="button button--primary" href="{{ item.enquiry_url }}">Enquire about this service</a>
+                        </div>
+                    </article>
                 {% endfor %}
             </div>
         {% else %}
             <div class="empty-state" role="status">
-                <h3>Services are being updated.</h3>
-                <p class="muted">Please contact ProjectVybe for assistance while the service catalogue is prepared.</p>
+                <h3>Services are coming soon.</h3>
+                <p class="muted">Tell us what you need and we'll let you know how we can help.</p>
                 <a class="button button--secondary" href="{% url 'leads:enquiry' %}">Contact ProjectVybe</a>
             </div>
         {% endif %}
     </div>
 </section>
 
-<section class="section section--muted" aria-labelledby="service-process-title">
-    <div class="container value-grid">
-        <div class="section-heading">
-            <p class="eyebrow">A clear next step</p>
-            <h2 id="service-process-title">Choose a service, then start a conversation.</h2>
-        </div>
-        <ul class="value-list">
-            <li>Explore an active service</li>
-            <li>Submit an enquiry with your context</li>
-            <li>Continue project conversations through WhatsApp when useful</li>
-        </ul>
-    </div>
-</section>
+{% faq_section "services" heading="About our services" %}
 
-<section class="section section--cta" aria-labelledby="services-cta-title">
-    <div class="container cta-panel">
-        <div>
-            <p class="eyebrow">Build. Learn. Grow.</p>
-            <h2 id="services-cta-title">Have a different requirement?</h2>
-            <p class="muted">Send ProjectVybe the context behind your technology or project enquiry.</p>
-        </div>
-        <div class="cta-panel__actions">
-            <a class="button button--primary" href="{% url 'leads:enquiry' %}">Start an enquiry</a>
-            <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
+<section class="section cta-band-wrap" aria-labelledby="services-cta-title">
+    <div class="container">
+        <div class="cta-band" data-reveal>
+            <div>
+                <h2 id="services-cta-title">Need something not listed?</h2>
+                <p>Describe what you're trying to build and we'll tell you how we can help.</p>
+            </div>
+            <div class="cta-band__actions">
+                <a class="button button--light button--large" href="{% url 'leads:enquiry' %}">Start an enquiry</a>
+                <a class="button button--ghost-light button--large" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
+            </div>
         </div>
     </div>
 </section>

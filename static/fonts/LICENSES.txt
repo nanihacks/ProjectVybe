@@ -1,0 +1,6 @@
+Bricolage Grotesque, Instrument Sans and JetBrains Mono are licensed under the
+SIL Open Font License 1.1 (https://openfontlicense.org). They may be used,
+embedded and redistributed freely, including commercially.
+Sources: https://fonts.google.com/specimen/Bricolage+Grotesque ,
+https://fonts.google.com/specimen/Instrument+Sans ,
+https://fonts.google.com/specimen/JetBrains+Mono

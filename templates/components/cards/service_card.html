@@ -1,14 +1,15 @@
 <article class="card card--service"{% if homepage_card %} data-homepage-card{% endif %}>
     <div class="card__media media-frame media-frame--service">
         {% if service.image %}
-            <img src="{% if service_image_url %}{{ service_image_url }}{% else %}{{ service.image.url }}{% endif %}" alt="{{ service.name }}" loading="lazy" decoding="async">
+            <img src="{% if service_image_url %}{{ service_image_url }}{% else %}{{ service.image.url }}{% endif %}" alt="{{ service.name }}" width="640" height="360" loading="lazy" decoding="async">
         {% else %}
-            <div class="media-placeholder" aria-label="No service image available">Service image coming soon</div>
+            <div class="media-placeholder" role="img" aria-label="{{ service.name }}"><span class="media-placeholder__label">Service</span></div>
         {% endif %}
     </div>
     <div class="card__body">
         <h3 class="card__title">{{ service.name }}</h3>
         <p class="card__summary">{{ service.short_description }}</p>
+        {% include "components/price.html" with item=service only %}
         {% if service_url %}
             <a class="button button--secondary" href="{{ service_url }}">{{ service_cta_label|default:"Explore services" }}</a>
         {% endif %}

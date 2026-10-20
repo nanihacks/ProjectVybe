@@ -9,8 +9,12 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from catalog.models import Category, Project, ProjectAddon, ProjectImage, Review, Service
+from core.images import cloudinary_url as _safe_cloudinary_url
+from core.ratelimit import is_rate_limited
 from core.seo import absolute_url, json_ld_string
+from core.site import get_site_settings
 from leads.forms import LeadForm
+from orders import services as orders_services
 
 
 YOUTUBE_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{11}$")
@@ -40,34 +44,16 @@ def _youtube_embed_url(value):
     return f"https://www.youtube-nocookie.com/embed/{video_id}?rel=0"
 
 
-def _safe_cloudinary_url(field, width=None):
-    if not field:
-        return ""
-    try:
-        if width and getattr(field, "public_id", None) and hasattr(field, "build_url"):
-            try:
-                return field.build_url(
-                    secure=True,
-                    transformation={
-                        "width": width,
-                        "crop": "limit",
-                        "quality": "auto",
-                        "fetch_format": "auto",
-                    },
-                )
-            except (AttributeError, ValueError):
-                pass
-        return field.url
-    except (AttributeError, ValueError):
-        return ""
-
-
 def home(request):
     home_url = reverse("pages:home")
     services_url = reverse("pages:services")
 
     featured_projects = list(
-        Project.objects.filter(is_published=True, featured=True)
+        Project.objects.filter(
+            is_published=True,
+            featured=True,
+            category__is_active=True,
+        )
         .select_related("category")
         .order_by("-created_at")[:3]
     )
@@ -79,6 +65,9 @@ def home(request):
 
     for project in featured_projects:
         project.render_thumbnail_url = _safe_cloudinary_url(project.thumbnail, width=640)
+    if featured_projects:
+        # The hero shows the newest featured project larger than its card.
+        featured_projects[0].render_large_url = _safe_cloudinary_url(featured_projects[0].thumbnail, width=1200)
     for service in services:
         service.render_image_url = _safe_cloudinary_url(service.image, width=640)
 
@@ -89,7 +78,12 @@ def home(request):
             "featured_projects": featured_projects,
             "services": services,
             "reviews": reviews,
-            "projects_anchor": f"{home_url}#projects",
+            # The #projects anchor only exists while the categories section is shown.
+            "projects_anchor": (
+                f"{home_url}#projects"
+                if get_site_settings(request).show_categories_section
+                else reverse("pages:project_catalogue")
+            ),
             "services_url": services_url,
             "contact_anchor": f"{home_url}#contact",
             "canonical_url": absolute_url(home_url),
@@ -155,33 +149,12 @@ def about(request):
     )
 
 
-def privacy_policy(request):
-    return render(request, "pages/privacy.html", {"breadcrumbs": [{"label": "Privacy Policy"}]})
-
-
-def terms(request):
-    return render(request, "pages/terms.html", {"breadcrumbs": [{"label": "Terms & Conditions"}]})
-
-
-def refund_policy(request):
-    return render(
-        request,
-        "pages/refund_policy.html",
-        {"breadcrumbs": [{"label": "Refund / Cancellation Policy"}]},
-    )
-
-
-def cookies(request):
-    return render(request, "pages/cookies.html", {"breadcrumbs": [{"label": "Cookie Policy"}]})
-
-
 def robots_txt(request):
     sitemap_url = absolute_url(reverse("sitemap"))
     content = "\n".join(
         (
             "User-agent: *",
             "Allow: /",
-            "Disallow: /admin/",
             "Disallow: /enquiry/success/",
             f"Sitemap: {sitemap_url}",
             "",
@@ -259,6 +232,11 @@ def project_search(request):
     query = request.GET.get("q", "").strip()[:80]
     if not query:
         return JsonResponse({"query": "", "results": []})
+    if is_rate_limited(request, "search", settings.SEARCH_RATE_LIMIT, 60):
+        return JsonResponse(
+            {"query": query, "results": [], "error": "rate_limited"},
+            status=429,
+        )
 
     projects = (
         Project.objects.filter(
@@ -315,6 +293,7 @@ def project_detail(request, slug):
                 ),
                 to_attr="active_addons",
             ),
+            "addon_prices",
         ),
         slug=slug,
         is_published=True,
@@ -350,18 +329,15 @@ def project_detail(request, slug):
             width=640,
         )
 
+    # Online payment replaces the WhatsApp modal only when every condition holds.
+    checkout_url = ""
+    if orders_services.checkout_available(project, get_site_settings(request)) and orders_services.policies_ready():
+        checkout_url = reverse("orders:checkout", kwargs={"slug": project.slug})
+
     addon_enquiries = []
     for addon in project.active_addons:
-        enquiry_url = (
-            f"{reverse('leads:enquiry')}?"
-            f"{urlencode({'project': project.slug, 'addon': addon.slug})}"
-        )
-        addon_enquiries.append(
-            {
-                "addon": addon,
-                "enquiry_url": enquiry_url,
-            }
-        )
+        amount, included = project.addon_pricing(addon)
+        addon_enquiries.append({"addon": addon, "amount": amount, "included": included})
 
     gallery_media = [
         {
@@ -389,6 +365,20 @@ def project_detail(request, slug):
                     "@type": "Thing",
                     "name": project.category.name,
                 },
+                # Only advertise a price when one is actually shown on the page.
+                **(
+                    {
+                        "offers": {
+                            "@type": "Offer",
+                            "price": str(project.effective_price),
+                            "priceCurrency": "INR",
+                            "availability": "https://schema.org/InStock",
+                            "url": canonical_url,
+                        }
+                    }
+                    if project.is_purchasable
+                    else {}
+                ),
             },
             {
                 "@type": "BreadcrumbList",
@@ -443,6 +433,12 @@ def project_detail(request, slug):
             "og_type": "article",
             "structured_data_json": json_ld_string(structured_data),
             "addon_enquiries": addon_enquiries,
+            "checkout_url": checkout_url,
+            "delivery_promise": (
+                f"Within {project.delivery_hours or get_site_settings(request).delivery_window_hours} hours, in business hours"
+                if checkout_url
+                else ""
+            ),
             "enquiry_form": LeadForm(
                 initial={"project": project.pk},
                 project=project,

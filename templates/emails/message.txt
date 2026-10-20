@@ -1,0 +1,20 @@
+{% autoescape off %}{% load pricing %}{{ heading }}
+
+{% if greeting %}{{ greeting }}
+
+{% endif %}{% for paragraph in paragraphs %}{{ paragraph }}
+
+{% endfor %}{% if items %}{% for name, amount in items %}  {{ name }}: {{ amount|inr }}
+{% endfor %}{% if total is not None %}  Total paid: {{ total|inr }}
+{% endif %}
+{% endif %}{% if details %}{% for label, value in details %}{{ label }}: {{ value }}
+{% endfor %}
+{% endif %}{% for paragraph in after %}{{ paragraph }}
+
+{% endfor %}{% for label, url in links %}{{ label }}: {{ url }}
+{% endfor %}{% if links %}
+{% endif %}{% if button_url %}{{ button_label }}: {{ button_url }}
+
+{% endif %}{{ site_name }}{% if contact_email %}
+{{ contact_email }}{% endif %}
+{% endautoescape %}

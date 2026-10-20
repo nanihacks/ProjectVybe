@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from core.testing import force_login_verified
+
 from .admin import LeadAdmin
 from .models import Lead
 
@@ -43,7 +45,7 @@ class LeadAdminWorkflowTests(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.admin_user)
+        force_login_verified(self.client, self.admin_user)
 
     def test_authenticated_admin_can_search_leads(self):
         response = self.client.get(

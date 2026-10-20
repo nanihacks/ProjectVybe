@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}About ProjectVybe | Build. Learn. Grow.{% endblock %}
 {% block meta_description %}Learn how ProjectVybe brings together practical technology projects, learning support, and software services.{% endblock %}
@@ -6,142 +7,104 @@
 {% block og_description %}Learn how ProjectVybe brings together practical technology projects, learning support, and software services.{% endblock %}
 
 {% block content %}
-<section class="section section--dark section--hero supporting-hero" aria-labelledby="about-title">
-    <div class="container">
-        <p class="eyebrow">About ProjectVybe</p>
-        <h1 id="about-title">Build. Learn. Grow.</h1>
-        <p class="hero-copy">ProjectVybe is a practical technology and project platform for people turning ideas into focused software work and useful learning experiences.</p>
-        <div class="hero__actions">
-            <a class="button button--primary" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
-            <a class="button button--outline button--on-dark" href="{% url 'leads:enquiry' %}">Start a conversation</a>
+<section class="page-hero" aria-labelledby="about-title">
+    <div class="container page-hero__grid">
+        <div>
+            <p class="pill">{% icon "spark" 16 %} About ProjectVybe</p>
+            <h1 id="about-title">Build. Learn. Grow.</h1>
+            <p class="page-hero__lead">ProjectVybe is a practical technology and project platform for people turning ideas into focused software work and useful learning experiences.</p>
+            <div class="hero2__actions">
+                <a class="button button--primary button--large" href="{% url 'pages:project_catalogue' %}">Explore projects {% icon "arrow-right" 18 %}</a>
+                <a class="button button--outline button--large" href="{% url 'leads:enquiry' %}">Start a conversation</a>
+            </div>
         </div>
+        <ul class="pillars" aria-label="Build, learn, grow">
+            <li>
+                <span class="pillars__icon">{% icon "code" 22 %}</span>
+                <div><h2>Build</h2><p class="muted">Explore project directions and software work you can learn from and build on.</p></div>
+            </li>
+            <li>
+                <span class="pillars__icon pillars__icon--violet">{% icon "book" 22 %}</span>
+                <div><h2>Learn</h2><p class="muted">Use project training, documentation, presentation support, and mentorship enquiries to build understanding.</p></div>
+            </li>
+            <li>
+                <span class="pillars__icon pillars__icon--cyan">{% icon "trend" 22 %}</span>
+                <div><h2>Grow</h2><p class="muted">Move from an early idea to a clearer next step with practical technology support.</p></div>
+            </li>
+        </ul>
     </div>
 </section>
 
 <section class="section" aria-labelledby="about-purpose-title">
     <div class="container about-content-grid">
-        <div class="section-heading">
+        <div class="section-head" data-reveal>
             <p class="eyebrow">What ProjectVybe is</p>
             <h2 id="about-purpose-title">A place for practical technology progress.</h2>
         </div>
-        <div class="about-reading-content">
+        <div class="about-reading-content" data-reveal>
             <p>ProjectVybe brings together practical software projects, AI/ML and computer science project ideas, training, mentorship, documentation support, and software development services in one place.</p>
             <p>Our goal is to make it easier to explore a project, understand what it involves, find the right support, and take the next step with confidence.</p>
         </div>
     </div>
 </section>
 
-<section class="section section--muted" aria-labelledby="about-offer-title">
+<section class="section section--muted" aria-labelledby="about-audience-title">
     <div class="container">
-        <div class="section-heading">
-            <p class="eyebrow">What we provide</p>
-            <h2 id="about-offer-title">Support around the work, not empty promises.</h2>
-        </div>
-        <div class="grid grid--three">
-            <article class="offer-card">
-                <span class="offer-card__number">01</span>
-                <span class="offer-card__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path d="m8 8-4 4 4 4"></path>
-                        <path d="m16 8 4 4-4 4"></path>
-                        <path d="m14 4-4 16"></path>
-                    </svg>
-                </span>
-                <h3>Build</h3>
-                <p>Explore project directions and software work maintained through the ProjectVybe catalogue.</p>
-            </article>
-            <article class="offer-card">
-                <span class="offer-card__number">02</span>
-                <span class="offer-card__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path d="m3 9 9-4 9 4-9 4-9-4Z"></path>
-                        <path d="M7 11v4c0 1.7 2.2 3 5 3s5-1.3 5-3v-4"></path>
-                        <path d="M21 10v5"></path>
-                    </svg>
-                </span>
-                <h3>Learn</h3>
-                <p>Use project training, documentation, presentation support, and mentorship enquiries to build understanding.</p>
-            </article>
-            <article class="offer-card">
-                <span class="offer-card__number">03</span>
-                <span class="offer-card__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path d="M4 19 10 13l4 4 6-8"></path>
-                        <path d="M15 9h5v5"></path>
-                    </svg>
-                </span>
-                <h3>Grow</h3>
-                <p>Move from an early idea to a clearer next step with practical technology support.</p>
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="section" aria-labelledby="about-audience-title">
-    <div class="container about-content-grid">
-        <div class="section-heading">
-            <p class="eyebrow">Who ProjectVybe supports</p>
+        <div class="section-head section-head--center" data-reveal>
+            <p class="eyebrow">Who we support</p>
             <h2 id="about-audience-title">For people doing practical technology work.</h2>
         </div>
-        <ul class="value-list about-audience-list">
-            <li>College &amp; final-year students</li>
-            <li>Students building technical skills</li>
-            <li>Developers &amp; project teams</li>
-            <li>Organizations seeking software support</li>
+        <ul class="why-grid" data-reveal="stagger">
+            <li><span class="why-grid__icon">{% icon "book" 22 %}</span><h3>College &amp; final-year students</h3></li>
+            <li><span class="why-grid__icon">{% icon "spark" 22 %}</span><h3>Students building technical skills</h3></li>
+            <li><span class="why-grid__icon">{% icon "code" 22 %}</span><h3>Developers &amp; project teams</h3></li>
+            <li><span class="why-grid__icon">{% icon "layers" 22 %}</span><h3>Organizations seeking software support</h3></li>
         </ul>
     </div>
 </section>
 
-<section class="section section--muted" aria-labelledby="about-areas-title">
+<section class="section" aria-labelledby="about-areas-title">
     <div class="container">
-        <div class="section-heading section-heading--stacked">
+        <div class="section-head section-head--row" data-reveal>
             <div>
                 <p class="eyebrow">Areas of focus</p>
-                <h2 id="about-areas-title">Explore the active<br class="about-heading-break">project categories.</h2>
+                <h2 id="about-areas-title">Where our projects sit.</h2>
             </div>
-            <p class="muted">Explore project ideas across AI/ML, cybersecurity, data science, IoT, mobile, and web development to find a direction that fits your goals.</p>
+            <p class="muted">Project ideas across AI/ML, cybersecurity, mobile and web development, so you can find a direction that fits your goals.</p>
         </div>
 
         {% if category_cards %}
-            <div class="category-carousel about-areas-carousel" data-category-carousel>
-                <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous categories" data-category-prev disabled>
-                    <span aria-hidden="true">&larr;</span>
-                </button>
-                <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
-                    <div class="category-carousel__track">
-                        {% for item in category_cards %}
-                            {% include "components/cards/category_card.html" with category=item.category category_url=item.category_url homepage_image=True homepage_card=True only %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next categories" data-category-next>
-                    <span aria-hidden="true">&rarr;</span>
-                </button>
-                <div class="category-carousel__footer">
-                    <p class="category-carousel__counter" aria-live="polite"><span data-category-current>01</span><span aria-hidden="true"> / </span><span data-category-total>01</span></p>
-                    <div class="category-carousel__dots" data-category-dots role="tablist" aria-label="Choose category slide"></div>
-                    <a class="category-carousel__view-all text-link" href="{% url 'pages:project_catalogue' %}">View all <span aria-hidden="true">&rarr;</span></a>
-                </div>
-            </div>
+            <ul class="area-list" data-reveal="stagger">
+                {% for item in category_cards %}
+                    <li>
+                        <a class="area-list__link" href="{{ item.category_url }}">
+                            <span class="area-list__name">{{ item.category.name }}</span>
+                            {% if item.category.description %}<span class="muted">{{ item.category.description }}</span>{% endif %}
+                            <span class="area-list__go" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         {% else %}
             <div class="empty-state" role="status">
-                <h3>Project categories are being prepared.</h3>
-                <p class="muted">Active technology areas will appear here as they are added through Django Admin.</p>
+                <h3>Project areas are coming soon.</h3>
+                <p class="muted">Tell us what you want to build and we'll point you to the right starting point.</p>
             </div>
         {% endif %}
     </div>
 </section>
 
-<section class="section section--cta" aria-labelledby="about-cta-title">
-    <div class="container cta-panel">
-        <div>
-            <p class="eyebrow">Find your next step</p>
-            <h2 id="about-cta-title">Ready to explore ProjectVybe?</h2>
-            <p class="muted">Explore the project catalogue or tell us what you're trying to build. We'll help you identify the next step.</p>
-        </div>
-        <div class="cta-panel__actions">
-            <a class="button button--primary" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
-            <a class="button button--outline" href="{% url 'leads:enquiry' %}">Contact ProjectVybe</a>
+<section class="section cta-band-wrap" aria-labelledby="about-cta-title">
+    <div class="container">
+        <div class="cta-band" data-reveal>
+            <div>
+                <h2 id="about-cta-title">Tell us what you're trying to build.</h2>
+                <p>Browse the projects or send a short note. We'll help you find the next step.</p>
+            </div>
+            <div class="cta-band__actions">
+                <a class="button button--light button--large" href="{% url 'leads:enquiry' %}">Contact ProjectVybe</a>
+                <a class="button button--ghost-light button--large" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
+            </div>
         </div>
     </div>
 </section>

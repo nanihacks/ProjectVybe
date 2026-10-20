@@ -3,7 +3,7 @@
 <header class="site-header">
     <div class="container site-header__inner">
         <a class="brand" href="{% url 'pages:home' %}" aria-label="ProjectVybe home">
-            <img class="brand__logo" src="{% static 'images/projectvybe-logo.png' %}" alt="ProjectVybe">
+            <img class="brand__logo" src="{% static 'images/brand/projectvybe-logo.webp' %}" alt="ProjectVybe" width="384" height="128" fetchpriority="high">
         </a>
 
         <form class="site-navigation__search site-navigation__search--mobile{% if request.GET.q %} is-expanded{% endif %}" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" data-nav-search>
@@ -20,7 +20,7 @@
 
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
             <span class="menu-toggle__label">Menu</span>
-            <span class="menu-toggle__icon" aria-hidden="true">☰</span>
+            <span class="menu-toggle__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></span>
         </button>
 
         <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
@@ -28,13 +28,14 @@
             <div class="site-navigation__dropdown{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-current{% endif %}">
                 <button class="site-navigation__link site-navigation__dropdown-toggle{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-active{% endif %}" type="button" aria-expanded="false" aria-controls="project-category-menu">
                     <span>Projects</span>
-                    <span class="site-navigation__dropdown-chevron" aria-hidden="true">⌄</span>
+                    <span class="site-navigation__dropdown-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
                 </button>
                 <div id="project-category-menu" class="site-navigation__dropdown-menu">
                     <div class="site-navigation__dropdown-header">
-                        <span class="site-navigation__dropdown-label"><img class="site-navigation__dropdown-brand-icon" src="{% static 'images/projectvybe-icon.png' %}" alt="" aria-hidden="true"> Browse by category</span>
+                        <span class="site-navigation__dropdown-label"><img class="site-navigation__dropdown-brand-icon" src="{% static 'images/brand/projectvybe-icon.webp' %}" alt="" aria-hidden="true" width="192" height="192" loading="lazy"> Browse by category</span>
                         <a class="site-navigation__dropdown-all" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects <span aria-hidden="true">→</span></a>
                     </div>
+                    <div class="mega__body">
                     {% if navigation_categories %}
                         <ul class="site-navigation__category-list">
                             {% for category in navigation_categories %}
@@ -42,9 +43,9 @@
                                     <a class="site-navigation__category-link" href="{% url 'pages:project_catalogue' %}?category={{ category.slug|urlencode }}#project-results-title">
                                         {% category_logo_url category as category_logo %}
                                         {% if category_logo %}
-                                            <img class="site-navigation__category-icon" src="{{ category_logo }}" alt="">
+                                            <img class="site-navigation__category-icon" src="{{ category_logo }}" alt="" width="44" height="44" loading="lazy" decoding="async">
                                         {% else %}
-                                            <span class="site-navigation__category-icon" aria-hidden="true">✦</span>
+                                            <span class="site-navigation__category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" focusable="false"><path d="m9 8-4 4 4 4M15 8l4 4-4 4"></path></svg></span>
                                         {% endif %}
                                         <span>
                                             <strong>{{ category.name }}</strong>
@@ -55,11 +56,19 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p class="site-navigation__category-empty">Project categories will appear here as they are published.</p>
+                        <p class="site-navigation__category-empty">Project areas are coming soon.</p>
                     {% endif %}
+                    <aside class="mega__aside">
+                        <p class="mega__aside-title">Not sure where to start?</p>
+                        <p class="mega__aside-text">Tell us what you want to build and we'll point you to the right project.</p>
+                        <a class="button button--primary button--small" href="{% url 'leads:enquiry' %}">Talk to us</a>
+                    </aside>
+                    </div>
                 </div>
             </div>
             <a class="site-navigation__link{% if request.resolver_match.url_name == 'services' %} is-active{% endif %}" href="{% url 'pages:services' %}"{% if request.resolver_match.url_name == 'services' %} aria-current="page"{% endif %}>Services</a>
+            <a class="site-navigation__link{% if request.resolver_match.namespace == 'courses' %} is-active{% endif %}" href="{% url 'courses:list' %}"{% if request.resolver_match.namespace == 'courses' %} aria-current="page"{% endif %}>Courses</a>
+            <a class="site-navigation__link{% if request.resolver_match.namespace == 'blog' %} is-active{% endif %}" href="{% url 'blog:list' %}"{% if request.resolver_match.namespace == 'blog' %} aria-current="page"{% endif %}>Blog</a>
             <a class="site-navigation__link{% if request.resolver_match.url_name == 'about' %} is-active{% endif %}" href="{% url 'pages:about' %}"{% if request.resolver_match.url_name == 'about' %} aria-current="page"{% endif %}>About</a>
             <a class="site-navigation__link" href="{% url 'leads:enquiry' %}">Contact</a>
             <form class="site-navigation__search site-navigation__search--desktop{% if request.GET.q %} is-expanded{% endif %}" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" data-nav-search>

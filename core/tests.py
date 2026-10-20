@@ -1,9 +1,10 @@
 import os
 import subprocess
 import sys
+from types import SimpleNamespace
 
 from django.conf import settings
-from django.test import RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 
 from .views import error_500
@@ -148,3 +149,45 @@ class DeploymentConfigurationTests(TestCase):
         self.assertIn("collectstatic --noinput", build_script)
         self.assertNotIn("migrate --noinput", build_script)
         self.assertEqual(procfile.strip(), "web: gunicorn config.wsgi:application")
+
+
+class CategoryAssetTagTests(SimpleTestCase):
+    def test_local_fallbacks_use_small_webp_assets(self):
+        from core.templatetags.category_assets import (
+            category_card_image_url,
+            category_home_image_url,
+            category_logo_url,
+        )
+
+        category = SimpleNamespace(slug="web-development", image=None, homepage_image=None)
+
+        self.assertTrue(
+            category_logo_url(category).endswith("categories/icons/web-development.webp")
+        )
+        self.assertTrue(
+            category_card_image_url(category).endswith("categories/web-development.webp")
+        )
+        self.assertTrue(
+            category_home_image_url(category).endswith("categories/web-development.webp")
+        )
+        self.assertEqual(category_logo_url(SimpleNamespace(slug="unknown", image=None)), "")
+
+    def test_cloudinary_images_are_requested_at_fixed_widths(self):
+        from core.templatetags.category_assets import (
+            category_home_image_url,
+            category_logo_url,
+        )
+
+        class Resource:
+            public_id = "projectvybe/categories/x"
+            url = "https://res.cloudinary.com/demo/original"
+
+            def build_url(self, **options):
+                return f"https://res.cloudinary.com/demo/w_{options['transformation']['width']}"
+
+        category = SimpleNamespace(slug="x", image=Resource(), homepage_image=Resource())
+
+        self.assertEqual(category_logo_url(category), "https://res.cloudinary.com/demo/w_96")
+        self.assertEqual(
+            category_home_image_url(category), "https://res.cloudinary.com/demo/w_640"
+        )

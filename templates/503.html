@@ -1,0 +1,10 @@
+{% extends "errors/standalone.html" %}
+
+{% block title %}Back soon | ProjectVybe{% endblock %}
+
+{% block body %}
+<p class="code">Maintenance</p>
+<h1>We will be back soon.</h1>
+<p>{{ message|default:"ProjectVybe is being updated. Please check back shortly." }}</p>
+{% if return_time %}<p>Expected back: <strong>{{ return_time|date:"j F Y, g:i A" }}</strong> (IST).</p>{% endif %}
+{% endblock %}

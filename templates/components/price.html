@@ -1,0 +1,12 @@
+{% load pricing %}{% if item.has_price %}
+<p class="price{% if item.on_sale %} price--sale{% endif %}">
+    {% if item.price_prefix == "from" %}<span class="price__prefix">Starting from</span>{% endif %}
+    {% if item.on_sale %}
+        <s class="price__was"><span class="visually-hidden">Original price </span>{{ item.price|inr }}</s>
+        <strong class="price__now"><span class="visually-hidden">Now </span>{{ item.sale_price|inr }}</strong>
+    {% else %}
+        <strong class="price__now">{{ item.price|inr }}</strong>
+    {% endif %}
+    {% if item.price_note %}<span class="price__note">{{ item.price_note }}</span>{% endif %}
+</p>
+{% endif %}

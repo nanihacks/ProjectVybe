@@ -1,0 +1,35 @@
+<fieldset class="consent">
+    <legend class="consent__legend">Your consent</legend>
+    <p class="form-help consent__notice">We use these details only to reply to your enquiry. Read our <a href="{% url 'pages:privacy_policy' %}" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+
+    <div class="consent__item{% if form.consent_contact.errors %} consent__item--error{% endif %}">
+        <label class="consent__label" for="{{ form.consent_contact.id_for_label }}">
+            {{ form.consent_contact }}
+            <span>I agree to the <a href="{% url 'pages:privacy_policy' %}" target="_blank" rel="noopener">Privacy Policy</a> and to ProjectVybe contacting me by WhatsApp, phone or email about this enquiry. <span class="consent__required">(required)</span></span>
+        </label>
+        {% if form.consent_contact.errors %}
+            <div id="{{ form.consent_contact.auto_id }}_error" role="alert">
+                {% for error in form.consent_contact.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="consent__item{% if form.consent_age.errors %} consent__item--error{% endif %}">
+        <label class="consent__label" for="{{ form.consent_age.id_for_label }}">
+            {{ form.consent_age }}
+            <span>{{ form.consent_age.label }} <span class="consent__required">(required)</span></span>
+        </label>
+        {% if form.consent_age.errors %}
+            <div id="{{ form.consent_age.auto_id }}_error" role="alert">
+                {% for error in form.consent_age.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="consent__item">
+        <label class="consent__label" for="{{ form.consent_marketing.id_for_label }}">
+            {{ form.consent_marketing }}
+            <span>{{ form.consent_marketing.label }} <span class="consent__optional">(optional)</span></span>
+        </label>
+    </div>
+</fieldset>

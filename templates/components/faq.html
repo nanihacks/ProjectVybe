@@ -1,0 +1,24 @@
+{% load icons %}{% if faqs %}
+<section class="section faq-section" aria-labelledby="faq-{{ placement }}-title">
+    <div class="container faq-split">
+        <div class="faq-split__intro" data-reveal>
+            <p class="eyebrow">FAQ</p>
+            <h2 id="faq-{{ placement }}-title">{{ heading }}</h2>
+            {% if intro %}<p class="muted">{{ intro }}</p>{% endif %}
+            <a class="text-link text-link--arrow" href="{% url 'leads:enquiry' %}">Ask us something else</a>
+        </div>
+        <div class="faq-list" data-reveal>
+            {% for faq in faqs %}
+                <details class="faq-item">
+                    <summary>
+                        <span>{{ faq.question }}</span>
+                        <span class="faq-item__toggle" aria-hidden="true">{% icon "plus" 18 %}</span>
+                    </summary>
+                    <div class="faq-item__answer">{{ faq.answer|linebreaks }}</div>
+                </details>
+            {% endfor %}
+        </div>
+    </div>
+    <script type="application/ld+json">{{ structured|safe }}</script>
+</section>
+{% endif %}

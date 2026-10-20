@@ -1,0 +1,27 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:courses_coursewaitlistentry_changelist' %}">Waitlist entries</a>
+    &rsaquo; Anonymise
+</div>
+{% endblock %}
+
+{% block content %}
+<p><strong>This cannot be undone.</strong> For each sign-up below, the name, email address and phone number are replaced with placeholders and consent is marked as withdrawn. The reference, course and dates are kept.</p>
+<ul>
+    {% for entry in queryset %}
+        <li>{{ entry.reference }} - {{ entry.name }} ({{ entry.email }}){% if entry.anonymised_at %} - already anonymised{% endif %}</li>
+    {% endfor %}
+</ul>
+<form method="post">
+    {% csrf_token %}
+    {% for pk in selected_pks %}<input type="hidden" name="{{ action_checkbox_name }}" value="{{ pk }}">{% endfor %}
+    <input type="hidden" name="action" value="{{ action_name }}">
+    <input type="hidden" name="confirm" value="yes">
+    <input type="hidden" name="post" value="yes">
+    <input type="submit" value="Yes, anonymise these sign-ups">
+    <a href="{% url 'admin:courses_coursewaitlistentry_changelist' %}" class="button cancel-link">No, take me back</a>
+</form>
+{% endblock %}

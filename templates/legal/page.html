@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} | ProjectVybe{% endblock %}
+{% block meta_description %}{{ page.seo_description|default:page.hero_copy|default:site_description }}{% endblock %}
+{% block og_title %}{{ page.title }} | ProjectVybe{% endblock %}
+{% block og_description %}{{ page.seo_description|default:page.hero_copy|default:site_description }}{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact policy-hero" aria-labelledby="policy-title">
+    <div class="container">
+        <p class="pill">ProjectVybe information</p>
+        <h1 id="policy-title">{{ page.title }}</h1>
+        {% if page.hero_copy %}<p class="page-hero__lead">{{ page.hero_copy }}</p>{% endif %}
+        <p class="policy-updated">Last updated: {{ version.effective_date|date:"F j, Y" }}</p>
+    </div>
+</section>
+
+<section class="section policy-page" aria-label="{{ page.title }}">
+    <div class="container policy-content">
+        <div class="policy-body">{{ body_html|safe }}</div>
+    </div>
+</section>
+{% endblock %}

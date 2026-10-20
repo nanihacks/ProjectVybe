@@ -1,48 +1,42 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Software Projects for Students | ProjectVybe{% endblock %}
-{% block meta_description %}Explore published ProjectVybe technology projects by category or search term.{% endblock %}
+{% block meta_description %}Browse ProjectVybe technology projects by category or search term.{% endblock %}
 {% block og_title %}Projects | ProjectVybe{% endblock %}
-{% block og_description %}Explore published ProjectVybe technology projects by category or search term.{% endblock %}
+{% block og_description %}Browse ProjectVybe technology projects by category or search term.{% endblock %}
 
 {% block content %}
 <div class="project-catalogue-page">
-<section class="section section--muted catalogue-intro" aria-labelledby="catalogue-title">
+<section class="page-hero page-hero--compact" aria-labelledby="catalogue-title">
     <div class="container">
-        <p class="eyebrow">Project catalogue</p>
-        <h1 id="catalogue-title"><span class="catalogue-intro__accent">Choose your</span><br>next project.</h1>
-        <p class="catalogue-intro__copy">Browse published ProjectVybe projects across the technology areas maintained in the catalogue. Search by project details or choose an active category to narrow the list.</p>
+        <p class="pill">{% icon "layers" 16 %} {{ page_obj.paginator.count }} project{{ page_obj.paginator.count|pluralize }}{% if selected_category %} in {{ selected_category.name }}{% endif %}</p>
+        <h1 id="catalogue-title">Projects</h1>
+        <p class="page-hero__lead">{% if query %}Showing results for “{{ query }}”.{% else %}Search by topic or technology, or pick an area to narrow the list.{% endif %}</p>
     </div>
 </section>
 
-<section class="section project-catalogue-results" aria-labelledby="project-results-title">
-    <div class="container">
-        <div class="catalogue-tools">
-            <nav class="category-filters" aria-label="Project categories">
-                <h2 class="category-filters__title">Browse by category</h2>
-                <ul class="category-filters__list">
+<section class="section catalogue-section project-catalogue-results" aria-labelledby="project-results-title">
+    <div class="container catalogue-layout">
+        <nav class="category-filters" aria-label="Project categories">
+            <h2 class="category-filters__title">Browse by category</h2>
+            <ul class="category-filters__list">
+                <li>
+                    <a class="filter-chip{% if not selected_category %} is-active{% endif %}" href="{% url 'pages:project_catalogue' %}{% if query %}?q={{ query|urlencode }}{% endif %}#project-results-title"{% if not selected_category %} aria-current="page"{% endif %}>All categories</a>
+                </li>
+                {% for category in active_categories %}
                     <li>
-                        <a class="filter-chip{% if not selected_category %} is-active{% endif %}" href="{% url 'pages:project_catalogue' %}{% if query %}?q={{ query|urlencode }}{% endif %}#project-results-title"{% if not selected_category %} aria-current="page"{% endif %}>All categories</a>
+                        <a class="filter-chip{% if category == selected_category %} is-active{% endif %}" href="{% url 'pages:project_catalogue' %}?category={{ category.slug }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}#project-results-title"{% if category == selected_category %} aria-current="page"{% endif %}>{{ category.name }}</a>
                     </li>
-                    {% for category in active_categories %}
-                        <li>
-                            <a class="filter-chip{% if category == selected_category %} is-active{% endif %}" href="{% url 'pages:project_catalogue' %}?category={{ category.slug }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}#project-results-title"{% if category == selected_category %} aria-current="page"{% endif %}>{{ category.name }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        </div>
+                {% endfor %}
+            </ul>
+        </nav>
 
-        <div class="section-heading catalogue-results-heading">
-            <div>
-                <p class="eyebrow">Explore projects</p>
-                <h2 id="project-results-title">Find a project that fits<br class="projects-heading-break">your direction.</h2>
-            </div>
-            {% if selected_category %}<p class="muted">Showing projects in {{ selected_category.name }}.</p>{% elif query %}<p class="muted">Showing results for “{{ query }}”.</p>{% else %}<p class="muted">Browse ProjectVybe projects across AI/ML, cybersecurity, data science, IoT, mobile, and web development.</p>{% endif %}
-        </div>
+        <div class="catalogue-main">
+        <h2 id="project-results-title" class="visually-hidden">Project results</h2>
 
         {% if page_obj.object_list %}
-            <div class="grid grid--cards grid--three project-catalogue-grid">
+            <div class="grid grid--cards project-catalogue-grid" data-reveal="stagger">
                 {% for project in page_obj %}
                     {% url 'pages:project_detail' project.slug as project_detail_url %}
                     {% include "components/cards/project_card.html" with project=project project_image_url=project.render_thumbnail_url project_url=project_detail_url project_cta_label="View project" project_card_variant="catalogue" only %}
@@ -82,18 +76,19 @@
             <div class="empty-state catalogue-empty" role="status">
                 {% if query %}
                     <h3>No projects matched your search.</h3>
-                    <p class="muted">Try another keyword or browse all active categories.</p>
+                    <p class="muted">Try another keyword, or browse every area.</p>
                     <a class="button button--secondary" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects</a>
                 {% elif selected_category %}
                     <h3>No projects are currently available in this category.</h3>
-                    <p class="muted">Try another category or return to the full project catalogue.</p>
+                    <p class="muted">Try another category, or see every project.</p>
                     <a class="button button--secondary" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects</a>
                 {% else %}
                     <h3>Projects are being added soon.</h3>
-                    <p class="muted">Check back shortly as published ProjectVybe projects are added through Django Admin.</p>
+                    <p class="muted">New projects are being added. Check back soon, or send us an enquiry.</p>
                 {% endif %}
             </div>
         {% endif %}
+        </div>
     </div>
 </section>
 </div>

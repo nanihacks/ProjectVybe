@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.page_title }} | ProjectVybe{% endblock %}
+{% block meta_description %}{{ post.page_description }}{% endblock %}
+{% block og_title %}{{ post.page_title }}{% endblock %}
+{% block og_description %}{{ post.page_description }}{% endblock %}
+{% block twitter_title %}{{ post.page_title }}{% endblock %}
+{% block twitter_description %}{{ post.page_description }}{% endblock %}
+{% block extra_meta %}
+    <meta property="article:published_time" content="{{ post.publish_at|date:'c' }}">
+    <meta property="article:modified_time" content="{{ post.updated_at|date:'c' }}">
+    <meta property="article:section" content="{{ post.category.name }}">
+{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+{% if previewing %}<p class="preview-banner" role="status">Preview. This post is not public yet.</p>{% endif %}
+
+<article class="post">
+    <header class="post__head container reading-width">
+        <p class="eyebrow"><a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a> · {{ post.reading_minutes }} min read</p>
+        <h1>{{ post.title }}</h1>
+        <p class="post__lead">{{ post.excerpt }}</p>
+        <p class="post__byline">By <strong>{{ post.author.name }}</strong> · <time datetime="{{ post.publish_at|date:'c' }}">{{ post.publish_at|date:"j F Y" }}</time>{% if post.updated_at.date != post.publish_at.date %} · Updated <time datetime="{{ post.updated_at|date:'c' }}">{{ post.updated_at|date:"j F Y" }}</time>{% endif %}</p>
+    </header>
+
+    {% if cover_url %}
+        <div class="container post__cover">
+            <img src="{{ cover_url }}" alt="{{ post.cover_alt }}" width="1200" height="750" fetchpriority="high" decoding="async">
+        </div>
+    {% endif %}
+
+    <div class="container post__layout">
+        {% if post.toc|length > 2 %}
+            <nav class="post__toc" aria-label="On this page">
+                <p class="post__toc-title">On this page</p>
+                <ol>
+                    {% for item in post.toc %}<li><a href="#{{ item.id }}">{{ item.title }}</a></li>{% endfor %}
+                </ol>
+            </nav>
+        {% endif %}
+        <div class="post__body">{{ post.body_html|safe }}</div>
+    </div>
+
+    <footer class="container reading-width post__footer">
+        {% if post.tags.all %}
+            <ul class="tag-list" aria-label="Tags">
+                {% for tag in post.tags.all %}<li><a class="tag" href="{{ tag.get_absolute_url }}">{{ tag.name }}</a></li>{% endfor %}
+            </ul>
+        {% endif %}
+        <div class="post__author">
+            <strong>{{ post.author.name }}</strong>
+            {% if post.author.bio %}<p class="muted">{{ post.author.bio }}</p>{% endif %}
+        </div>
+    </footer>
+</article>
+
+{% if related_projects %}
+<section class="section section--muted" aria-labelledby="post-projects-title">
+    <div class="container">
+        <h2 id="post-projects-title">Projects mentioned</h2>
+        <ul class="related-rows">
+            {% for project in related_projects %}
+                <li>
+                    <a class="related-row" href="{% url 'pages:project_detail' project.slug %}">
+                        <span class="related-row__media">
+                            {% if project.render_thumbnail_url %}<img src="{{ project.render_thumbnail_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">{% else %}<span class="media-placeholder__label">{{ project.category.name }}</span>{% endif %}
+                        </span>
+                        <span class="related-row__body">
+                            <span class="eyebrow">{{ project.category.name }}</span>
+                            <strong class="related-row__title">{{ project.title }}</strong>
+                            <span class="muted">{{ project.short_description }}</span>
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,14 +1,29 @@
-{% load static %}
+{% load static icons %}
 <footer class="site-footer">
     <div class="container site-footer__grid">
         <div class="site-footer__brand">
             <a class="brand" href="{% url 'pages:home' %}" aria-label="ProjectVybe home">
-                <img class="brand__logo" src="{% static 'images/projectvybe-logo.png' %}" alt="ProjectVybe">
+                <img class="brand__logo" src="{% static 'images/brand/projectvybe-logo-light.webp' %}" alt="ProjectVybe" width="384" height="128" loading="lazy">
             </a>
-            <p class="site-footer__slogan">Build. Learn. Grow.</p>
-            <p class="site-footer__description">A technology-focused space for thoughtful software projects, practical learning, and steady progress.</p>
-            {% if public_contact_email %}
-                <a class="site-footer__email" href="mailto:{{ public_contact_email }}">{{ public_contact_email }}</a>
+            <p class="site-footer__slogan">{{ site_settings.footer_tagline }}</p>
+            <p class="site-footer__description">{{ site_settings.footer_description }}</p>
+
+            <ul class="site-footer__contact">
+                {% if public_contact_email %}<li>{% icon "mail" 18 %}<a class="site-footer__email" href="mailto:{{ public_contact_email }}">{{ public_contact_email }}</a></li>{% endif %}
+                {% if site_settings.phone %}<li>{% icon "phone" 18 %}<a href="tel:{{ site_settings.phone|cut:' ' }}">{{ site_settings.phone }}</a></li>{% endif %}
+                {% if site_settings.address %}<li>{% icon "map-pin" 18 %}<span>{{ site_settings.address|linebreaksbr }}</span></li>{% endif %}
+                {% if site_settings.business_hours %}<li>{% icon "clock" 18 %}<span>{{ site_settings.business_hours }}</span></li>{% endif %}
+            </ul>
+
+            {% if site_settings.social_items or whatsapp_chat_url %}
+                <ul class="site-footer__social" aria-label="ProjectVybe on social media">
+                    {% for key, label, url in site_settings.social_items %}
+                        <li><a href="{{ url }}" rel="noopener noreferrer" target="_blank" aria-label="{{ label }}" title="{{ label }}">{% icon key 20 %}</a></li>
+                    {% endfor %}
+                    {% if whatsapp_chat_url %}
+                        <li><a href="{{ whatsapp_chat_url }}" rel="noopener noreferrer" target="_blank" aria-label="WhatsApp" title="WhatsApp">{% icon "whatsapp" 20 %}</a></li>
+                    {% endif %}
+                </ul>
             {% endif %}
         </div>
 
@@ -17,19 +32,22 @@
             <a href="{% url 'pages:home' %}">Home</a>
             <a href="{% url 'pages:project_catalogue' %}">Projects</a>
             <a href="{% url 'pages:services' %}">Services</a>
+            <a href="{% url 'courses:list' %}">Courses</a>
+            <a href="{% url 'blog:list' %}">Blog</a>
             <a href="{% url 'pages:about' %}">About</a>
             <a href="{% url 'leads:enquiry' %}">Contact</a>
         </nav>
 
         <nav class="site-footer__nav" aria-label="Legal navigation">
             <p class="site-footer__heading">Information</p>
-            <a href="{% url 'pages:privacy_policy' %}">Privacy policy</a>
-            <a href="{% url 'pages:terms' %}">Terms &amp; conditions</a>
-            <a href="{% url 'pages:refund_policy' %}">Refund / cancellation policy</a>
-            <a href="{% url 'pages:cookies' %}">Cookie policy</a>
+            {% for label, url in legal_footer_links %}
+                <a href="{{ url }}">{{ label }}</a>
+            {% endfor %}
+            <a href="{% url 'pages:privacy_request' %}">Privacy request</a>
         </nav>
     </div>
     <div class="container site-footer__bottom">
-        <p>&copy; {% now "Y" %} ProjectVybe</p>
+        <p>&copy; {% now "Y" %} {{ site_settings.legal_name|default:"ProjectVybe" }}{% if site_settings.gstin %} &middot; GSTIN {{ site_settings.gstin }}{% endif %}</p>
+        <p>{{ site_settings.footer_tagline }}</p>
     </div>
 </footer>

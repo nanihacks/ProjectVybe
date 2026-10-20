@@ -1,6 +1,25 @@
 from django.contrib import admin, messages
 
-from .models import Category, Project, ProjectAddon, ProjectImage, Review, Service
+from .models import (
+    Category,
+    Project,
+    ProjectAddon,
+    ProjectAddonPrice,
+    ProjectImage,
+    Review,
+    Service,
+)
+
+
+PRICING_FIELDS = ("price", "sale_price", "price_prefix", "price_note", "show_price")
+
+
+class ProjectAddonPriceInline(admin.TabularInline):
+    model = ProjectAddonPrice
+    extra = 0
+    fields = ("addon", "price_override", "included_free")
+    verbose_name = "add-on price for this project"
+    verbose_name_plural = "Add-on prices for this project (optional)"
 
 
 class ProjectImageInline(admin.TabularInline):
@@ -10,7 +29,7 @@ class ProjectImageInline(admin.TabularInline):
     ordering = ("ordering", "id")
 
 
-@admin.action(description="Publish selected projects")
+@admin.action(description="Publish selected projects", permissions=["change"])
 def publish_projects(modeladmin, request, queryset):
     updated = queryset.update(is_published=True)
     modeladmin.message_user(
@@ -20,7 +39,7 @@ def publish_projects(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Unpublish selected projects")
+@admin.action(description="Unpublish selected projects", permissions=["change"])
 def unpublish_projects(modeladmin, request, queryset):
     updated = queryset.update(is_published=False)
     modeladmin.message_user(
@@ -30,7 +49,7 @@ def unpublish_projects(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Mark selected projects as featured")
+@admin.action(description="Mark selected projects as featured", permissions=["change"])
 def feature_projects(modeladmin, request, queryset):
     updated = queryset.update(featured=True)
     modeladmin.message_user(
@@ -40,7 +59,7 @@ def feature_projects(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Remove featured status from selected projects")
+@admin.action(description="Remove featured status from selected projects", permissions=["change"])
 def unfeature_projects(modeladmin, request, queryset):
     updated = queryset.update(featured=False)
     modeladmin.message_user(
@@ -96,7 +115,7 @@ class ProjectAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("addons",)
-    inlines = (ProjectImageInline,)
+    inlines = (ProjectImageInline, ProjectAddonPriceInline)
     actions = (
         publish_projects,
         unpublish_projects,
@@ -136,9 +155,20 @@ class ProjectAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "Price and checkout",
+            {
+                "fields": (*PRICING_FIELDS, "accept_online_payment", "delivery_hours"),
+                "description": (
+                    "Leave the price empty to show no price; visitors then use the WhatsApp "
+                    "enquiry. Online payment also needs 'Payments enabled' in Site Settings."
+                ),
+            },
+        ),
+        (
             "Project add-ons",
             {
                 "fields": ("addons",),
+                "description": "Prices for add-ons on this project can be set in the table further down.",
             },
         ),
         (
@@ -152,20 +182,45 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "is_active", "ordering")
+    list_display = ("name", "slug", "price", "is_active", "ordering")
     search_fields = ("name", "slug", "short_description")
     list_filter = ("is_active",)
     ordering = ("ordering", "name")
     prepopulated_fields = {"slug": ("name",)}
+    fieldsets = (
+        ("Service", {"fields": ("name", "slug", "short_description", "description", "image")}),
+        (
+            "Price (display only)",
+            {
+                "fields": PRICING_FIELDS,
+                "description": "Shown as a guide on the service card. Services are still arranged by enquiry.",
+            },
+        ),
+        ("Publishing", {"fields": ("is_active", "ordering")}),
+    )
 
 
 @admin.register(ProjectAddon)
 class ProjectAddonAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "is_active", "ordering")
+    list_display = ("name", "slug", "price", "extra_delivery_hours", "is_active", "ordering")
     search_fields = ("name", "slug", "description")
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "is_popular")
     ordering = ("ordering", "name")
     prepopulated_fields = {"slug": ("name",)}
+    fieldsets = (
+        ("Add-on", {"fields": ("name", "slug", "description", "benefit", "inclusions")}),
+        (
+            "Default price",
+            {
+                "fields": PRICING_FIELDS,
+                "description": (
+                    "Used on every project unless a project sets its own price in the "
+                    "project's 'Add-on prices' table."
+                ),
+            },
+        ),
+        ("Delivery and display", {"fields": ("extra_delivery_hours", "is_popular", "is_active", "ordering")}),
+    )
 
 
 @admin.register(Review)

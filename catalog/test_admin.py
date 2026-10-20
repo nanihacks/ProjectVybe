@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from core.testing import force_login_verified
+
 from .admin import (
     CategoryAdmin,
     ProjectAdmin,
@@ -126,7 +128,7 @@ class CatalogAdminWorkflowTests(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.admin_user)
+        force_login_verified(self.client, self.admin_user)
 
     def test_admin_project_changelist_requires_authentication(self):
         self.client.logout()

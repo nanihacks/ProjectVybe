@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{% block title %}ProjectVybe{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+            background: #f6f7fb;
+            color: #122033;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.55;
+        }
+        main {
+            width: 100%;
+            max-width: 34rem;
+            padding: 2.5rem 2rem;
+            border-radius: 1.25rem;
+            background: #fff;
+            box-shadow: 0 0.75rem 2.5rem rgba(18, 32, 51, 0.1);
+        }
+        .brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.75rem; font-weight: 800; font-size: 1.2rem; color: #3346c8; }
+        .brand svg { width: 2rem; height: 2rem; }
+        .code { margin: 0 0 0.25rem; color: #5b6b82; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8rem; }
+        h1 { margin: 0 0 0.75rem; font-size: clamp(1.6rem, 5vw, 2.2rem); line-height: 1.15; }
+        p { margin: 0 0 1rem; color: #3b4a5f; }
+        .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+        .button {
+            display: inline-block;
+            min-height: 2.75rem;
+            padding: 0.7rem 1.4rem;
+            border-radius: 999px;
+            background: #3346c8;
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .button:focus-visible, a:focus-visible { outline: 0.2rem solid #122033; outline-offset: 0.15rem; }
+        .note { margin: 1.5rem 0 0; font-size: 0.9rem; color: #5b6b82; }
+        .note a { color: #3346c8; }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="brand">
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="8" fill="#3346c8"></rect><path d="M11 8v16l12-8z" fill="#fff"></path></svg>
+            <span>ProjectVybe</span>
+        </div>
+        {% block body %}{% endblock %}
+        {% if contact_email %}<p class="note">Need help? Email <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>{% endif %}
+    </main>
+</body>
+</html>

@@ -1,10 +1,17 @@
+from unittest.mock import patch
+
+from django.conf import settings
 from django.core import mail
+from django.core.cache import cache
+from django.core.mail import EmailMessage
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from catalog.models import Category, Project, ProjectAddon, Service
 
-from .models import Lead
+from legal.models import LegalPage
+
+from .models import ConsentRecord, Lead
 
 
 class LeadModelTests(TestCase):
@@ -59,6 +66,7 @@ class LeadModelTests(TestCase):
 
 class EnquiryWorkflowTests(TestCase):
     def setUp(self):
+        cache.clear()
         self.category = Category.objects.create(
             name="Enquiry Category",
             slug="enquiry-category",
@@ -133,8 +141,15 @@ class EnquiryWorkflowTests(TestCase):
             "selected_services": [str(self.service.pk)],
             "selected_addons": [str(self.addon.pk)],
             "message": "I would like to discuss this project.",
+            "consent_contact": "on",
+            "consent_age": "on",
             "website": "",
         }
+
+    def general_post_data(self):
+        data = self.valid_post_data()
+        data.update({"project": "", "selected_services": [], "selected_addons": []})
+        return data
 
     def test_enquiry_page_renders_without_creating_a_lead(self):
         response = self.client.get(self.enquiry_url(), secure=True)
@@ -198,39 +213,74 @@ class EnquiryWorkflowTests(TestCase):
         WHATSAPP_NUMBER="919876543210",
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
         PUBLIC_CONTACT_EMAIL="owner@example.com",
-        DEFAULT_FROM_EMAIL="no-reply@example.com",
+        DEFAULT_FROM_EMAIL="ProjectVybe Enquiries <no-reply@example.com>",
     )
-    def test_valid_submission_saves_lead_and_renders_inline_success(self):
-        data = self.valid_post_data()
-        data.update({"project": "", "selected_services": [], "selected_addons": []})
+    def test_general_submission_redirects_to_success_page_and_sends_emails(self):
         response = self.client.post(
-            self.enquiry_url(),
-            data,
-            secure=True,
+            self.enquiry_url(), self.general_post_data(), secure=True
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pages/enquiry.html")
-        self.assertContains(response, "We've received your enquiry.")
-        self.assertNotContains(response, "wa.me")
-        self.assertContains(response, "Explore projects")
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(mail.outbox[0].to, ["owner@example.com"])
-        self.assertEqual(mail.outbox[0].reply_to, ["visitor@example.com"])
-        self.assertEqual(mail.outbox[1].to, ["visitor@example.com"])
-        self.assertEqual(mail.outbox[1].reply_to, ["owner@example.com"])
-        self.assertIn("Thank you for contacting ProjectVybe", mail.outbox[1].body)
-        self.assertNotIn("Project:", mail.outbox[0].body)
-        self.assertNotIn("Project add-ons:", mail.outbox[0].body)
+        self.assertRedirects(
+            response,
+            reverse("leads:success"),
+            fetch_redirect_response=False,
+        )
         lead = Lead.objects.get()
-        self.assertEqual(lead.name, "Enquiry Visitor")
-        self.assertEqual(lead.email, "visitor@example.com")
-        self.assertEqual(lead.phone, "+91 98765 43210")
+        self.assertEqual(lead.reference, f"PV-{lead.pk + 1000}")
         self.assertIsNone(lead.project)
-        self.assertEqual(list(lead.selected_services.all()), [])
-        self.assertEqual(list(lead.selected_addons.all()), [])
+        self.assertEqual(lead.phone, "+91 98765 43210")
         self.assertEqual(lead.message, "I would like to discuss this project.")
         self.assertEqual(lead.status, Lead.Status.NEW)
+
+        self.assertEqual(len(mail.outbox), 2)
+        owner, confirmation = mail.outbox
+        self.assertEqual(owner.to, ["owner@example.com"])
+        self.assertEqual(owner.reply_to, ["visitor@example.com"])
+        self.assertIn(lead.reference, owner.subject)
+        self.assertIn("Enquiry Visitor", owner.subject)
+        self.assertIn("Enquiry Visitor via ProjectVybe", owner.from_email)
+        self.assertIn("no-reply@example.com", owner.from_email)
+        self.assertIn("I would like to discuss this project.", owner.body)
+        self.assertEqual(confirmation.to, ["visitor@example.com"])
+        self.assertEqual(confirmation.reply_to, ["owner@example.com"])
+        self.assertIn(lead.reference, confirmation.subject)
+        lead.refresh_from_db()
+        self.assertTrue(lead.owner_notified)
+        self.assertTrue(lead.confirmation_sent)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        PUBLIC_CONTACT_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="no-reply@example.com",
+    )
+    def test_visitor_confirmation_does_not_echo_visitor_input(self):
+        data = self.general_post_data()
+        data["message"] = "Please send spam link http://evil.example to everyone"
+        data["name"] = "Mallory"
+        data["phone"] = "+91 99999 11111"
+
+        self.client.post(self.enquiry_url(), data, secure=True)
+
+        confirmation = mail.outbox[1]
+        self.assertNotIn("evil.example", confirmation.body)
+        self.assertNotIn("Mallory", confirmation.body)
+        self.assertNotIn("99999", confirmation.body)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        PUBLIC_CONTACT_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="no-reply@example.com",
+    )
+    def test_newlines_in_name_cannot_inject_email_headers(self):
+        data = self.general_post_data()
+        data["name"] = "Eve\r\nBcc: victim@example.com"
+
+        self.client.post(self.enquiry_url(), data, secure=True)
+
+        owner = mail.outbox[0]
+        self.assertNotIn("\n", owner.subject)
+        self.assertNotIn("\n", owner.from_email)
+        self.assertEqual(owner.bcc, [])
 
     @override_settings(
         WHATSAPP_NUMBER="919876543210",
@@ -238,36 +288,195 @@ class EnquiryWorkflowTests(TestCase):
         PUBLIC_CONTACT_EMAIL="owner@example.com",
         DEFAULT_FROM_EMAIL="no-reply@example.com",
     )
-    def test_project_wizard_saves_lead_and_offers_whatsapp_with_all_context(self):
+    def test_project_wizard_emails_owner_and_redirects_to_whatsapp_with_reference(self):
         data = self.valid_post_data()
         data["project_wizard"] = "1"
 
         response = self.client.post(self.enquiry_url(), data, secure=True)
 
+        lead = Lead.objects.get()
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response["Location"].startswith("https://wa.me/919876543210?"))
         self.assertIn("Email%3A+visitor%40example.com", response["Location"])
         self.assertIn("Phone%3A+%2B91+98765+43210", response["Location"])
         self.assertIn("Additional+services%3A", response["Location"])
         self.assertIn("Documentation+add-on", response["Location"])
-        self.assertEqual(len(mail.outbox), 0)
-        self.assertEqual(Lead.objects.count(), 1)
+        self.assertIn(f"Reference%3A+{lead.reference}", response["Location"])
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn("Published Enquiry Project", mail.outbox[0].subject)
+        self.assertTrue(lead.owner_notified or Lead.objects.get().owner_notified)
 
-    def test_general_enquiry_can_omit_project_phone_and_services(self):
+    @override_settings(
+        WHATSAPP_NUMBER="",
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        PUBLIC_CONTACT_EMAIL="owner@example.com",
+    )
+    def test_project_wizard_without_whatsapp_falls_back_to_success_page(self):
         data = self.valid_post_data()
-        data.update(
-            {
-                "phone": "",
-                "project": "",
-                "selected_services": [],
-                "selected_addons": [],
-            }
-        )
+        data["project_wizard"] = "1"
 
         response = self.client.post(self.enquiry_url(), data, secure=True)
 
+        self.assertRedirects(
+            response, reverse("leads:success"), fetch_redirect_response=False
+        )
+        self.assertEqual(len(mail.outbox), 2)
+
+    @override_settings(
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+        PUBLIC_CONTACT_EMAIL="owner@example.com",
+        DEFAULT_FROM_EMAIL="no-reply@example.com",
+    )
+    def test_email_failure_is_recorded_per_message_and_lead_is_still_saved(self):
+        original_send = EmailMessage.send
+
+        def fail_for_visitor(message, fail_silently=False):
+            if message.to == ["visitor@example.com"]:
+                raise OSError("smtp down")
+            return original_send(message, fail_silently=fail_silently)
+
+        with patch.object(EmailMessage, "send", fail_for_visitor):
+            response = self.client.post(
+                self.enquiry_url(), self.general_post_data(), secure=True
+            )
+
+        self.assertEqual(response.status_code, 302)
+        lead = Lead.objects.get()
+        self.assertTrue(lead.owner_notified)
+        self.assertFalse(lead.confirmation_sent)
+
+    @override_settings(PUBLIC_CONTACT_EMAIL="")
+    def test_missing_contact_email_still_saves_lead_without_flags(self):
+        response = self.client.post(
+            self.enquiry_url(), self.general_post_data(), secure=True
+        )
+
+        self.assertEqual(response.status_code, 302)
+        lead = Lead.objects.get()
+        self.assertFalse(lead.owner_notified)
+        self.assertFalse(lead.confirmation_sent)
+
+    @override_settings(WHATSAPP_NUMBER="919876543210")
+    def test_success_page_shows_reference_survives_refresh_and_offers_whatsapp(self):
+        self.client.post(self.enquiry_url(), self.general_post_data(), secure=True)
+        lead = Lead.objects.get()
+
+        first = self.client.get(reverse("leads:success"), secure=True)
+        second = self.client.get(reverse("leads:success"), secure=True)
+
+        for response in (first, second):
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, lead.reference)
+            self.assertContains(response, "Open WhatsApp")
+            self.assertContains(response, "Reference%3A+" + lead.reference)
+            self.assertContains(response, 'content="noindex')
+
+    def test_success_page_without_a_submission_redirects_to_form(self):
+        response = self.client.get(reverse("leads:success"), secure=True)
+
+        self.assertRedirects(
+            response, self.enquiry_url(), fetch_redirect_response=False
+        )
+
+    @override_settings(WHATSAPP_NUMBER="")
+    def test_success_page_without_whatsapp_has_no_whatsapp_button(self):
+        self.client.post(self.enquiry_url(), self.general_post_data(), secure=True)
+
+        response = self.client.get(reverse("leads:success"), secure=True)
+
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "We've received your enquiry.")
+        self.assertNotContains(response, "Open WhatsApp")
+
+    def test_consent_boxes_are_rendered_unticked(self):
+        for url in (
+            self.enquiry_url(),
+            f"{self.enquiry_url()}?project={self.project.slug}",
+        ):
+            response = self.client.get(url, secure=True)
+            self.assertContains(response, 'name="consent_contact"')
+            self.assertContains(response, 'name="consent_age"')
+            self.assertContains(response, 'name="consent_marketing"')
+            self.assertNotContains(response, "checked")
+
+    def test_required_consent_is_enforced_and_no_lead_is_saved_without_it(self):
+        for missing in ("consent_contact", "consent_age"):
+            data = self.general_post_data()
+            del data[missing]
+
+            response = self.client.post(self.enquiry_url(), data, secure=True)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Please tick this box")
+            self.assertContains(response, f'id="id_{missing}_error"')
+            self.assertEqual(Lead.objects.count(), 0)
+            self.assertEqual(ConsentRecord.objects.count(), 0)
+            self.assertEqual(len(mail.outbox), 0)
+
+    def test_valid_submission_stores_a_consent_record(self):
+        data = self.general_post_data()
+        data["consent_marketing"] = "on"
+
+        self.client.post(self.enquiry_url(), data, secure=True)
+
+        consent = Lead.objects.get().consent
+        self.assertTrue(consent.contact_consent)
+        self.assertTrue(consent.age_confirmed)
+        self.assertTrue(consent.marketing_opt_in)
+        privacy = LegalPage.objects.get(slug="privacy-policy").latest_version
+        self.assertEqual(consent.privacy_policy, privacy)
+        self.assertEqual(consent.privacy_policy_version, privacy.label)
+        self.assertIn("Privacy Policy", consent.consent_text)
+        self.assertIsNone(consent.withdrawn_at)
+
+    def test_marketing_consent_defaults_to_not_opted_in(self):
+        self.client.post(self.enquiry_url(), self.general_post_data(), secure=True)
+
+        self.assertFalse(Lead.objects.get().consent.marketing_opt_in)
+
+    def test_consent_error_on_project_wizard_reopens_step_one(self):
+        data = self.valid_post_data()
+        data["project_wizard"] = "1"
+        del data["consent_contact"]
+
+        response = self.client.post(self.enquiry_url(), data, secure=True)
+
+        self.assertContains(response, 'data-start-step="1"')
+
+    def test_enquiry_post_is_rate_limited_per_ip(self):
+        limit = settings.ENQUIRY_RATE_LIMIT
+        for _ in range(limit):
+            response = self.client.post(
+                self.enquiry_url(), self.general_post_data(), secure=True
+            )
+            self.assertEqual(response.status_code, 302)
+
+        blocked = self.client.post(
+            self.enquiry_url(), self.general_post_data(), secure=True
+        )
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertContains(blocked, "Too many enquiries", status_code=429)
+        self.assertEqual(Lead.objects.count(), limit)
+
+    def test_invalid_submissions_do_not_use_up_the_rate_limit(self):
+        for _ in range(settings.ENQUIRY_RATE_LIMIT + 2):
+            bad = self.general_post_data()
+            bad["email"] = "nope"
+            self.client.post(self.enquiry_url(), bad, secure=True)
+
+        response = self.client.post(
+            self.enquiry_url(), self.general_post_data(), secure=True
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_general_enquiry_can_omit_project_phone_and_services(self):
+        data = self.general_post_data()
+        data["phone"] = ""
+
+        response = self.client.post(self.enquiry_url(), data, secure=True)
+
+        self.assertEqual(response.status_code, 302)
         lead = Lead.objects.get()
         self.assertIsNone(lead.project)
         self.assertEqual(lead.phone, "")
@@ -353,35 +562,6 @@ class EnquiryWorkflowTests(TestCase):
         self.assertEqual(Lead.objects.count(), 0)
         self.assertContains(response, "This enquiry could not be submitted.")
 
-    @override_settings(WHATSAPP_NUMBER="919876543210")
-    def test_general_success_does_not_offer_whatsapp_context(self):
-        data = self.valid_post_data()
-        data.update({"project": "", "selected_services": [], "selected_addons": []})
-        response = self.client.post(
-            self.enquiry_url(),
-            data,
-            secure=True,
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pages/enquiry.html")
-        self.assertContains(response, "Thank you")
-        self.assertNotContains(response, "Continue on WhatsApp")
-        self.assertNotContains(response, "wa.me/919876543210")
-        self.assertEqual(Lead.objects.count(), 1)
-
-    @override_settings(WHATSAPP_NUMBER="")
-    def test_missing_whatsapp_configuration_keeps_success_flow_usable(self):
-        response = self.client.post(
-            self.enquiry_url(),
-            self.valid_post_data(),
-            secure=True,
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, "wa.me")
-        self.assertContains(response, "Explore projects")
-
     def test_csrf_is_required_for_form_submission(self):
         csrf_client = Client(enforce_csrf_checks=True)
 
@@ -393,3 +573,13 @@ class EnquiryWorkflowTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Lead.objects.count(), 0)
+
+
+class LeadReferenceTests(TestCase):
+    def test_reference_is_stable_and_offset_from_pk(self):
+        lead = Lead.objects.create(
+            name="Ref", email="ref@example.com", message="Reference test message."
+        )
+
+        self.assertEqual(lead.reference, f"PV-{lead.pk + 1000}")
+        self.assertEqual(Lead().reference, "")
