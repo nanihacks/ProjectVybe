@@ -578,7 +578,7 @@ Payments stay OFF until you tick **Payments enabled** in Admin > Site settings.
 ## UI redesign, Courses and Blog
 
 - **Migrations to run on deploy** (the Pre-Deploy Command already does this): `courses.0001`, `blog.0001`, `leads.0009`.
-- **Fonts** are self-hosted in `static/fonts/` (Bricolage Grotesque, Instrument Sans, JetBrains Mono; SIL Open Font License). Nothing is loaded from Google at runtime.
+- **Fonts** are self-hosted in `static/fonts/` (Plus Jakarta Sans for headings, Instrument Sans, JetBrains Mono; SIL Open Font License). Nothing is loaded from Google at runtime.
 - **Courses:** add courses in Admin > Courses. Sign-ups appear under Waitlist entries (CSV export and anonymise actions). Add a monthly Render Cron Job: `python manage.py anonymise_old_waitlist` (removes personal details after 24 months, like enquiries).
 - **Blog:** create an Author and a Blog category first, then Posts. A post goes live when its status is Published and its publish time has passed, so a future time schedules it. "Open preview" in the post form shows a draft to logged-in staff. The RSS feed is `/blog/feed/` and posts are in `sitemap.xml`.
 - **Images in posts:** the Markdown editor accepts only `https://` image links. Upload images to Cloudinary at the size you need (about 1200 px wide) and paste the link. Posts' cover images use the existing 640 and 1200 px sizes.
