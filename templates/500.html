@@ -1,13 +1,10 @@
-{% extends "base.html" %}
+{% extends "errors/standalone.html" %}
 
 {% block title %}Something went wrong | ProjectVybe{% endblock %}
 
-{% block content %}
-<section class="section" aria-labelledby="server-error-title">
-    <div class="container reading-width">
-        <p class="eyebrow">500</p>
-        <h1 id="server-error-title">Something went wrong.</h1>
-        <p class="muted">Please try again shortly.</p>
-    </div>
-</section>
+{% block body %}
+<p class="code">Error 500</p>
+<h1>Something went wrong.</h1>
+<p>We hit a problem on our side. It is not something you did. Please try again in a few minutes.</p>
+<div class="actions"><a class="button" href="/">Go to the home page</a></div>
 {% endblock %}

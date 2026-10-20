@@ -3,8 +3,11 @@ from urllib.parse import urlsplit
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
+from blog.models import BlogCategory, Post
 from catalog.models import Project
+from courses.models import Course
 from core.seo import site_origin, site_scheme
+from legal.services import published_pages
 
 
 class ConfiguredOriginSitemap(Sitemap):
@@ -23,10 +26,8 @@ class StaticViewSitemap(ConfiguredOriginSitemap):
             "pages:project_catalogue",
             "pages:services",
             "pages:about",
-            "pages:privacy_policy",
-            "pages:terms",
-            "pages:refund_policy",
-            "pages:cookies",
+            "courses:list",
+            "blog:list",
         )
 
     def location(self, item):
@@ -51,7 +52,54 @@ class ProjectSitemap(ConfiguredOriginSitemap):
         return item.updated_at
 
 
+class CourseSitemap(ConfiguredOriginSitemap):
+    def items(self):
+        return Course.objects.filter(is_published=True).only("slug", "updated_at").order_by("pk")
+
+    def location(self, item):
+        return reverse("courses:detail", kwargs={"slug": item.slug})
+
+    def lastmod(self, item):
+        return item.updated_at
+
+
+class BlogPostSitemap(ConfiguredOriginSitemap):
+    def items(self):
+        return Post.objects.live().only("slug", "updated_at").order_by("pk")
+
+    def location(self, item):
+        return reverse("blog:detail", kwargs={"slug": item.slug})
+
+    def lastmod(self, item):
+        return item.updated_at
+
+
+class BlogCategorySitemap(ConfiguredOriginSitemap):
+    def items(self):
+        return BlogCategory.objects.filter(posts__in=Post.objects.live()).distinct().order_by("pk")
+
+    def location(self, item):
+        return item.get_absolute_url()
+
+
+class LegalPageSitemap(ConfiguredOriginSitemap):
+    def items(self):
+        return list(published_pages().prefetch_related("versions").order_by("footer_order", "title"))
+
+    def location(self, item):
+        return item.get_absolute_url()
+
+    def lastmod(self, item):
+        # Prefetched, so no extra query per page; versions are ordered newest first.
+        versions = list(item.versions.all())
+        return versions[0].published_at if versions else None
+
+
 sitemaps = {
     "static": StaticViewSitemap(),
     "projects": ProjectSitemap(),
+    "courses": CourseSitemap(),
+    "blog": BlogPostSitemap(),
+    "blog_categories": BlogCategorySitemap(),
+    "legal": LegalPageSitemap(),
 }

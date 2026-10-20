@@ -2,14 +2,15 @@
     <div class="card__media media-frame media-frame--project">
         {% if project.category %}<span class="badge badge--category card__category-overlay">{{ project.category.name }}</span>{% endif %}
         {% if project.thumbnail %}
-            <img src="{% if project_image_url %}{{ project_image_url }}{% else %}{{ project.thumbnail.url }}{% endif %}" alt="{{ project.title }} thumbnail" loading="lazy" decoding="async">
+            <img src="{% if project_image_url %}{{ project_image_url }}{% else %}{{ project.thumbnail.url }}{% endif %}" alt="{{ project.title }} thumbnail" width="640" height="400" loading="lazy" decoding="async">
         {% else %}
-            <div class="media-placeholder" aria-label="No project image available">Project image coming soon</div>
+            <div class="media-placeholder" role="img" aria-label="{{ project.title }}"><span class="media-placeholder__label">{{ project.category.name|default:"Project" }}</span></div>
         {% endif %}
     </div>
     <div class="card__body">
         <h3 class="card__title">{{ project.title }}</h3>
         <p class="card__summary">{{ project.short_description }}</p>
+        {% include "components/price.html" with item=project only %}
         {% if project_url %}
             {% if project_card_variant == "catalogue" %}
                 <a class="button button--secondary project-card__cta" href="{{ project_url }}">{{ project_cta_label|default:"View project" }} <span aria-hidden="true">→</span></a>

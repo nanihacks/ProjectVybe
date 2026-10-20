@@ -116,7 +116,14 @@ Health check path:
 /health/
 ```
 
-The build script runs `collectstatic`. Database migrations are intentionally run separately after deployment.
+The build script runs `collectstatic`. Database migrations run in Render's **Pre-Deploy Command**, which Render executes after a successful build and before it switches traffic to the new version. If the migration fails, the deploy is stopped and the live site keeps running the previous version.
+
+```text
+Pre-Deploy Command:
+python manage.py migrate --noinput
+```
+
+Set it under the service's **Settings → Build & Deploy → Pre-Deploy Command**. Pushing to `main` then rebuilds, migrates and deploys in one step.
 
 Render's Django deployment instructions are available at [render.com/docs/deploy-django](https://render.com/docs/deploy-django).
 
@@ -142,7 +149,7 @@ WHATSAPP_NUMBER=your-business-whatsapp-number
 CLOUDINARY_URL=cloudinary://api-key:api-secret@cloud-name
 
 PUBLIC_CONTACT_EMAIL=support@projectvybe.com
-DEFAULT_FROM_EMAIL=notifications@projectvybe.com
+DEFAULT_FROM_EMAIL=ProjectVybe Enquiries <notifications@projectvybe.com>
 
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=smtp.resend.com
@@ -153,15 +160,30 @@ EMAIL_USE_TLS=True
 EMAIL_USE_SSL=False
 EMAIL_TIMEOUT=10
 
+# Optional Cloudflare Turnstile keys (bot check on forms); leave unset to disable.
+# TURNSTILE_SITE_KEY=your-turnstile-site-key
+# TURNSTILE_SECRET_KEY=your-turnstile-secret-key
+
+# Private admin path (no leading slash). Choose something hard to guess.
+ADMIN_URL=your-private-admin-path/
+# Render sits behind one reverse proxy; this makes rate limits use the real visitor IP.
+TRUSTED_PROXY_COUNT=1
+
 SECURE_SSL_REDIRECT=True
 SESSION_COOKIE_SECURE=True
 CSRF_COOKIE_SECURE=True
-SECURE_HSTS_SECONDS=0
+# HSTS: omit SECURE_HSTS_SECONDS to use the production default of 31536000 (1 year).
+# Only do this once HTTPS is confirmed on projectvybe.com and www.projectvybe.com,
+# because browsers will refuse plain HTTP for the whole year.
 SECURE_HSTS_INCLUDE_SUBDOMAINS=False
 SECURE_HSTS_PRELOAD=False
 ```
 
 Rules:
+
+- Confirm that `www.projectvybe.com` redirects (301) to `projectvybe.com`.
+- `ADMIN_URL` has no leading slash and ends with `/` (added automatically if missing). `/admin/` stops working once it is changed, and robots.txt no longer lists the admin path.
+- Keep the Neon **direct** connection string. The app reuses connections (`CONN_MAX_AGE=60`) and reopens any that Neon dropped while idle.
 
 - `ALLOWED_HOSTS` contains hostnames only; do not include `https://`.
 - `CSRF_TRUSTED_ORIGINS` contains complete HTTPS origins.
@@ -174,24 +196,68 @@ Rules:
 After the first Render deployment, open the Render Shell and run:
 
 ```bash
-python manage.py migrate --noinput
 python manage.py check --deploy
 python manage.py createsuperuser
 ```
 
-Open:
+(Migrations already ran in the Pre-Deploy Command from section 5.) Open:
 
 ```text
-https://your-service.onrender.com/admin/
+https://your-service.onrender.com/<ADMIN_URL>
 ```
 
-For future code deployments that contain migrations:
+Future deployments that contain migrations need no manual step: the Pre-Deploy Command applies them before the new version goes live. Take a database backup before destructive schema changes.
+
+### Admin sign-in uses two-factor authentication
+
+Admin only lets in staff who have confirmed a one-time-password device. A password alone is not enough.
+
+**First sign-in after this version is deployed** (nobody has a device yet):
+
+1. In the Render Shell run `python manage.py addstatictoken <username>`. It prints a one-time backup code.
+2. Open the admin address, enter your username and password, choose the backup device and paste the code. Each backup code works once.
+3. In Admin open **Totp devices → Add**, choose your user and save. Open the device and scan the QR code with an authenticator app (Google Authenticator, Microsoft Authenticator, Aegis and similar).
+4. Open **Static devices** and create a fresh set of backup codes. Store them offline.
+5. From then on sign in with the 6-digit code from the app.
+
+**Lost phone:** use a backup code, or run `addstatictoken` again from the Render Shell, then add a new authenticator device.
+
+**Passwords:** use a unique password of 20 or more characters for the superuser (a password manager helps). The site enforces at least 12 characters. Give day-to-day staff their own accounts with only the permissions they need (for example: Legal pages and Site settings, not Users).
+
+**Lockout:** five failed password attempts from one IP address lock that address out for one hour (the lock is by address, so a stranger cannot lock you out of your own account). The owner gets one email when an IP is locked out and one on every staff sign-in. Failed attempts are only logged. To unlock an address at once, run in the Render Shell:
 
 ```bash
-python manage.py migrate --noinput
+python manage.py axes_reset
 ```
 
-Take a database backup before destructive schema changes.
+(or `python manage.py axes_reset_ip <ip-address>` for one address). Wrong one-time codes are slowed down by django-otp itself.
+
+### Cloudflare Turnstile (optional bot check on forms)
+
+Turnstile adds a small invisible-or-click check to the enquiry form, the project enquiry window and the privacy request form. It is off until both keys exist.
+
+1. In the Cloudflare dashboard open **Turnstile → Add widget**, add `projectvybe.com` and `www.projectvybe.com`, and copy the site key and secret key.
+2. In Render set `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` and redeploy.
+
+If Cloudflare cannot be reached, visitors are let through (the hidden honeypot field and the per-IP rate limits still apply), so an outage never loses an enquiry.
+
+### Site Settings, Legal pages and Privacy requests in Admin
+
+- **Site settings** (one record): contact email and WhatsApp number (blank means the Render values are used), phone, address, business hours, legal name, registered address, GSTIN, grievance officer, footer text, social links, share image, announcement bar, homepage heading and sections, 404 text and maintenance mode. Changes appear within about a minute because each server keeps the settings cached for 60 seconds.
+- **Maintenance mode:** tick it to show visitors a 503 page. Signed-in staff, the admin, `/health/`, `robots.txt` and the sitemap keep working. The admin address is always reachable, so you can sign in and switch it off.
+- **Legal pages:** edit the draft (Markdown), then tick **Publish this draft as a new version** and save. Visitors see only published versions, every enquiry consent record points to the exact Privacy Policy version shown at that time, and old versions cannot be edited. Placeholders such as `{contact_email}`, `{legal_name}`, `{registered_address}`, `{grievance_officer_name}` and `{grievance_officer_email}` are filled from Site Settings. The three new pages (Grievance Redressal, Shipping & Delivery, Academic Integrity) are drafts of general text: have a lawyer review all policies before relying on them.
+- **Privacy requests** (`/privacy/request/`): each request emails the owner and shows matching enquiries in Admin. Check that the person owns the email address, then in **Enquiries** use *Export selected enquiries as CSV* to answer an access request, *Anonymise selected enquiries* to answer a deletion request, or *Mark consent as withdrawn* for a STOP request, and close the request. A WhatsApp STOP message is handled the same way: find the enquiry by reference or email and withdraw consent.
+
+### Scheduled job: delete old enquiries (24 months)
+
+The Privacy Policy promises to remove personal details from enquiries after 24 months. Add a Render **Cron Job** (same repository and environment variables as the web service):
+
+```text
+Schedule:  0 3 1 * *          (03:00 on the 1st of each month)
+Command:   python manage.py anonymise_old_leads
+```
+
+Preview what it would do with `python manage.py anonymise_old_leads --dry-run`. Nothing becomes due until 24 months after the first enquiry, so this can be set up any time before then.
 
 ## 8. Move local SQLite content to Neon
 
@@ -392,7 +458,7 @@ https://your-service.onrender.com/projects/
 https://your-service.onrender.com/services/
 https://your-service.onrender.com/about/
 https://your-service.onrender.com/enquiry/
-https://your-service.onrender.com/admin/
+https://your-service.onrender.com/<ADMIN_URL>
 https://your-service.onrender.com/health/
 https://your-service.onrender.com/sitemap.xml
 https://your-service.onrender.com/robots.txt
@@ -493,3 +559,34 @@ Render Django Web Service
   ├── Cloudinary images
   └── Resend SMTP email
 ```
+
+## Phase 3: online payments (Razorpay)
+
+Payments stay OFF until you tick **Payments enabled** in Admin > Site settings.
+
+1. **Pre-Deploy Command** stays `python manage.py migrate --noinput` (new migrations: catalog 0007, core 0003, orders 0001, leads 0008, legal 0003).
+2. **Environment variables on Render** (test keys first): `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `ORDERS_FROM_EMAIL` (for example `ProjectVybe Orders <orders@projectvybe.com>`; verify that sender in Resend).
+3. **Razorpay dashboard**: turn on auto-capture. Add a webhook at `https://<your-domain>/payments/razorpay/webhook/` with events `payment.captured`, `payment.failed`, `refund.processed`, `refund.failed`, using the same secret as `RAZORPAY_WEBHOOK_SECRET`.
+4. **Render Cron Jobs** (same build and env as the web service):
+   - `python manage.py send_overdue_alerts` every 15 minutes
+   - `python manage.py expire_unpaid_orders` daily
+   - `python manage.py anonymise_old_leads` monthly
+5. **Policies**: Refund, Shipping, Terms and Privacy have new DRAFT wording. Review it with a lawyer, then press Publish in Admin. Checkout will not open if Terms or Refund Policy has no published version.
+6. **Per project**: set a price, tick "Accept online payment". Add-on prices are set on each add-on, or per project in the project's add-on price rows.
+7. **Before going live**: take a Neon backup, swap in live keys after KYC, make one real Rs 1-10 payment and refund it, then enable.
+
+## UI redesign, Courses and Blog
+
+- **Migrations to run on deploy** (the Pre-Deploy Command already does this): `courses.0001`, `blog.0001`, `leads.0009`.
+- **Fonts** are self-hosted in `static/fonts/` (Bricolage Grotesque, Instrument Sans, JetBrains Mono; SIL Open Font License). Nothing is loaded from Google at runtime.
+- **Courses:** add courses in Admin > Courses. Sign-ups appear under Waitlist entries (CSV export and anonymise actions). Add a monthly Render Cron Job: `python manage.py anonymise_old_waitlist` (removes personal details after 24 months, like enquiries).
+- **Blog:** create an Author and a Blog category first, then Posts. A post goes live when its status is Published and its publish time has passed, so a future time schedules it. "Open preview" in the post form shows a draft to logged-in staff. The RSS feed is `/blog/feed/` and posts are in `sitemap.xml`.
+- **Images in posts:** the Markdown editor accepts only `https://` image links. Upload images to Cloudinary at the size you need (about 1200 px wide) and paste the link. Posts' cover images use the existing 640 and 1200 px sizes.
+- **Policies:** the Privacy Policy draft does not yet mention the course waitlist (name, email, phone kept for up to 24 months). Add a line before you publish courses.
+
+## Redesign round 2: FAQs, social icons, add-ons
+
+- **FAQs** are managed in Admin > Core > FAQs. Tick the pages each question appears on (home, project pages, services, contact, courses). Changes show within about five minutes. A few starter questions are added by migration `core.0005`; edit or delete them.
+- **Social icons** in the footer come from Admin > Site settings > Brand and social links. The migration fills in placeholder links (instagram.com/projectvybe and similar). **Replace them with your real profiles, or clear a field to hide that icon.** The WhatsApp icon uses your WhatsApp number.
+- **Add-ons** on a project page: tick-to-add cards with a live total when online payment is on; plain cards with an "Ask about this" link otherwise. Set add-on prices in Admin > Project addons, or per project in the project's add-on price rows.
+- **Testing payments locally:** put your Razorpay TEST keys in `.env` (`RAZORPAY_KEY_ID=rzp_test_...`, `RAZORPAY_KEY_SECRET=...`), tick "Payments enabled" in Site settings, and tick "Accept online payment" on a priced project. Use Razorpay's test cards or UPI (`success@razorpay`). The optional `RAZORPAY_API_BASE` setting exists only to point at a fake gateway while developing; leave it unset on Render.

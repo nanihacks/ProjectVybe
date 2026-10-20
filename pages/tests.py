@@ -1,13 +1,17 @@
+import importlib
 import json
 import re
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.staticfiles import finders
+from django.core.cache import cache
 from django.template.loader import render_to_string
-from django.test import SimpleTestCase, TestCase, override_settings
-from django.urls import reverse
+from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
+from django.urls import clear_url_caches, reverse
 
 from catalog.models import Category, Project, ProjectAddon, ProjectImage, Review, Service
+from core.ratelimit import client_ip
 from pages.views import _safe_cloudinary_url, _youtube_embed_url
 
 
@@ -27,7 +31,9 @@ class HomePageTests(TestCase):
         self.assertContains(response, "Skip to content")
 
     def test_home_page_uses_limited_catalogue_queries(self):
-        with self.assertNumQueries(4):
+        # Includes reads of the site settings row, footer legal links and the Admin-managed FAQs
+        # (all cached in production).
+        with self.assertNumQueries(7):
             response = self.client.get("/", secure=True)
 
         self.assertEqual(response.status_code, 200)
@@ -124,10 +130,7 @@ class HomePageContentTests(TestCase):
         self.assertNotContains(response, "Inactive Service")
         self.assertContains(response, "Published reviewer")
         self.assertContains(response, "ProjectVybe made the next step clear.")
-        self.assertContains(response, 'data-review-carousel')
-        self.assertContains(response, 'data-review-prev')
-        self.assertContains(response, 'data-review-next')
-        self.assertContains(response, 'data-review-scroller')
+        self.assertContains(response, 'review2')
         self.assertNotContains(response, "Hidden reviewer")
 
     def test_homepage_ctas_point_to_existing_destinations(self):
@@ -154,9 +157,9 @@ class HomePageEmptyContentTests(TestCase):
         response = self.client.get("/", secure=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Project categories are being prepared.")
-        self.assertContains(response, "Featured projects will appear here.")
-        self.assertContains(response, "Services will appear here as they are published.")
+        self.assertContains(response, "Project areas are coming soon.")
+        self.assertContains(response, "Featured projects are coming soon.")
+        self.assertContains(response, "Services are coming soon.")
 
 
 class ProjectCatalogueTests(TestCase):
@@ -354,12 +357,12 @@ class ProjectCatalogueTests(TestCase):
 
 class ProjectCatalogueEmptyStateTests(TestCase):
     def test_empty_catalogue_has_a_clear_empty_state(self):
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(4):
             response = self.client.get(reverse("pages:project_catalogue"), secure=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Projects are being added soon.")
-        self.assertContains(response, "Check back shortly")
+        self.assertContains(response, "Check back soon")
 
     def test_empty_search_has_a_search_specific_empty_state(self):
         response = self.client.get(
@@ -540,7 +543,8 @@ class ProjectDetailTests(TestCase):
             'data-video-url="https://www.youtube-nocookie.com/embed/abcdefghijk?rel=0"',
         )
         self.assertContains(response, 'data-video-open')
-        self.assertNotContains(response, 'target="_blank"')
+        demo_tag = re.search(r"<[^>]*data-video-open[^>]*>", response.content.decode())
+        self.assertNotIn("target=", demo_tag.group(0))
 
         self.project.youtube_demo_url = ""
         self.project.save(update_fields=["youtube_demo_url"])
@@ -564,7 +568,7 @@ class ProjectDetailTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "wa.me")
-        self.assertContains(response, "Explore more projects")
+        self.assertContains(response, "Back to projects")
 
     def test_project_addons_are_separate_from_company_services(self):
         response = self.client.get(self.detail_url(), secure=True)
@@ -612,13 +616,13 @@ class ProjectDetailEmptyContentTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Project image coming soon")
+        self.assertContains(response, "media-placeholder__label")
         self.assertNotContains(response, "Project media")
         self.assertNotContains(response, "Key features")
         self.assertNotContains(response, "Technology stack")
         self.assertNotContains(response, "Watch demo")
         self.assertNotContains(response, "Additional support")
-        self.assertContains(response, "Explore more projects")
+        self.assertContains(response, "Back to projects")
 
 
 class ServicesPageTests(TestCase):
@@ -680,7 +684,8 @@ class ServicesPageTests(TestCase):
         self.assertContains(response, f'href="{reverse("pages:about")}"')
 
     def test_services_page_uses_catalogue_and_navigation_queries(self):
-        with self.assertNumQueries(2):
+        # One more than before: the Admin-managed FAQs (cached in production).
+        with self.assertNumQueries(5):
             response = self.client.get(reverse("pages:services"), secure=True)
 
         self.assertEqual(response.status_code, 200)
@@ -691,7 +696,7 @@ class ServicesPageEmptyStateTests(TestCase):
         response = self.client.get(reverse("pages:services"), secure=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Services are being updated.")
+        self.assertContains(response, "Services are coming soon.")
         self.assertContains(response, "Contact ProjectVybe")
 
 
@@ -719,10 +724,7 @@ class AboutPageTests(TestCase):
         self.assertContains(response, "A place for practical technology progress.")
         self.assertContains(response, "Active About Category")
         self.assertNotContains(response, "Hidden About Category")
-        self.assertContains(response, 'data-category-carousel')
-        self.assertContains(response, 'data-category-scroller')
-        self.assertContains(response, 'data-category-prev')
-        self.assertContains(response, 'data-category-next')
+        self.assertContains(response, 'class="area-list"')
         self.assertNotContains(response, 'aria-label="Breadcrumb"')
 
     def test_about_page_ctas_and_category_links_use_existing_routes(self):
@@ -748,7 +750,7 @@ class AboutPageTests(TestCase):
         self.assertContains(response, f'href="{reverse("pages:services")}"')
 
     def test_about_page_uses_one_catalogue_query(self):
-        with self.assertNumQueries(1):
+        with self.assertNumQueries(3):
             response = self.client.get(reverse("pages:about"), secure=True)
 
         self.assertEqual(response.status_code, 200)
@@ -759,7 +761,7 @@ class AboutPageEmptyStateTests(TestCase):
         response = self.client.get(reverse("pages:about"), secure=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Project categories are being prepared.")
+        self.assertContains(response, "Project areas are coming soon.")
 
 
 class CloudinaryDeliveryTests(SimpleTestCase):
@@ -815,32 +817,37 @@ class YouTubeEmbedUrlTests(SimpleTestCase):
 
 class PolicyPageTests(TestCase):
     policy_pages = (
-        ("privacy_policy", "pages/privacy.html", "Privacy Policy", "Information you may submit"),
-        ("terms", "pages/terms.html", "Terms &amp; Conditions", "Enquiries and communication"),
-        (
-            "refund_policy",
-            "pages/refund_policy.html",
-            "Refund / Cancellation Policy",
-            "Enquiries are not online transactions",
-        ),
-        ("cookies", "pages/cookies.html", "Cookie Policy", "Necessary cookies"),
+        ("privacy_policy", "Privacy Policy", "Information you may submit"),
+        ("terms", "Terms &amp; Conditions", "Enquiries and communication"),
+        ("refund_policy", "Refund / Cancellation Policy", "Enquiries are not online transactions"),
+        ("cookies", "Cookie Policy", "Necessary cookies"),
+        ("grievance_redressal", "Grievance Redressal", "How to raise a complaint"),
+        ("shipping_delivery_policy", "Shipping &amp; Delivery Policy", "How work is delivered"),
+        ("academic_integrity_policy", "Academic Integrity Policy", "What we will not do"),
     )
 
-    def test_policy_routes_render_expected_templates_and_content(self):
-        for url_name, template_name, title, content in self.policy_pages:
+    @override_settings(PUBLIC_CONTACT_EMAIL="support@projectvybe.com")
+    def test_policy_routes_render_seeded_content(self):
+        for url_name, title, content in self.policy_pages:
             with self.subTest(url_name=url_name):
                 response = self.client.get(reverse(f"pages:{url_name}"), secure=True)
 
                 self.assertEqual(response.status_code, 200)
-                self.assertTemplateUsed(response, template_name)
+                self.assertTemplateUsed(response, "legal/page.html")
                 self.assertContains(response, title)
                 self.assertContains(response, content)
                 self.assertContains(response, "support@projectvybe.com")
 
+    def test_original_policy_addresses_are_unchanged(self):
+        self.assertEqual(reverse("pages:privacy_policy"), "/privacy/")
+        self.assertEqual(reverse("pages:terms"), "/terms/")
+        self.assertEqual(reverse("pages:refund_policy"), "/refund-policy/")
+        self.assertEqual(reverse("pages:cookies"), "/cookies/")
+
     def test_footer_contains_working_links_to_all_policy_pages(self):
         response = self.client.get(reverse("pages:privacy_policy"), secure=True)
 
-        for url_name in ("privacy_policy", "terms", "refund_policy", "cookies"):
+        for url_name, _title, _content in self.policy_pages:
             with self.subTest(url_name=url_name):
                 self.assertContains(
                     response,
@@ -908,16 +915,19 @@ class SeoMetadataTests(TestCase):
 
     def test_homepage_json_ld_contains_only_real_site_data(self):
         response = self.client.get(reverse("pages:home"), secure=True)
-        match = re.search(
-            rb'<script type="application/ld\+json">(.*?)</script>',
-            response.content,
-            re.DOTALL,
-        )
+        blocks = [
+            json.loads(block)
+            for block in re.findall(
+                rb'<script type="application/ld\+json">(.*?)</script>',
+                response.content,
+                re.DOTALL,
+            )
+        ]
 
-        self.assertIsNotNone(match)
-        structured_data = json.loads(match.group(1))
-        self.assertEqual(structured_data["@type"], "WebSite")
-        self.assertEqual(structured_data["url"], "http://localhost:8000/")
+        site = next(block for block in blocks if block.get("@type") == "WebSite")
+        self.assertEqual(site["url"], "http://localhost:8000/")
+        # FAQs managed in Admin add their own FAQPage block next to it.
+        self.assertTrue(all(block.get("@type") in {"WebSite", "FAQPage"} for block in blocks))
 
 
 class SitemapAndRobotsTests(TestCase):
@@ -955,7 +965,7 @@ class SitemapAndRobotsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "User-agent: *")
         self.assertContains(response, "Allow: /")
-        self.assertContains(response, "Disallow: /admin/")
+        self.assertNotContains(response, "/admin/")
         self.assertContains(response, "Disallow: /enquiry/success/")
         self.assertContains(response, "Sitemap: https://seo.example.com/sitemap.xml")
         self.assertNotContains(response, "seo.example.com//")
@@ -1057,7 +1067,6 @@ class DesignSystemTemplateTests(SimpleTestCase):
             "components/navbar.html",
             "components/footer.html",
             "components/messages.html",
-            "components/buttons.html",
             "components/cards/project_card.html",
             "components/cards/service_card.html",
             "components/cards/addon_card.html",
@@ -1072,3 +1081,138 @@ class DesignSystemTemplateTests(SimpleTestCase):
         self.assertIsNotNone(finders.find("css/base.css"))
         self.assertIsNotNone(finders.find("css/components.css"))
         self.assertIsNotNone(finders.find("js/site.js"))
+
+
+class HomeFeaturedProjectsTests(TestCase):
+    def setUp(self):
+        self.active = Category.objects.create(name="Featured Active", slug="featured-active")
+        self.inactive = Category.objects.create(
+            name="Featured Inactive", slug="featured-inactive", is_active=False
+        )
+        self.visible = Project.objects.create(
+            title="Visible Featured",
+            slug="visible-featured",
+            short_description="Visible.",
+            description="Visible.",
+            category=self.active,
+            is_published=True,
+            featured=True,
+        )
+        Project.objects.create(
+            title="Hidden By Category",
+            slug="hidden-by-category",
+            short_description="Hidden.",
+            description="Hidden.",
+            category=self.inactive,
+            is_published=True,
+            featured=True,
+        )
+
+    def test_featured_cards_link_to_the_project_page(self):
+        response = self.client.get("/", secure=True)
+
+        detail_url = reverse("pages:project_detail", kwargs={"slug": self.visible.slug})
+        self.assertContains(response, f'href="{detail_url}"')
+
+    def test_featured_projects_in_inactive_categories_are_not_shown(self):
+        response = self.client.get("/", secure=True)
+
+        self.assertContains(response, "Visible Featured")
+        self.assertNotContains(response, "Hidden By Category")
+
+
+class SearchRateLimitTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    @override_settings(SEARCH_RATE_LIMIT=3)
+    def test_search_is_limited_per_ip_after_the_threshold(self):
+        url = reverse("pages:project_search")
+        for _ in range(3):
+            self.assertEqual(self.client.get(url, {"q": "ai"}, secure=True).status_code, 200)
+
+        blocked = self.client.get(url, {"q": "ai"}, secure=True)
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertEqual(blocked.json()["error"], "rate_limited")
+
+    @override_settings(SEARCH_RATE_LIMIT=1)
+    def test_empty_queries_do_not_count_towards_the_limit(self):
+        url = reverse("pages:project_search")
+        for _ in range(5):
+            self.assertEqual(self.client.get(url, {"q": ""}, secure=True).status_code, 200)
+
+        self.assertEqual(self.client.get(url, {"q": "ai"}, secure=True).status_code, 200)
+
+
+class ClientIpTests(SimpleTestCase):
+    def test_uses_remote_addr_without_trusted_proxies(self):
+        request = RequestFactory().get(
+            "/", REMOTE_ADDR="10.0.0.1", HTTP_X_FORWARDED_FOR="203.0.113.9"
+        )
+
+        with override_settings(TRUSTED_PROXY_COUNT=0):
+            self.assertEqual(client_ip(request), "10.0.0.1")
+
+    def test_trusts_only_the_entry_added_by_the_last_proxy(self):
+        # A client can prepend fake addresses; only the last hop is trustworthy.
+        request = RequestFactory().get(
+            "/",
+            REMOTE_ADDR="10.0.0.1",
+            HTTP_X_FORWARDED_FOR="1.2.3.4, 203.0.113.9",
+        )
+
+        with override_settings(TRUSTED_PROXY_COUNT=1):
+            self.assertEqual(client_ip(request), "203.0.113.9")
+
+    def test_falls_back_to_remote_addr_when_header_is_missing(self):
+        request = RequestFactory().get("/", REMOTE_ADDR="10.0.0.1")
+
+        with override_settings(TRUSTED_PROXY_COUNT=1):
+            self.assertEqual(client_ip(request), "10.0.0.1")
+
+
+class NavigationCategoryCacheTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        self.category = Category.objects.create(name="Cached Nav", slug="cached-nav")
+
+    @override_settings(NAVIGATION_CATEGORIES_CACHE_SECONDS=300)
+    def test_navigation_categories_are_cached_and_cleared_on_save(self):
+        self.client.get("/", secure=True)
+        # bulk_create skips signals, so the cached list must still be served.
+        Category.objects.bulk_create([Category(name="Sneaky", slug="sneaky")])
+        cached = self.client.get("/", secure=True)
+        self.assertNotContains(cached, "Sneaky")
+
+        self.category.description = "changed"
+        self.category.save()
+
+        refreshed = self.client.get("/", secure=True)
+        self.assertContains(refreshed, "Sneaky")
+
+    @override_settings(NAVIGATION_CATEGORIES_CACHE_SECONDS=300)
+    def test_deleting_a_category_clears_the_cache(self):
+        self.client.get("/", secure=True)
+
+        self.category.delete()
+
+        self.assertNotContains(self.client.get("/", secure=True), "Cached Nav")
+
+
+class AdminUrlTests(TestCase):
+    def test_admin_lives_at_the_configured_path(self):
+        self.assertEqual(reverse("admin:index"), f"/{settings.ADMIN_URL}")
+
+    def test_custom_admin_path_replaces_the_default(self):
+        import config.urls
+
+        try:
+            with override_settings(ADMIN_URL="private-door/"):
+                importlib.reload(config.urls)
+                clear_url_caches()
+                self.assertEqual(reverse("admin:index"), "/private-door/")
+                self.assertEqual(self.client.get("/admin/", secure=True).status_code, 404)
+        finally:
+            importlib.reload(config.urls)
+            clear_url_caches()

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Access denied | ProjectVybe{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="forbidden-title">
+    <div class="container reading-width">
+        <p class="eyebrow">403</p>
+        <h1 id="forbidden-title">You do not have access to this page.</h1>
+        <p class="muted">If you think this is a mistake, please contact us and we will help.</p>
+        <div class="hero__actions">
+            <a class="button button--primary" href="{% url 'pages:home' %}">Go home</a>
+            <a class="button button--outline" href="{% url 'leads:enquiry' %}">Contact us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

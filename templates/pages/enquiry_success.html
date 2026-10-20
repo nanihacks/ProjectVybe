@@ -14,10 +14,14 @@
         <div class="enquiry-success__panel">
             <p class="eyebrow">Thank you</p>
             <h1 id="enquiry-success-title">We've received your enquiry.</h1>
-            <p class="enquiry-success__copy">Your enquiry is safely recorded. {% if whatsapp_url %}You can also send the prepared project details through WhatsApp if you want to continue there.{% else %}We will review it and get back to you.{% endif %}</p>
+            <p class="enquiry-success__copy">Your reference number is <strong>{{ reference }}</strong>.{% if project %} You asked about <strong>{{ project.title }}</strong>.{% endif %} {{ site_settings.reply_time_promise|default:"We will review your enquiry and get back to you soon." }}</p>
+            <p class="muted">A confirmation email is on its way. If you do not see it, check your spam folder or quote {{ reference }} when you contact us.</p>
             <div class="hero__actions">
                 {% if whatsapp_url %}
-                    <a class="button button--primary" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Continue on WhatsApp</a>
+                    <a class="button button--primary" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Open WhatsApp</a>
+                {% endif %}
+                {% if project %}
+                    <a class="button button--outline" href="{% url 'pages:project_detail' project.slug %}">Back to project</a>
                 {% endif %}
                 <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Explore projects</a>
             </div>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Form expired | ProjectVybe{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="form-expired-title">
+    <div class="container reading-width">
+        <p class="eyebrow">Form expired</p>
+        <h1 id="form-expired-title">That form has expired.</h1>
+        <p class="muted">The page was open for a while or your browser blocked a security cookie, so we could not send your form. Nothing was submitted. Please go back, refresh the page and try again.</p>
+        <div class="hero__actions">
+            <a class="button button--primary" href="javascript:history.back()">Go back</a>
+            <a class="button button--outline" href="{% url 'leads:enquiry' %}">Open the enquiry form</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

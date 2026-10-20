@@ -1,5 +1,5 @@
 <div class="form-field{% if field.errors %} form-field--error{% endif %}">
-    {{ field.label_tag }}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
     {{ field }}
     {% if field.help_text %}<p id="{{ field.auto_id }}_help" class="form-help">{{ field.help_text }}</p>{% endif %}
     {% if field.errors %}

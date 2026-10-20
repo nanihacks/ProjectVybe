@@ -200,6 +200,11 @@
             signal: requestController.signal,
         })
             .then(function (response) {
+                if (response.status === 429) {
+                    const limited = new Error("Search rate limited");
+                    limited.rateLimited = true;
+                    throw limited;
+                }
                 if (!response.ok) throw new Error("Project search failed");
                 return response.json();
             })
@@ -220,7 +225,11 @@
             .catch(function (error) {
                 if (error.name === "AbortError") return;
                 resultsContainer.replaceChildren();
-                setStatus("Project search is temporarily unavailable.");
+                setStatus(
+                    error.rateLimited
+                        ? "Too many searches. Please wait a moment and try again."
+                        : "Project search is temporarily unavailable."
+                );
             });
     };
 
@@ -451,26 +460,39 @@
                 : ".card--category";
         if (!scroller || !track || !previousButton || !nextButton) return;
 
+        const getGap = function () {
+            const trackStyles = window.getComputedStyle(track);
+            return parseFloat(trackStyles.columnGap || trackStyles.gap) || 0;
+        };
+
         const getScrollStep = function () {
             const card = track.querySelector(cardSelector);
             if (!card) return scroller.clientWidth;
+            return card.getBoundingClientRect().width + getGap();
+        };
 
-            const trackStyles = window.getComputedStyle(track);
-            const gap = parseFloat(trackStyles.columnGap || trackStyles.gap) || 0;
-            return card.getBoundingClientRect().width + gap;
+        // The counter and dots count pages (a screenful of cards), not scroll positions.
+        const getCardsPerView = function () {
+            const step = getScrollStep();
+            if (!step) return 1;
+            return Math.max(1, Math.floor((scroller.clientWidth + getGap()) / step + 0.01));
         };
 
         const getSlideCount = function () {
-            const maximumScroll = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
-            const step = getScrollStep();
-            return step ? Math.max(1, Math.ceil(maximumScroll / step) + 1) : 1;
+            const cardCount = track.querySelectorAll(cardSelector).length;
+            return Math.max(1, Math.ceil(cardCount / getCardsPerView()));
         };
 
         const getCurrentSlide = function () {
             const step = getScrollStep();
             const slideCount = getSlideCount();
+            const maximumScroll = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
             if (!step) return 0;
-            return Math.min(slideCount - 1, Math.max(0, Math.round(scroller.scrollLeft / step)));
+            if (maximumScroll > 0 && scroller.scrollLeft >= maximumScroll - 1) return slideCount - 1;
+            return Math.min(
+                slideCount - 1,
+                Math.max(0, Math.round(scroller.scrollLeft / (step * getCardsPerView())))
+            );
         };
 
         const renderDots = function (slideCount) {
@@ -482,11 +504,11 @@
                 dot.type = "button";
                 dot.className = "category-carousel__dot";
                 dot.setAttribute("role", "tab");
-                dot.setAttribute("aria-label", `Go to ${prefix} slide ${index + 1}`);
+                dot.setAttribute("aria-label", `Go to ${prefix} page ${index + 1}`);
                 dot.addEventListener("click", function () {
                     const maximumScroll = scroller.scrollWidth - scroller.clientWidth;
-                    const target = Math.min(maximumScroll, index * getScrollStep());
-                    scroller.scrollTo({ left: target, behavior: "smooth" });
+                    const target = Math.min(maximumScroll, index * getCardsPerView() * getScrollStep());
+                    scroller.scrollTo({ left: target, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
                 });
                 dotsContainer.appendChild(dot);
             }
@@ -506,8 +528,11 @@
             }
 
             const currentSlide = getCurrentSlide();
-            if (currentIndicator) currentIndicator.textContent = String(currentSlide + 1).padStart(2, "0");
-            if (totalIndicator) totalIndicator.textContent = String(slideCount).padStart(2, "0");
+            const currentText = String(currentSlide + 1).padStart(2, "0");
+            const totalText = String(slideCount).padStart(2, "0");
+            // Only touch the DOM when the value changes, so scrolling stays cheap.
+            if (currentIndicator && currentIndicator.textContent !== currentText) currentIndicator.textContent = currentText;
+            if (totalIndicator && totalIndicator.textContent !== totalText) totalIndicator.textContent = totalText;
             if (dotsContainer) {
                 Array.from(dotsContainer.children).forEach(function (dot, index) {
                     const isActive = index === currentSlide;
@@ -524,7 +549,7 @@
                 Math.max(0, scroller.scrollLeft + direction * getScrollStep())
             );
 
-            scroller.scrollTo({ left: nextPosition, behavior: "smooth" });
+            scroller.scrollTo({ left: nextPosition, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
             window.setTimeout(updateControls, 250);
         };
 
@@ -540,4 +565,123 @@
         window.addEventListener("resize", updateControls);
         updateControls();
     });
+})();
+
+
+// Announcement bar: remember a dismissal for that exact text (per browser).
+(function () {
+    const bar = document.querySelector("[data-announcement]");
+    if (!bar) return;
+
+    const storageKey = "projectvybe-announcement-dismissed";
+    const announcementKey = bar.dataset.announcementKey || "";
+
+    try {
+        if (window.localStorage.getItem(storageKey) === announcementKey) {
+            bar.hidden = true;
+            return;
+        }
+    } catch (error) {
+        // Storage can be blocked; the bar simply stays visible.
+    }
+
+    const closeButton = bar.querySelector("[data-announcement-close]");
+    if (!closeButton) return;
+    closeButton.addEventListener("click", function () {
+        bar.hidden = true;
+        try {
+            window.localStorage.setItem(storageKey, announcementKey);
+        } catch (error) {
+            // Ignore: dismissal just will not be remembered.
+        }
+    });
+})();
+
+
+// Scroll reveals: elements with data-reveal fade in once as they enter the view.
+// Content is visible without JavaScript, with reduced motion, and in print.
+(function () {
+    const targets = document.querySelectorAll("[data-reveal]");
+    if (!targets.length) return;
+
+    const revealAll = function () {
+        targets.forEach(function (element) {
+            element.classList.add("is-revealed");
+        });
+    };
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+        revealAll();
+        return;
+    }
+
+    targets.forEach(function (element) {
+        if (element.getAttribute("data-reveal") === "stagger") {
+            Array.prototype.forEach.call(element.children, function (child, index) {
+                child.style.setProperty("--reveal-i", Math.min(index, 6));
+            });
+        }
+    });
+
+    const observer = new IntersectionObserver(
+        function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-revealed");
+                observer.unobserve(entry.target);
+            });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+    );
+    targets.forEach(function (element) {
+        observer.observe(element);
+    });
+
+    // Safety net: never leave content hidden if the observer does not fire.
+    window.setTimeout(revealAll, 4000);
+})();
+
+
+// Project page: tick add-ons, see the total, and carry the choice to checkout.
+(function () {
+    const root = document.querySelector("[data-addons][data-checkout-url]");
+    if (!root) return;
+
+    const boxes = root.querySelectorAll(".addon2__input");
+    const totalElement = root.querySelector("[data-addons-total]");
+    const countElement = root.querySelector("[data-addons-count]");
+    const continueLink = root.querySelector("[data-addons-continue]");
+    const base = parseFloat(root.getAttribute("data-base-price")) || 0;
+    const checkoutUrl = root.getAttribute("data-checkout-url");
+    const buyLinks = document.querySelectorAll("[data-checkout-link]");
+
+    function rupees(value) {
+        const hasPaise = Math.round(value * 100) % 100 !== 0;
+        return "₹" + value.toLocaleString("en-IN", {
+            minimumFractionDigits: hasPaise ? 2 : 0,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function update() {
+        const ids = [];
+        let sum = base;
+        boxes.forEach(function (box) {
+            if (box.checked) {
+                ids.push(box.value);
+                sum += parseFloat(box.getAttribute("data-price")) || 0;
+            }
+        });
+        const href = ids.length
+            ? checkoutUrl + "?" + ids.map(function (id) { return "addons=" + encodeURIComponent(id); }).join("&")
+            : checkoutUrl;
+        if (totalElement) totalElement.textContent = rupees(sum);
+        if (countElement) countElement.textContent = ids.length ? "project + " + ids.length + " add-on" + (ids.length > 1 ? "s" : "") : "project only";
+        if (continueLink) continueLink.setAttribute("href", href);
+        buyLinks.forEach(function (link) { link.setAttribute("href", href); });
+    }
+
+    boxes.forEach(function (box) { box.addEventListener("change", update); });
+    update();
 })();

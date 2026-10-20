@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy request received | ProjectVybe{% endblock %}
+{% block meta_description %}Your privacy request has been received.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block og_title %}Privacy request received | ProjectVybe{% endblock %}
+{% block og_description %}Your privacy request has been received.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section section--muted enquiry-success" aria-labelledby="privacy-received-title">
+    <div class="container">
+        <div class="enquiry-success__panel">
+            <p class="eyebrow">Thank you</p>
+            <h1 id="privacy-received-title">We've received your request.</h1>
+            <p class="enquiry-success__copy">Your request number is <strong>{{ request_number }}</strong>. We will check your details and reply by email, normally within one month.</p>
+            <p class="muted">A confirmation email is on its way. If you do not see it, check your spam folder and quote {{ request_number }} if you contact us.</p>
+            <div class="hero__actions">
+                <a class="button button--outline" href="{% url 'pages:home' %}">Back to home</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

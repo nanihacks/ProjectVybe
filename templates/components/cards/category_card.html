@@ -2,12 +2,12 @@
 {% if homepage_image %}
     {% category_home_image_url category as category_logo %}
 {% else %}
-    {% category_logo_url category as category_logo %}
+    {% category_card_image_url category as category_logo %}
 {% endif %}
 <article class="card card--category"{% if homepage_card %} data-homepage-card{% endif %}>
     {% if category_logo %}
         <div class="card__media card__media--category">
-            <img src="{{ category_logo }}" alt="{{ category.name }} category" loading="lazy" decoding="async">
+            <img src="{{ category_logo }}" alt="{{ category.name }} category" width="640" height="400" loading="lazy" decoding="async">
         </div>
     {% endif %}
     <div class="card__body">

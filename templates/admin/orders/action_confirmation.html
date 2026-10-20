@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:orders_order_changelist' %}">Orders</a>
+    &rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<p>{{ intro }}</p>
+<ul>
+    {% for order in queryset %}
+        <li>{{ order.reference }} - {{ order.customer_name }} ({{ order.customer_email }}), total {{ order.total }}</li>
+    {% endfor %}
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    {% for pk in selected_pks %}
+        <input type="hidden" name="{{ action_checkbox_name }}" value="{{ pk }}">
+    {% endfor %}
+    <input type="hidden" name="action" value="{{ action_name }}">
+    <input type="hidden" name="confirm" value="yes">
+    <input type="hidden" name="post" value="yes">
+    {{ form.as_p }}
+    <input type="submit" value="Confirm">
+    <a href="{% url 'admin:orders_order_changelist' %}" class="button cancel-link">Cancel</a>
+</form>
+{% endblock %}

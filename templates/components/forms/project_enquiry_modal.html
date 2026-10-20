@@ -22,6 +22,7 @@
                     {% include "components/forms/form_field.html" with field=form.name only %}
                     {% include "components/forms/form_field.html" with field=form.email only %}
                     {% include "components/forms/form_field.html" with field=form.phone only %}
+                    {% include "components/forms/consent_fields.html" %}
 
                     <div class="enquiry-wizard__actions">
                         <button class="button button--outline" type="button" data-enquiry-close>Back</button>
@@ -44,6 +45,8 @@
                     <div class="form-honeypot" aria-hidden="true">
                         {{ form.website }}
                     </div>
+
+                    {% include "components/forms/turnstile.html" %}
 
                     <div class="enquiry-wizard__actions">
                         <button class="button button--outline" type="button" data-enquiry-back>Back</button>

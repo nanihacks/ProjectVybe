@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import sys
 from urllib.parse import urlsplit
@@ -43,7 +44,7 @@ if not DEBUG:
         )
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "core.admin_config.ProjectVybeAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -51,9 +52,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "cloudinary",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "django_otp.plugins.otp_static",
+    "axes",
+    "solo",
     "core",
+    "legal",
     "catalog",
+    "blog",
+    "courses",
     "leads",
+    "orders",
     "pages",
 ]
 
@@ -64,11 +74,18 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
+    "core.middleware.MaintenanceModeMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Must be last: turns a locked-out login into a 429 response.
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
+
+# Friendly page when a form is sent with an expired or missing CSRF token.
+CSRF_FAILURE_VIEW = "core.views.csrf_failure"
 
 TEMPLATES = [
     {
@@ -128,13 +145,76 @@ def _database_configuration():
 
 
 DATABASES = {"default": _database_configuration()}
+# Reuse connections between requests (Neon adds TLS handshake latency) and
+# reopen any connection Neon dropped while the compute was suspended.
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
+DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
+
+# How long the navigation categories stay cached (0 disables; tests use 0).
+NAVIGATION_CATEGORIES_CACHE_SECONDS = env.int(
+    "NAVIGATION_CATEGORIES_CACHE_SECONDS",
+    default=0 if "test" in sys.argv else 300,
+)
+
+# Cloudflare Turnstile (bot check on public forms). Both unset = disabled.
+TURNSTILE_SITE_KEY = env("TURNSTILE_SITE_KEY", default="").strip()
+TURNSTILE_SECRET_KEY = env("TURNSTILE_SECRET_KEY", default="").strip()
+
+# FAQs are cached for five minutes (0 under test) and cleared whenever one is saved.
+FAQ_CACHE_SECONDS = env.int("FAQ_CACHE_SECONDS", default=0 if "test" in sys.argv else 300)
+
+# Razorpay (online payments). Env vars only; never put these in Admin or the repo.
+RAZORPAY_KEY_ID = env("RAZORPAY_KEY_ID", default="").strip()
+RAZORPAY_KEY_SECRET = env("RAZORPAY_KEY_SECRET", default="").strip()
+RAZORPAY_WEBHOOK_SECRET = env("RAZORPAY_WEBHOOK_SECRET", default="").strip()
+# Only change this to point at a local fake gateway while developing.
+RAZORPAY_API_BASE = env("RAZORPAY_API_BASE", default="https://api.razorpay.com/v1").strip().rstrip("/")
+
+# Site Settings are cached for a minute (production only) so Admin edits show up
+# quickly in every worker without a database read on each request.
+SOLO_CACHE = None if "test" in sys.argv else "default"
+SOLO_CACHE_TIMEOUT = 60
+
+# Footer legal links are cached and cleared whenever a legal page changes (0 under test).
+LEGAL_FOOTER_CACHE_SECONDS = env.int(
+    "LEGAL_FOOTER_CACHE_SECONDS",
+    default=0 if "test" in sys.argv else 300,
+)
+
+# Per-process cache: enough for rate limits and the navigation categories.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "projectvybe",
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+AUTHENTICATION_BACKENDS = [
+    # Axes first so it can refuse logins from locked-out IPs.
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+# Admin login protection: 5 failures from one IP lock that IP out for an hour.
+# Locking by IP (not username) stops an attacker locking the real admin out.
+AXES_FAILURE_LIMIT = env.int("AXES_FAILURE_LIMIT", default=5)
+AXES_COOLOFF_TIME = timedelta(hours=1)
+AXES_LOCKOUT_PARAMETERS = ["ip_address"]
+AXES_RESET_ON_SUCCESS = True
+# Behind Render's proxy REMOTE_ADDR is the proxy, so reuse our trusted-proxy logic.
+AXES_CLIENT_IP_CALLABLE = "core.ratelimit.client_ip"
+
+OTP_TOTP_ISSUER = "ProjectVybe"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
@@ -172,6 +252,8 @@ SITE_DESCRIPTION = env(
 WHATSAPP_NUMBER = env("WHATSAPP_NUMBER", default="")
 PUBLIC_CONTACT_EMAIL = env("PUBLIC_CONTACT_EMAIL", default="")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=PUBLIC_CONTACT_EMAIL)
+# Sender for payment, receipt and delivery emails. Falls back to the enquiries sender.
+ORDERS_FROM_EMAIL = env("ORDERS_FROM_EMAIL", default=DEFAULT_FROM_EMAIL)
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
     default=(
@@ -187,6 +269,19 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
 EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)
+# Send enquiry emails from a background thread so visitors never wait on SMTP.
+ENQUIRY_EMAIL_ASYNC = env.bool(
+    "ENQUIRY_EMAIL_ASYNC", default=not DEBUG and "test" not in sys.argv
+)
+ENQUIRY_RATE_LIMIT = env.int("ENQUIRY_RATE_LIMIT", default=5)
+ENQUIRY_RATE_WINDOW = env.int("ENQUIRY_RATE_WINDOW", default=600)
+SEARCH_RATE_LIMIT = env.int("SEARCH_RATE_LIMIT", default=60)
+# Admin lives at a configurable path (set ADMIN_URL on Render to something private).
+ADMIN_URL = env("ADMIN_URL", default="admin/").strip().strip("/") or "admin"
+ADMIN_URL += "/"
+# Number of trusted reverse proxies (Render = 1) when reading the client IP.
+TRUSTED_PROXY_COUNT = env.int("TRUSTED_PROXY_COUNT", default=0 if DEBUG else 1)
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", default=60 * 60 * 8)
 CLOUDINARY_URL = env("CLOUDINARY_URL", default="")
 CLOUDINARY = {
     "secure": True,

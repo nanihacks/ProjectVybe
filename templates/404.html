@@ -1,14 +1,51 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Page not found | ProjectVybe{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
 
 {% block content %}
-<section class="section" aria-labelledby="not-found-title">
-    <div class="container reading-width">
-        <p class="eyebrow">404</p>
-        <h1 id="not-found-title">That page could not be found.</h1>
-        <p class="muted">Try returning to the ProjectVybe home page.</p>
-        <a class="button button--primary" href="{% url 'pages:home' %}">Go home</a>
+<section class="page-hero page-hero--compact" aria-labelledby="not-found-title">
+    <div class="container">
+        <p class="pill">{% icon "search" 16 %} Error 404</p>
+        <h1 id="not-found-title">{{ site_settings.not_found_heading }}</h1>
+        <p class="page-hero__lead">{{ site_settings.not_found_message }}</p>
+
+        <form class="not-found__search" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" role="search">
+            <label class="visually-hidden" for="not-found-search">Search projects</label>
+            <input id="not-found-search" name="q" type="search" placeholder="Search projects" autocomplete="off">
+            <button class="button button--primary" type="submit">Search</button>
+        </form>
+
+        <div class="hero__actions">
+            <a class="button button--outline" href="{% url 'pages:home' %}">Go home</a>
+            <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">Browse projects</a>
+            <a class="button button--outline" href="{% url 'leads:enquiry' %}">Contact us</a>
+        </div>
     </div>
 </section>
+
+{% if popular_projects %}
+<section class="section" aria-labelledby="not-found-projects-title">
+    <div class="container">
+        <h2 id="not-found-projects-title">Popular projects</h2>
+        <ul class="related-rows">
+            {% for project in popular_projects %}
+                <li>
+                    <a class="related-row" href="{{ project.page_url }}">
+                        <span class="related-row__media">
+                            {% if project.render_thumbnail_url %}<img src="{{ project.render_thumbnail_url }}" alt="" width="640" height="400" loading="lazy" decoding="async">{% else %}<span class="media-placeholder__label">{{ project.category.name }}</span>{% endif %}
+                        </span>
+                        <span class="related-row__body">
+                            <span class="eyebrow">{{ project.category.name }}</span>
+                            <strong class="related-row__title">{{ project.title }}</strong>
+                            <span class="muted">{{ project.short_description }}</span>
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
 {% endblock %}

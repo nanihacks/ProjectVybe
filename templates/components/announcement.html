@@ -1,0 +1,11 @@
+{% if site_settings.announcement_is_visible %}
+    <div class="announcement-bar" data-announcement data-announcement-key="{{ site_settings.announcement_text|slice:':80' }}" role="region" aria-label="Announcement">
+        <p class="announcement-bar__text">
+            {{ site_settings.announcement_text }}
+            {% if site_settings.announcement_link_url %}
+                <a class="announcement-bar__link" href="{{ site_settings.announcement_link_url }}">{{ site_settings.announcement_link_label|default:"Learn more" }}</a>
+            {% endif %}
+        </p>
+        <button class="announcement-bar__close" type="button" aria-label="Dismiss announcement" data-announcement-close>&times;</button>
+    </div>
+{% endif %}

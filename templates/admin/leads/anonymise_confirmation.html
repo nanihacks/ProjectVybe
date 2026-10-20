@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:leads_lead_changelist' %}">Enquiries</a>
+    &rsaquo; Anonymise
+</div>
+{% endblock %}
+
+{% block content %}
+<p><strong>This cannot be undone.</strong> For each enquiry below, the name, email address, phone number and message are replaced with placeholders, selected services and add-ons are cleared, and consent is marked as withdrawn. The reference number, project and dates are kept.</p>
+<p>Only do this after you have checked that the request really comes from the person concerned.</p>
+
+<ul>
+    {% for lead in queryset %}
+        <li>{{ lead.reference }} - {{ lead.name }} ({{ lead.email }}){% if lead.anonymised_at %} - already anonymised{% endif %}</li>
+    {% endfor %}
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    {% for pk in selected_pks %}
+        <input type="hidden" name="{{ action_checkbox_name }}" value="{{ pk }}">
+    {% endfor %}
+    <input type="hidden" name="action" value="{{ action_name }}">
+    <input type="hidden" name="confirm" value="yes">
+    <input type="hidden" name="post" value="yes">
+    <input type="submit" value="Yes, anonymise these enquiries">
+    <a href="{% url 'admin:leads_lead_changelist' %}" class="button cancel-link">No, take me back</a>
+</form>
+{% endblock %}
