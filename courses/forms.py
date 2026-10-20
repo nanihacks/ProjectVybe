@@ -1,7 +1,6 @@
-import re
-
 from django import forms
 
+from core.validators import StrictEmailField, StrictPhoneField
 from leads.forms import CONSENT_AGE_LABEL, CONSENT_MARKETING_LABEL
 
 
@@ -16,13 +15,8 @@ CONSENT_CONTACT_LABEL = (
 
 class WaitlistForm(forms.Form):
     name = forms.CharField(max_length=120, widget=forms.TextInput(attrs={"autocomplete": "name"}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"autocomplete": "email"}))
-    phone = forms.CharField(
-        required=False,
-        max_length=40,
-        label="Phone (optional)",
-        widget=forms.TextInput(attrs={"autocomplete": "tel"}),
-    )
+    email = StrictEmailField()
+    phone = StrictPhoneField(required=False, label="Phone (optional)")
     # Consent boxes are never pre-ticked.
     consent_contact = forms.BooleanField(
         label=CONSENT_CONTACT_LABEL, error_messages={"required": CONSENT_REQUIRED_ERROR}
@@ -46,14 +40,6 @@ class WaitlistForm(forms.Form):
 
     def clean_name(self):
         return " ".join(self.cleaned_data["name"].split())
-
-    def clean_phone(self):
-        phone = self.cleaned_data.get("phone", "").strip()
-        if phone and (
-            not re.fullmatch(r"[0-9+().\-\s]{7,40}", phone) or len(re.sub(r"\D", "", phone)) < 7
-        ):
-            raise forms.ValidationError("Enter a valid phone number or leave this blank.")
-        return phone
 
     def clean(self):
         cleaned = super().clean()

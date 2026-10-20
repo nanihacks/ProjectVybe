@@ -2,6 +2,8 @@ import re
 
 from django import forms
 
+from core.validators import StrictEmailField, StrictPhoneField
+
 from .models import Order, RefundRequest
 
 
@@ -45,11 +47,8 @@ class AddonIdsField(forms.MultipleChoiceField):
 
 class CheckoutForm(forms.Form):
     name = forms.CharField(max_length=120, widget=forms.TextInput(attrs={"autocomplete": "name"}))
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
-        help_text="Your receipt and delivery details are sent here.",
-    )
-    phone = forms.CharField(max_length=40, widget=forms.TextInput(attrs={"autocomplete": "tel"}))
+    email = StrictEmailField(help_text="Your receipt and delivery details are sent here.")
+    phone = StrictPhoneField()
     delivery_channel = forms.ChoiceField(
         choices=Order.Channel.choices,
         initial=Order.Channel.EMAIL,
@@ -72,12 +71,6 @@ class CheckoutForm(forms.Form):
 
     def clean_name(self):
         return " ".join(self.cleaned_data["name"].split())
-
-    def clean_phone(self):
-        phone = self.cleaned_data["phone"].strip()
-        if not re.fullmatch(r"[0-9+().\-\s]{7,40}", phone) or len(re.sub(r"\D", "", phone)) < 7:
-            raise forms.ValidationError("Enter a valid phone number.")
-        return phone
 
     def clean(self):
         cleaned = super().clean()
@@ -103,14 +96,14 @@ class RefundRequestForm(forms.ModelForm):
         label="Order reference",
         help_text="For example PVO-1042, from your payment email.",
     )
+    email = StrictEmailField(label="Email used for the order")
     website = forms.CharField(required=False, label="", widget=HONEYPOT)
 
     class Meta:
         model = RefundRequest
         fields = ("reference", "email", "reason")
-        labels = {"email": "Email used for the order", "reason": "Why are you asking for a refund?"}
+        labels = {"reason": "Why are you asking for a refund?"}
         widgets = {
-            "email": forms.EmailInput(attrs={"autocomplete": "email"}),
             "reason": forms.Textarea(attrs={"rows": 5}),
         }
 

@@ -228,7 +228,7 @@ class EnquiryWorkflowTests(TestCase):
         lead = Lead.objects.get()
         self.assertEqual(lead.reference, f"PV-{lead.pk + 1000}")
         self.assertIsNone(lead.project)
-        self.assertEqual(lead.phone, "+91 98765 43210")
+        self.assertEqual(lead.phone, "+919876543210")
         self.assertEqual(lead.message, "I would like to discuss this project.")
         self.assertEqual(lead.status, Lead.Status.NEW)
 
@@ -298,7 +298,7 @@ class EnquiryWorkflowTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response["Location"].startswith("https://wa.me/919876543210?"))
         self.assertIn("Email%3A+visitor%40example.com", response["Location"])
-        self.assertIn("Phone%3A+%2B91+98765+43210", response["Location"])
+        self.assertIn("Phone%3A+%2B919876543210", response["Location"])
         self.assertIn("Additional+services%3A", response["Location"])
         self.assertIn("Documentation+add-on", response["Location"])
         self.assertIn(f"Reference%3A+{lead.reference}", response["Location"])
