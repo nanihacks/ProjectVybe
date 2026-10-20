@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}Payment not completed | ProjectVybe{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section result-section" aria-labelledby="failed-title">
+    <div class="container">
+        <div class="result-card">
+            <span class="result-card__icon result-card__icon--warning">{% icon "clock" 28 %}</span>
+            <p class="eyebrow">Order {{ order.reference }}</p>
+            <h1 id="failed-title">Your payment was not completed</h1>
+            <p class="result-card__lead">{% if gateway_down %}We could not reach the payment service. {% endif %}Nothing has been taken from you for this attempt. If money left your account, it will be returned by your bank, or we will confirm the order shortly. Write to us if you are unsure.</p>
+            <div class="result-card__actions">
+                {% if can_retry %}
+                    <form method="post" action="{% url 'orders:retry' order.public_token %}">
+                        {% csrf_token %}
+                        <button class="button button--primary button--large" type="submit">Try payment again</button>
+                    </form>
+                {% endif %}
+                <a class="button button--outline button--large" href="{% url 'leads:enquiry' %}">Chat or enquire instead</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

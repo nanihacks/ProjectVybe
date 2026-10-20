@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load pricing %}
+
+{% block title %}{% if has_gstin %}Invoice{% else %}Payment Receipt{% endif %} {{ order.receipt_number }} | ProjectVybe{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="section receipt" aria-labelledby="receipt-title">
+    <div class="container reading-width">
+        <div class="card receipt__card">
+            <div class="card__body">
+                <h1 id="receipt-title">{% if has_gstin %}Tax Invoice{% else %}Payment Receipt{% endif %}</h1>
+                <p><strong>{{ business.legal_name|default:site_name }}</strong><br>
+                {% if business.registered_address %}{{ business.registered_address|linebreaksbr }}<br>{% endif %}
+                {% if business.gstin %}GSTIN: {{ business.gstin }}<br>{% endif %}
+                {% if public_contact_email %}{{ public_contact_email }}{% endif %}</p>
+
+                <dl class="receipt__meta">
+                    <div><dt>Receipt number</dt><dd>{{ order.receipt_number }}</dd></div>
+                    <div><dt>Order</dt><dd>{{ order.reference }}</dd></div>
+                    <div><dt>Date</dt><dd>{{ order.paid_at|date:"j M Y, g:i a" }}</dd></div>
+                    <div><dt>Payment ID</dt><dd>{{ order.razorpay_payment_id }}</dd></div>
+                    {% if order.payment_method %}<div><dt>Method</dt><dd>{% if order.payment_method|length <= 4 %}{{ order.payment_method|upper }}{% else %}{{ order.payment_method|title }}{% endif %}</dd></div>{% endif %}
+                    <div><dt>Billed to</dt><dd>{{ order.customer_name }}<br>{{ order.customer_email }}</dd></div>
+                </dl>
+
+                <table class="receipt__table">
+                    <thead><tr><th scope="col">Item</th><th scope="col">Amount</th></tr></thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            <tr><td>{{ item.name }}</td><td>{{ item.line_total|inr }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot><tr><th scope="row">Total paid ({{ order.currency }})</th><td><strong>{{ order.total|inr }}</strong></td></tr></tfoot>
+                </table>
+                {% if not has_gstin %}<p class="muted">ProjectVybe is not registered for GST, so no GST is charged on this payment.</p>{% endif %}
+                <p class="muted">Digital delivery. Refunds follow our <a href="{% url 'pages:refund_policy' %}">Refund Policy</a>; to ask for one, use the <a href="{% url 'orders:refund_request' %}?order={{ order.reference }}">refund request form</a>.</p>
+
+                <div class="hero__actions receipt__actions">
+                    <button class="button button--primary" type="button" onclick="window.print()">Print or save as PDF</button>
+                    <a class="button button--outline" href="{% url 'orders:detail' order.public_token %}">Back to order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

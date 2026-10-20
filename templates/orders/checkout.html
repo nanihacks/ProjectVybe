@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load pricing static icons %}
+
+{% block title %}Checkout: {{ project.title }} | ProjectVybe{% endblock %}
+{% block meta_description %}Pay securely for {{ project.title }}.{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block og_title %}Checkout | ProjectVybe{% endblock %}
+{% block og_description %}Secure checkout.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact" aria-labelledby="checkout-title">
+    <div class="container">
+        <p class="pill">{% icon "lock" 16 %} Secure checkout</p>
+        <h1 id="checkout-title">{{ project.title }}</h1>
+        <p class="page-hero__lead">Pay with UPI, card or net banking through Razorpay. You pay the full amount now, and we deliver the way you choose below.</p>
+    </div>
+</section>
+
+<section class="section contact-section" aria-labelledby="checkout-form-title">
+    <div class="container checkout-layout">
+        <div class="form-card">
+            <h2 id="checkout-form-title" class="visually-hidden">Your details</h2>
+            <form method="post" action="{% url 'orders:checkout' project.slug %}" data-checkout-form>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="form-errors" role="alert">
+                        {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                    </div>
+                {% endif %}
+
+                <fieldset class="form-group">
+                    <legend class="form-group__title"><span class="form-group__num">1</span> Your details</legend>
+                    <div class="form-row">
+                        {% include "components/forms/form_field.html" with field=form.name only %}
+                        {% include "components/forms/form_field.html" with field=form.email only %}
+                    </div>
+                    {% include "components/forms/form_field.html" with field=form.phone only %}
+                </fieldset>
+
+                <fieldset class="form-group addon-picker">
+                    <legend class="form-group__title"><span class="form-group__num">2</span> Add-ons <span class="muted">(optional)</span></legend>
+                    <p class="form-help">Boost your project: optional extras to help you document, present and understand your work.</p>
+                    {% if addon_rows %}
+                        <div class="addon-picker__grid">
+                            {% for row in addon_rows %}
+                                <label class="addon2" for="addon-{{ row.addon.pk }}">
+                                    <input class="addon2__input" type="checkbox" id="addon-{{ row.addon.pk }}" name="addons" value="{{ row.addon.pk }}" data-price="{{ row.amount }}" data-name="{{ row.addon.name }}"{% if row.checked %} checked{% endif %}>
+                                    <span class="addon2__box">
+                                        <span class="addon2__top">
+                                            <span class="addon2__icon">{% icon "file-text" 20 %}</span>
+                                            {% if row.addon.is_popular %}<span class="addon2__badge">Popular</span>{% endif %}
+                                            <span class="addon2__check" aria-hidden="true">{% icon "check" 14 %}</span>
+                                        </span>
+                                        <strong class="addon2__name">{{ row.addon.name }}</strong>
+                                        {% if row.addon.benefit %}<span class="addon2__benefit">{{ row.addon.benefit }}</span>{% endif %}
+                                        {% if row.addon.inclusion_lines %}
+                                            <ul class="addon2__list">
+                                                {% for line in row.addon.inclusion_lines|slice:":3" %}<li>{% icon "check" 14 %} {{ line }}</li>{% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                        <span class="addon2__foot">
+                                            <span class="addon2__price">{% if row.included %}Included{% else %}+{{ row.amount|inr }}{% endif %}</span>
+                                            {% if row.addon.extra_delivery_hours %}<span class="addon2__time">{% icon "clock" 14 %} +{{ row.addon.extra_delivery_hours }} h</span>{% endif %}
+                                        </span>
+                                    </span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="muted">No add-ons are available for this project.</p>
+                    {% endif %}
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <legend class="form-group__title"><span class="form-group__num">3</span> {{ form.delivery_channel.label }}</legend>
+                    <div class="choice-grid">
+                        {% for radio in form.delivery_channel %}
+                            <label class="choice" for="{{ radio.id_for_label }}">{{ radio.tag }} <span>{{ radio.choice_label }}</span></label>
+                        {% endfor %}
+                    </div>
+                    {% if form.delivery_channel.errors %}<div role="alert">{% for error in form.delivery_channel.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div>{% endif %}
+                </fieldset>
+
+                {% include "orders/_consent.html" with consent_fields=consent_fields %}
+
+                <div class="form-honeypot" aria-hidden="true">{{ form.website }}</div>
+                {% include "components/forms/turnstile.html" %}
+
+                <button class="button button--primary button--large form-submit" type="submit">Continue to payment {% icon "arrow-right" 18 %}</button>
+            </form>
+        </div>
+
+        <aside class="panel order-summary" aria-labelledby="order-summary-title">
+            <h2 id="order-summary-title" class="panel__title">Order summary</h2>
+            <ul class="order-summary__lines" data-order-lines>
+                <li><span>{{ project.title }}</span><strong>{{ project_amount|inr }}</strong></li>
+            </ul>
+            <p class="order-summary__total" aria-live="polite"><span>Total</span> <strong data-order-total data-base="{{ project_amount }}">{{ project_amount|inr }}</strong></p>
+            <p class="form-help">{% icon "lock" 14 %} Payments are processed by Razorpay. We never see your card details. We'll confirm the final total on the next screen.</p>
+        </aside>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/checkout.js' %}?v=20261021-1" defer></script>{% endblock %}

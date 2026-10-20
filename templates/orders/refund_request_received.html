@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Refund request received | ProjectVybe{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section section--muted enquiry-success" aria-labelledby="refund-received-title">
+    <div class="container">
+        <div class="enquiry-success__panel">
+            <p class="eyebrow">Thank you</p>
+            <h1 id="refund-received-title">We've received your request.</h1>
+            <p class="enquiry-success__copy">Your request number is <strong>{{ request_number }}</strong>. We will review it and reply by email within 5 working days.</p>
+            <div class="hero__actions">
+                <a class="button button--outline" href="{% url 'pages:home' %}">Back to home</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

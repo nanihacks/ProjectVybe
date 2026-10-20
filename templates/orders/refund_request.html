@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}Refund request | ProjectVybe{% endblock %}
+{% block meta_description %}Ask ProjectVybe to review a refund for your order.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact" aria-labelledby="refund-request-title">
+    <div class="container">
+        <p class="pill">{% icon "file-text" 16 %} Your order</p>
+        <h1 id="refund-request-title">Ask for a refund.</h1>
+        <p class="page-hero__lead">Payments are generally non-refundable, but we review every request fairly. Tell us what went wrong and we will reply by email within 5 working days. See our <a href="{% url 'pages:refund_policy' %}">Refund Policy</a>.</p>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="refund-form-title">
+    <div class="container reading-width">
+        <div class="form-card">
+            <div>
+                <h2 id="refund-form-title" class="visually-hidden">Refund request form</h2>
+                <form method="post" action="{% url 'orders:refund_request' %}">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form-errors" role="alert">
+                            {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+                    {% include "components/forms/form_field.html" with field=form.reference only %}
+                    {% include "components/forms/form_field.html" with field=form.email only %}
+                    {% include "components/forms/form_field.html" with field=form.reason only %}
+                    <div class="form-honeypot" aria-hidden="true">{{ form.website }}</div>
+                    {% include "components/forms/turnstile.html" %}
+                    <button class="button button--primary" type="submit">Send request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

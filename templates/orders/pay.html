@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static pricing icons %}
+
+{% block title %}Complete your payment | ProjectVybe{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="section result-section" aria-labelledby="pay-title">
+    <div class="container">
+        <div class="result-card"
+             data-pay
+             data-key="{{ key_id }}"
+             data-amount="{{ amount_paise }}"
+             data-order-id="{{ order.razorpay_order_id }}"
+             data-description="{{ order.project_title }} ({{ order.reference }})"
+             data-name="{{ order.customer_name }}"
+             data-email="{{ order.customer_email }}"
+             data-contact="{{ order.customer_phone }}"
+             data-verify-url="{{ verify_url }}"
+             data-failed-url="{{ failed_url }}">
+            {% csrf_token %}
+            {% if test_mode %}
+                <p class="test-banner" role="status"><strong>TEST MODE.</strong> No real money is taken. Use Razorpay test cards or UPI.</p>
+            {% endif %}
+            <span class="result-card__icon">{% icon "lock" 28 %}</span>
+            <p class="eyebrow">Order {{ order.reference }}</p>
+            <h1 id="pay-title">Complete your payment</h1>
+            <p class="result-card__lead">{{ order.project_title }}: <strong>{{ order.total|inr }}</strong>. The secure Razorpay window opens automatically.</p>
+            <p class="muted" data-pay-message hidden role="status"></p>
+            <div class="result-card__actions">
+                <button class="button button--primary button--large" type="button" data-pay-button>Pay {{ order.total|inr }}</button>
+                <a class="button button--outline button--large" href="{% url 'pages:project_catalogue' %}">Cancel</a>
+            </div>
+            <noscript><p class="form-error">Payment needs JavaScript. Please enable it, or contact us on WhatsApp.</p></noscript>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="{% static 'js/pay.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load pricing icons %}
+
+{% block title %}Order {{ order.reference }} | ProjectVybe{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="section result-section" aria-labelledby="order-title">
+    <div class="container result-layout">
+        <div class="result-card result-card--wide">
+            <span class="result-card__icon result-card__icon--success">{% icon "check" 30 %}</span>
+            <p class="eyebrow">Payment received</p>
+            <h1 id="order-title">Thank you, {{ order.customer_name }}.</h1>
+            <p class="result-card__lead">Your order <strong>{{ order.reference }}</strong> is confirmed. We will deliver by <strong>{{ order.get_delivery_channel_display }}</strong>, {{ deadline_text }}.</p>
+
+            {% if order.status == "delivered" %}
+                <p class="waitlist-done"><strong>Delivered.</strong>{% if order.delivery_link %} <a href="{{ order.delivery_link }}" rel="noopener noreferrer">Open your files</a>.{% endif %}</p>
+            {% endif %}
+
+            <table class="receipt-table">
+                <caption class="visually-hidden">Items in your order</caption>
+                <tbody>
+                    {% for item in order.items.all %}
+                        <tr><th scope="row">{{ item.name }}</th><td>{{ item.line_total|inr }}</td></tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr><th scope="row">Total paid</th><td>{{ order.total|inr }}</td></tr>
+                </tfoot>
+            </table>
+
+            <dl class="receipt-meta">
+                <div><dt>Receipt number</dt><dd>{{ order.receipt_number }}</dd></div>
+                <div><dt>Payment ID</dt><dd>{{ order.razorpay_payment_id }}</dd></div>
+            </dl>
+
+            <p class="muted">A confirmation email is on its way to {{ order.customer_email }}. Check your spam folder if you do not see it. Keep this page's link: it is your order page.</p>
+            <div class="result-card__actions">
+                <a class="button button--primary" href="{% url 'orders:receipt' order.public_token %}">View payment receipt</a>
+                {% if whatsapp_url %}<a class="button button--outline" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Continue on WhatsApp</a>{% endif %}
+                <a class="text-link text-link--arrow" href="{% url 'orders:refund_request' %}?order={{ order.reference }}">Ask for a refund</a>
+            </div>
+        </div>
+
+        <aside class="panel" aria-labelledby="order-next-title">
+            <h2 id="order-next-title" class="panel__title">What happens next</h2>
+            <ol class="panel-steps">
+                <li><span class="panel-steps__icon">{% icon "mail" 18 %}</span><div><strong>Check your email</strong><p class="muted">Your receipt and order details are on their way.</p></div></li>
+                <li><span class="panel-steps__icon">{% icon "clock" 18 %}</span><div><strong>We prepare your order</strong><p class="muted">Delivery {{ deadline_text }}.</p></div></li>
+                <li><span class="panel-steps__icon">{% icon "download" 18 %}</span><div><strong>You receive it</strong><p class="muted">By {{ order.get_delivery_channel_display|lower }}, as you chose.</p></div></li>
+            </ol>
+        </aside>
+    </div>
+</section>
+{% endblock %}
