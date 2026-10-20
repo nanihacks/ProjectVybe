@@ -721,3 +721,30 @@
         }).observe(footer);
     }
 })();
+
+(function () {
+    document.querySelectorAll("[data-gallery]").forEach(function (gallery) {
+        const track = gallery.querySelector("[data-gallery-track]");
+        const prev = gallery.querySelector("[data-gallery-prev]");
+        const next = gallery.querySelector("[data-gallery-next]");
+        if (!track || !prev || !next) return;
+
+        const update = function () {
+            const max = track.scrollWidth - track.clientWidth - 2;
+            prev.disabled = track.scrollLeft <= 2;
+            next.disabled = track.scrollLeft >= max;
+        };
+        const move = function (direction) {
+            track.scrollBy({ left: direction * track.clientWidth * 0.85 });
+        };
+
+        prev.addEventListener("click", function () { move(-1); });
+        next.addEventListener("click", function () { move(1); });
+        track.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        track.querySelectorAll("img").forEach(function (img) {
+            img.addEventListener("load", update);
+        });
+        update();
+    });
+})();
