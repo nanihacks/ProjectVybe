@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}Courses | ProjectVybe{% endblock %}
+{% block meta_description %}Practical technology courses from ProjectVybe. See what is planned and join the waitlist to hear first.{% endblock %}
+{% block og_title %}Courses | ProjectVybe{% endblock %}
+{% block og_description %}Practical technology courses from ProjectVybe. Join the waitlist to hear first.{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<section class="page-hero page-hero--compact" aria-labelledby="courses-title">
+    <div class="container">
+        <p class="pill">{% icon "book" 16 %} Courses</p>
+        <h1 id="courses-title">Learn it by building it.</h1>
+        <p class="page-hero__lead">Practical courses are on the way. See what is planned and join the waitlist, and we'll email you when a course opens.</p>
+    </div>
+</section>
+
+<section class="section course-section" aria-labelledby="course-list-title">
+    <div class="container">
+        <h2 id="course-list-title" class="visually-hidden">Planned courses</h2>
+        {% if courses %}
+            <ul class="course-rows" data-reveal="stagger">
+                {% for course in courses %}
+                    <li>
+                        <a class="course-row" href="{% url 'courses:detail' course.slug %}">
+                            <span class="course-row__media">
+                                {% if course.render_cover_url %}<img src="{{ course.render_cover_url }}" alt="{{ course.cover_alt }}" width="640" height="400" loading="lazy" decoding="async">{% else %}<span class="media-placeholder__label">Course</span>{% endif %}
+                            </span>
+                            <span class="course-row__body">
+                                <span class="eyebrow">{{ course.get_level_display }}{% if course.duration %} · {{ course.duration }}{% endif %} · {{ course.get_format_display }}</span>
+                                <strong class="course-row__title">{{ course.title }}</strong>
+                                <span class="muted">{{ course.summary }}</span>
+                                {% if course.expected_launch %}<span class="course-row__launch">Expected: {{ course.expected_launch }}</span>{% endif %}
+                            </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state" role="status">
+                <h3>Our first course is being planned.</h3>
+                <p class="muted">Join the waitlist below and we'll tell you first.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section section--muted" aria-labelledby="waitlist-title">
+    <div class="container reading-width">
+        <h2 id="waitlist-title">Hear about new courses first.</h2>
+        {% if joined %}
+            <p class="waitlist-done" role="status"><strong>You're on the list.</strong> We have sent a confirmation to your email.</p>
+        {% else %}
+            <p class="muted">Leave your details and we'll email you when a course opens. No spam, and you can ask us to remove you at any time.</p>
+            <div class="card"><div class="card__body">
+                {% include "courses/_waitlist_form.html" with action=request.path button_label="Join the waitlist" %}
+            </div></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

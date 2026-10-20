@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load icons %}
+
+{% block title %}{{ course.title }} | Courses | ProjectVybe{% endblock %}
+{% block meta_description %}{{ course.summary }}{% endblock %}
+{% block og_title %}{{ course.title }} | ProjectVybe{% endblock %}
+{% block og_description %}{{ course.summary }}{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<article>
+<section class="page-hero" aria-labelledby="course-title">
+    <div class="container page-hero__grid">
+        <div>
+            <p class="pill">{% icon "book" 16 %} {{ course.get_level_display }}{% if course.duration %} · {{ course.duration }}{% endif %} · {{ course.get_format_display }}</p>
+            <h1 id="course-title">{{ course.title }}</h1>
+            <p class="page-hero__lead">{{ course.summary }}</p>
+        </div>
+        {% if cover_url %}
+            <img class="course-cover" src="{{ cover_url }}" alt="{{ course.cover_alt }}" width="1200" height="750" fetchpriority="high" decoding="async">
+        {% endif %}
+    </div>
+</section>
+
+<section class="section course-section">
+    <div class="container course-layout">
+        <div class="course-layout__main">
+            {% if course.description %}
+                <div class="project-detail__prose" data-reveal>{{ course.description|linebreaks }}</div>
+            {% endif %}
+            {% if course.outline_lines %}
+                <h2 class="course-outline-title">What you'll cover</h2>
+                <ol class="outline-list" data-reveal="stagger">
+                    {% for line in course.outline_lines %}<li>{{ line }}</li>{% endfor %}
+                </ol>
+            {% endif %}
+        </div>
+
+        <aside class="course-layout__aside" aria-labelledby="course-waitlist-title">
+            <h2 id="course-waitlist-title">{% if course.expected_launch %}Opens {{ course.expected_launch }}{% else %}Coming soon{% endif %}</h2>
+            {% if joined %}
+                <p class="waitlist-done" role="status"><strong>You're on the list.</strong> We have sent a confirmation to your email.</p>
+            {% elif course.waitlist_open %}
+                <p class="muted">Leave your details and we'll email you when this course opens.</p>
+                {% include "courses/_waitlist_form.html" with action=request.path button_label="Notify me" %}
+            {% else %}
+                <p class="muted">Sign-ups for this course are closed for now. <a href="{% url 'courses:list' %}">See other courses</a>.</p>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+</article>
+{% endblock %}
