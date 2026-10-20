@@ -96,6 +96,17 @@ class SiteSettings(SingletonModel):
     github_url = models.URLField(blank=True)
     facebook_url = models.URLField(blank=True)
     x_url = models.URLField("X (Twitter) URL", blank=True)
+    show_instagram = models.BooleanField("show Instagram", default=True)
+    show_linkedin = models.BooleanField("show LinkedIn", default=True)
+    show_youtube = models.BooleanField("show YouTube", default=True)
+    show_github = models.BooleanField("show GitHub", default=True)
+    show_facebook = models.BooleanField("show Facebook", default=True)
+    show_x = models.BooleanField("show X (Twitter)", default=True)
+    show_whatsapp = models.BooleanField(
+        "show WhatsApp",
+        default=True,
+        help_text="Uses the WhatsApp number set in the Site settings (or the server settings).",
+    )
 
     # Announcement bar
     announcement_enabled = models.BooleanField(default=False)
@@ -223,14 +234,14 @@ class SiteSettings(SingletonModel):
     def social_items(self):
         """[(key, label, url)] for the footer icons; `key` picks the icon."""
         links = [
-            ("instagram", "Instagram", self.instagram_url),
-            ("linkedin", "LinkedIn", self.linkedin_url),
-            ("youtube", "YouTube", self.youtube_url),
-            ("github", "GitHub", self.github_url),
-            ("facebook", "Facebook", self.facebook_url),
-            ("x", "X (Twitter)", self.x_url),
+            ("instagram", "Instagram", self.instagram_url, self.show_instagram),
+            ("linkedin", "LinkedIn", self.linkedin_url, self.show_linkedin),
+            ("youtube", "YouTube", self.youtube_url, self.show_youtube),
+            ("github", "GitHub", self.github_url, self.show_github),
+            ("facebook", "Facebook", self.facebook_url, self.show_facebook),
+            ("x", "X (Twitter)", self.x_url, self.show_x),
         ]
-        return [(key, label, url) for key, label, url in links if url]
+        return [(key, label, url) for key, label, url, shown in links if url and shown]
 
     @property
     def social_links(self):

@@ -15,12 +15,12 @@
                 {% if site_settings.business_hours %}<li>{% icon "clock" 18 %}<span>{{ site_settings.business_hours }}</span></li>{% endif %}
             </ul>
 
-            {% if site_settings.social_items or whatsapp_chat_url %}
+            {% if site_settings.social_items or whatsapp_chat_url and site_settings.show_whatsapp %}
                 <ul class="site-footer__social" aria-label="ProjectVybe on social media">
                     {% for key, label, url in site_settings.social_items %}
                         <li><a href="{{ url }}" rel="noopener noreferrer" target="_blank" aria-label="{{ label }}" title="{{ label }}">{% icon key 20 %}</a></li>
                     {% endfor %}
-                    {% if whatsapp_chat_url %}
+                    {% if whatsapp_chat_url and site_settings.show_whatsapp %}
                         <li><a href="{{ whatsapp_chat_url }}" rel="noopener noreferrer" target="_blank" aria-label="WhatsApp" title="WhatsApp">{% icon "whatsapp" 20 %}</a></li>
                     {% endif %}
                 </ul>

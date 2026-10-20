@@ -24,34 +24,27 @@
             {% endif %}
         </div>
 
-        {% with lead=featured_projects.0 %}
         <div class="hero2__visual">
             <div class="device" aria-hidden="true">
                 <div class="device__bar"><span></span><span></span><span></span><em>projectvybe.com/projects</em></div>
                 <div class="device__body">
-                    {% if lead and lead.render_large_url %}
-                        <img class="device__shot" src="{{ lead.render_large_url }}" alt="" width="1200" height="750" fetchpriority="high" decoding="async">
-                        <div class="device__caption"><strong>{{ lead.title }}</strong><span>{{ lead.category.name }}</span></div>
-                    {% else %}
-                        <p class="device__title">Find your next project</p>
-                        <div class="device__search">{% icon "search" 16 %} <span>Search by topic or technology</span></div>
-                        <ul class="device__tiles">
-                            {% for category in navigation_categories|slice:":4" %}
-                                <li><span class="device__tile-icon">{% icon "code" 18 %}</span><strong>{{ category.name }}</strong><i></i></li>
-                            {% empty %}
-                                <li><span class="device__tile-icon">{% icon "cpu" 18 %}</span><strong>AI &amp; ML</strong><i></i></li>
-                                <li><span class="device__tile-icon">{% icon "globe" 18 %}</span><strong>Web</strong><i></i></li>
-                                <li><span class="device__tile-icon">{% icon "shield" 18 %}</span><strong>Security</strong><i></i></li>
-                                <li><span class="device__tile-icon">{% icon "phone-mobile" 18 %}</span><strong>Mobile</strong><i></i></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+                    <p class="device__title">Find your next project</p>
+                    <div class="device__search">{% icon "search" 16 %} <span>Search by topic or technology</span></div>
+                    <ul class="device__tiles">
+                        {% for category in navigation_categories|slice:":4" %}
+                            <li><span class="device__tile-icon">{% icon "code" 18 %}</span><strong>{{ category.name }}</strong><i></i></li>
+                        {% empty %}
+                            <li><span class="device__tile-icon">{% icon "cpu" 18 %}</span><strong>AI &amp; ML</strong><i></i></li>
+                            <li><span class="device__tile-icon">{% icon "globe" 18 %}</span><strong>Web</strong><i></i></li>
+                            <li><span class="device__tile-icon">{% icon "shield" 18 %}</span><strong>Security</strong><i></i></li>
+                            <li><span class="device__tile-icon">{% icon "phone-mobile" 18 %}</span><strong>Mobile</strong><i></i></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
             <div class="float-chip float-chip--one" aria-hidden="true">{% icon "file-text" 16 %} Documentation included</div>
             <div class="float-chip float-chip--two" aria-hidden="true">{% icon "users" 16 %} Mentor guidance</div>
         </div>
-        {% endwith %}
     </div>
 </section>
 

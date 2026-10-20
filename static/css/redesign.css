@@ -2527,3 +2527,458 @@ body {
 .svc .svc__body > .price {
     margin-bottom: var(--space-3);
 }
+
+/* ===== Round 4 fixes ================================================================================== */
+
+/* Cards in a carousel or grid keep their link on one line, whatever the text length. */
+.card--category,
+.card--service,
+.card--project {
+    display: flex;
+    flex-direction: column;
+}
+
+.card--category .card__body,
+.card--service .card__body,
+.card--project .card__body {
+    flex: 1;
+}
+
+.card__body > .text-link {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-3);
+}
+
+/* Project page: show the whole picture at its own shape instead of cropping it. */
+.pd-card__media {
+    align-items: center;
+    justify-content: center;
+}
+
+.pd-card__media .project-detail__media,
+.pd-card__media .project-detail__media.media-frame--project {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: auto;
+}
+
+.pd-card__media img {
+    width: 100%;
+    height: auto;
+    max-height: 36rem;
+    object-fit: contain;
+}
+
+.project-gallery__item {
+    aspect-ratio: 16 / 10;
+    background: var(--color-surface-muted);
+}
+
+.project-gallery__item img {
+    object-fit: contain;
+}
+
+/* Project page body: overview and usage side by side, then full-width feature list. */
+.pd-stack {
+    display: grid;
+    gap: var(--space-8);
+}
+
+.pd-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7) var(--space-8);
+}
+
+@media (min-width: 62rem) {
+    .pd-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
+.feature-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 var(--space-7);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 42rem) {
+    .feature-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-hairline);
+    line-height: 1.5;
+}
+
+.feature-list .icon {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-success);
+}
+
+.point-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.point-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.point-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.62em;
+    left: 0.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+}
+
+/* Breadcrumbs sit on top of the page hero, so its grid background starts right under the navbar. */
+:root {
+    --crumb-h: 3.25rem;
+}
+
+.breadcrumbs {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    height: var(--crumb-h);
+    align-items: center;
+    padding-block: 0;
+}
+
+.breadcrumbs__list {
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.breadcrumbs__list li:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumbs + .page-hero,
+.breadcrumbs + article > .page-hero:first-child {
+    margin-top: calc(-1 * var(--crumb-h));
+    padding-top: calc(var(--crumb-h) + clamp(2.5rem, 5vw, 4.25rem));
+}
+
+.breadcrumbs + .page-hero--compact,
+.breadcrumbs + article > .page-hero--compact:first-child {
+    padding-top: calc(var(--crumb-h) + clamp(1.75rem, 3.5vw, 2.75rem));
+}
+
+/* ===== Enquiry pop-up: summary strip, compact fields, sticky actions, phone sheet ===================== */
+
+.enquiry-modal__panel {
+    border-radius: 1.1rem;
+    box-shadow: var(--shadow-lift);
+}
+
+.enquiry-modal__header {
+    align-items: center;
+    padding: 1.1rem 1.5rem 0.9rem;
+}
+
+.enquiry-modal__eyebrow {
+    margin: 0 0 0.2rem;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.enquiry-project {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 1.5rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+}
+
+.enquiry-project__thumb {
+    width: 4rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.enquiry-project__text {
+    display: grid;
+    min-width: 0;
+    gap: 0.1rem;
+}
+
+.enquiry-project__text strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.enquiry-project__text span {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
+
+.enquiry-modal .project-enquiry-form {
+    padding: 1.1rem 1.5rem 0;
+}
+
+.enquiry-modal .form-field {
+    margin-bottom: 0.9rem;
+}
+
+.enquiry-modal .form-field label {
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.enquiry-modal .form-field input,
+.enquiry-modal .form-field select,
+.enquiry-modal .form-field textarea {
+    padding: 0.6rem 0.8rem;
+}
+
+.enquiry-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+    .enquiry-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* The consent wording is unchanged; it just takes less room. */
+.enquiry-modal .consent {
+    margin: 0.25rem 0 0;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+}
+
+.enquiry-modal .consent__legend {
+    padding: 0 0.3rem;
+    font-size: 0.9rem;
+}
+
+.enquiry-modal .consent__notice {
+    margin-bottom: 0.6rem;
+    font-size: 0.82rem;
+}
+
+.enquiry-modal .consent__label {
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.enquiry-modal .enquiry-wizard__actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem -1.5rem 0;
+    padding: 0.85rem 1.5rem;
+    border-top: 1px solid var(--color-hairline);
+    background: #fff;
+}
+
+.enquiry-modal .enquiry-wizard__actions .button--primary {
+    width: auto;
+    min-width: 11rem;
+    flex: 1 1 auto;
+    max-width: 18rem;
+    color: #fff;
+}
+
+.enquiry-wizard__cancel {
+    padding: 0.6rem 0.4rem;
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.enquiry-wizard__cancel:hover,
+.enquiry-wizard__cancel:focus-visible {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.enquiry-modal__note {
+    margin: 0;
+    padding: 0 0 0.9rem;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* Phones: a bottom sheet that fills the height, with the buttons always in reach. */
+@media (max-width: 41.99rem) {
+    .enquiry-modal {
+        place-items: end center;
+        padding: 0;
+    }
+
+    .enquiry-modal__panel {
+        width: 100%;
+        max-height: 94dvh;
+        border-radius: 1.1rem 1.1rem 0 0;
+    }
+
+    .enquiry-project,
+    .enquiry-modal__header {
+        margin-inline: 1rem;
+    }
+
+    .enquiry-modal__header {
+        margin-inline: 0;
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .project-enquiry-form {
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions {
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .button--primary {
+        max-width: none;
+    }
+}
+
+.enquiry-modal__panel {
+    max-height: min(92vh, 52rem);
+}
+
+.enquiry-project {
+    margin-top: 0.9rem;
+}
+
+/* Add-on choices in the pop-up: tidy two-column tick rows instead of stacked boxes. */
+.enquiry-modal #id_selected_addons {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+    .enquiry-modal #id_selected_addons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.enquiry-modal #id_selected_addons label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.enquiry-modal #id_selected_addons label:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.enquiry-modal #id_selected_addons input[type="checkbox"] {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: none;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--color-primary);
+}
+
+.enquiry-modal .form-field textarea {
+    min-height: 5.5rem;
+}
+
+.enquiry-modal .form-field textarea {
+    height: 6rem;
+    resize: vertical;
+}
+
+@media (max-width: 41.99rem) {
+    .enquiry-modal .enquiry-wizard__actions {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .enquiry-wizard__cancel {
+        width: auto;
+        flex: none;
+    }
+
+    .enquiry-modal .enquiry-wizard__actions .button--primary {
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
+
+/* Home hero: content sits close under the header, with equal space above and below. */
+.hero2 {
+    padding-block: clamp(2rem, 5vh, 3.25rem);
+}
+
+@media (min-width: 62rem) {
+    .hero2 h1 {
+        font-size: clamp(2.5rem, min(1.5rem + 4.6vw, 10.5vh), 4.9rem);
+    }
+
+    .hero2__lead {
+        margin-bottom: clamp(1rem, 3vh, 1.75rem);
+    }
+
+    .chip-row {
+        margin-top: clamp(0.9rem, 3vh, 1.75rem);
+    }
+}

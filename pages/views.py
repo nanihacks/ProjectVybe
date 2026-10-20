@@ -65,9 +65,6 @@ def home(request):
 
     for project in featured_projects:
         project.render_thumbnail_url = _safe_cloudinary_url(project.thumbnail, width=640)
-    if featured_projects:
-        # The hero shows the newest featured project larger than its card.
-        featured_projects[0].render_large_url = _safe_cloudinary_url(featured_projects[0].thumbnail, width=1200)
     for service in services:
         service.render_image_url = _safe_cloudinary_url(service.image, width=640)
 
@@ -421,6 +418,11 @@ def project_detail(request, slug):
                 line.strip()
                 for line in project.features.splitlines()
                 if line.strip()
+            ],
+            "usage_points": [
+                line.strip().lstrip("-*• ").strip()
+                for line in project.usage.splitlines()
+                if line.strip().lstrip("-*• ").strip()
             ],
             "technology_stack": [
                 line.strip()
