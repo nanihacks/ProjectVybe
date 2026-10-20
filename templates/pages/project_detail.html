@@ -49,11 +49,22 @@
         </div>
     </section>
 
-    <div class="project-detail__mobile-sticky-actions{% if youtube_embed_url %} project-detail__mobile-sticky-actions--with-demo{% endif %}" aria-label="Project actions">
-        <a class="button button--primary" {% if checkout_url %}href="{{ checkout_url }}" data-checkout-link{% else %}href="#project-enquiry" data-enquiry-open{% endif %}>{% if checkout_url %}Buy this project{% else %}Get this project{% endif %}</a>
-        {% if youtube_embed_url %}
-            <button class="button button--outline" type="button" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">Watch demo</button>
-        {% endif %}
+    <div class="pd-sticky" data-pd-sticky aria-label="Project actions" aria-hidden="true">
+        <div class="container pd-sticky__inner">
+            <div class="pd-sticky__summary">
+                {% if thumbnail_url %}<img class="pd-sticky__thumb" src="{{ thumbnail_url }}" alt="" width="64" height="48" loading="lazy" decoding="async">{% endif %}
+                <div class="pd-sticky__text">
+                    <strong>{{ project.title }}</strong>
+                    {% include "components/price.html" with item=project only %}
+                </div>
+            </div>
+            <div class="pd-sticky__actions">
+                {% if youtube_embed_url %}
+                    <button class="button button--outline" type="button" tabindex="-1" data-video-open data-video-url="{{ youtube_embed_url }}" data-video-title="{{ project.title }}">{% icon "video" 16 %} Watch demo</button>
+                {% endif %}
+                <a class="button button--primary" tabindex="-1" {% if checkout_url %}href="{{ checkout_url }}" data-checkout-link{% else %}href="#project-enquiry" data-enquiry-open{% endif %}>{% if checkout_url %}Buy this project{% else %}Get this project{% endif %} {% icon "arrow-right" 16 %}</a>
+            </div>
+        </div>
     </div>
 
     <section class="section pd-body" aria-labelledby="project-overview-title">
