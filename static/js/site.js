@@ -785,3 +785,60 @@
         update();
     });
 })();
+
+(function () {
+    const box = document.querySelector("[data-lightbox]");
+    const openers = Array.from(document.querySelectorAll("[data-lightbox-open]"));
+    if (!box || !openers.length) return;
+
+    const img = box.querySelector("[data-lightbox-img]");
+    const caption = box.querySelector("[data-lightbox-caption]");
+    const count = box.querySelector("[data-lightbox-count]");
+    const prev = box.querySelector("[data-lightbox-prev]");
+    const next = box.querySelector("[data-lightbox-next]");
+    const slides = openers.map(function (button) {
+        const source = button.querySelector("img");
+        return { src: source.currentSrc || source.src, alt: source.alt };
+    });
+    let index = 0;
+    let lastFocus = null;
+
+    const show = function (i) {
+        index = (i + slides.length) % slides.length;
+        img.src = slides[index].src;
+        img.alt = slides[index].alt;
+        caption.textContent = slides[index].alt;
+        count.textContent = index + 1 + " / " + slides.length;
+        prev.hidden = next.hidden = slides.length < 2;
+    };
+    const open = function (i, opener) {
+        lastFocus = opener;
+        show(i);
+        box.hidden = false;
+        box.setAttribute("aria-hidden", "false");
+        document.body.classList.add("is-modal-open");
+        box.querySelector(".lightbox__close").focus();
+    };
+    const close = function () {
+        box.hidden = true;
+        box.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("is-modal-open");
+        img.removeAttribute("src");
+        if (lastFocus) lastFocus.focus();
+    };
+
+    openers.forEach(function (button, i) {
+        button.addEventListener("click", function () { open(i, button); });
+    });
+    box.addEventListener("click", function (event) {
+        if (event.target.closest("[data-lightbox-close]")) close();
+    });
+    prev.addEventListener("click", function () { show(index - 1); });
+    next.addEventListener("click", function () { show(index + 1); });
+    document.addEventListener("keydown", function (event) {
+        if (box.hidden) return;
+        if (event.key === "Escape") close();
+        if (event.key === "ArrowLeft") show(index - 1);
+        if (event.key === "ArrowRight") show(index + 1);
+    });
+})();

@@ -3458,3 +3458,136 @@ body {
 h2 {
     line-height: 1.15;
 }
+
+/* ===== Gallery lightbox: click a picture to see it large ============================================== */
+.pd-gallery__zoom {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+}
+
+.lightbox {
+    position: fixed;
+    z-index: 90;
+    inset: 0;
+    display: grid;
+    place-items: center;
+}
+
+.lightbox[hidden] {
+    display: none !important;
+}
+
+.lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 14, 28, 0.88);
+}
+
+.lightbox__panel {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: clamp(0.75rem, 3vw, 2rem);
+    pointer-events: none;
+}
+
+.lightbox__panel > * {
+    pointer-events: auto;
+}
+
+.lightbox__figure {
+    display: grid;
+    min-width: 0;
+    max-height: 100%;
+    justify-items: center;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.lightbox__img {
+    max-width: 100%;
+    max-height: calc(100vh - 9rem);
+    max-height: calc(100dvh - 9rem);
+    border-radius: var(--radius-md);
+    object-fit: contain;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+}
+
+.lightbox__caption {
+    color: #e6ecf7;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.lightbox__count {
+    margin-left: 0.5rem;
+    color: #9fb0cc;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+.lightbox__close,
+.lightbox__arrow {
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    cursor: pointer;
+}
+
+.lightbox__close:hover,
+.lightbox__arrow:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.lightbox__close {
+    position: absolute;
+    top: clamp(0.75rem, 2vw, 1.5rem);
+    right: clamp(0.75rem, 2vw, 1.5rem);
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.lightbox__arrow {
+    width: 3rem;
+    height: 3rem;
+}
+
+.lightbox__arrow--prev .icon {
+    transform: rotate(180deg);
+}
+
+.lightbox__arrow[hidden] {
+    display: none;
+}
+
+@media (max-width: 41.99rem) {
+    .lightbox__panel {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: 1fr auto;
+    }
+
+    .lightbox__arrow {
+        position: absolute;
+        bottom: 1rem;
+    }
+
+    .lightbox__arrow--prev {
+        left: 1rem;
+    }
+
+    .lightbox__arrow--next {
+        right: 1rem;
+    }
+}

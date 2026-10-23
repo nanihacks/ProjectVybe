@@ -178,7 +178,7 @@ class ProjectCatalogueTests(TestCase):
             is_active=False,
         )
 
-        for index in range(10):
+        for index in range(14):
             title = f"Catalogue Project {index:02d}"
             if index == 0:
                 title = "Python Catalogue Project 00"
@@ -270,7 +270,7 @@ class ProjectCatalogueTests(TestCase):
             secure=True,
         )
 
-        self.assertEqual(response.context["page_obj"].paginator.count, 10)
+        self.assertEqual(response.context["page_obj"].paginator.count, 14)
         self.assertContains(response, "Catalogue Project 09")
         self.assertNotContains(response, "Python Other Category Project")
 
@@ -310,7 +310,7 @@ class ProjectCatalogueTests(TestCase):
             secure=True,
         )
 
-        self.assertEqual(len(response.context["page_obj"].object_list), 9)
+        self.assertEqual(len(response.context["page_obj"].object_list), 12)
         self.assertTrue(response.context["page_obj"].has_next())
         self.assertContains(
             response,
@@ -329,7 +329,7 @@ class ProjectCatalogueTests(TestCase):
 
         self.assertEqual(next_response.status_code, 200)
         self.assertEqual(next_response.context["page_obj"].number, 2)
-        self.assertEqual(len(next_response.context["page_obj"].object_list), 1)
+        self.assertEqual(len(next_response.context["page_obj"].object_list), 2)
         self.assertContains(
             next_response,
             "q=project&amp;category=active-catalogue-category&amp;page=1",
@@ -515,6 +515,11 @@ class ProjectDetailTests(TestCase):
             [image.alt_text for image in response.context["gallery_images"]],
             ["First project view", "Second project view"],
         )
+
+    def test_gallery_images_open_in_a_lightbox(self):
+        response = self.client.get(self.detail_url(), secure=True)
+
+        self.assertContains(response, "data-lightbox-img")
 
     def test_unpublished_nonexistent_and_inactive_category_projects_return_404(self):
         unpublished_response = self.client.get(
