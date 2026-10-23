@@ -4,7 +4,7 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from blog.models import BlogCategory, Post
-from catalog.models import Project
+from catalog.models import Project, Service
 from courses.models import Course
 from core.seo import site_origin, site_scheme
 from legal.services import published_pages
@@ -50,6 +50,14 @@ class ProjectSitemap(ConfiguredOriginSitemap):
 
     def lastmod(self, item):
         return item.updated_at
+
+
+class ServiceSitemap(ConfiguredOriginSitemap):
+    def items(self):
+        return Service.objects.filter(is_active=True).only("slug").order_by("pk")
+
+    def location(self, item):
+        return reverse("pages:service_detail", kwargs={"slug": item.slug})
 
 
 class CourseSitemap(ConfiguredOriginSitemap):
@@ -98,6 +106,7 @@ class LegalPageSitemap(ConfiguredOriginSitemap):
 sitemaps = {
     "static": StaticViewSitemap(),
     "projects": ProjectSitemap(),
+    "services": ServiceSitemap(),
     "courses": CourseSitemap(),
     "blog": BlogPostSitemap(),
     "blog_categories": BlogCategorySitemap(),

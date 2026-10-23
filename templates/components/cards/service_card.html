@@ -11,7 +11,7 @@
         <p class="card__summary">{{ service.short_description }}</p>
         {% include "components/price.html" with item=service only %}
         {% if service_url %}
-            <a class="button button--secondary" href="{{ service_url }}">{{ service_cta_label|default:"Explore services" }}</a>
+            <a class="text-link text-link--arrow" href="{{ service_url }}">{{ service_cta_label|default:"View details" }}<span class="visually-hidden"> about {{ service.name }}</span></a>
         {% endif %}
     </div>
 </article>

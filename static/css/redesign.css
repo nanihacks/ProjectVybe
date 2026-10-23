@@ -3591,3 +3591,99 @@ h2 {
         right: 1rem;
     }
 }
+
+/* ===== Service pages ================================================================================= */
+
+/* Whole service card is clickable through its title link; the quiet "View details" link sits at the bottom. */
+.svc {
+    position: relative;
+}
+
+.svc__title-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.svc__title-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.svc .svc__link {
+    position: relative;
+    z-index: 2;
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-3);
+}
+
+.svc:hover .svc__link {
+    text-decoration: underline;
+}
+
+.service-detail__note {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: var(--space-4) 0 0;
+    font-size: 0.85rem;
+}
+
+.svc__mono--large {
+    display: grid;
+    width: 100%;
+    min-height: 16rem;
+    place-items: center;
+    font-size: 5rem;
+}
+
+.service-detail__steps {
+    max-width: 44rem;
+    margin-bottom: var(--space-5);
+}
+
+.related-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 52rem) {
+    .related-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.related-link {
+    display: grid;
+    height: 100%;
+    gap: 0.35rem;
+    padding: var(--space-4);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.related-link:hover,
+.related-link:focus-visible {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .related-link {
+        transition: none;
+    }
+
+    .related-link:hover {
+        transform: none;
+    }
+}

@@ -177,7 +177,8 @@
                 <div class="category-carousel__viewport" data-service-scroller tabindex="0" aria-label="ProjectVybe services">
                     <div class="category-carousel__track">
                         {% for service in services %}
-                            {% include "components/cards/service_card.html" with service=service service_image_url=service.render_image_url service_url=services_url service_cta_label="Explore services" homepage_card=True only %}
+                            {% url 'pages:service_detail' service.slug as service_detail_url %}
+                            {% include "components/cards/service_card.html" with service=service service_image_url=service.render_image_url service_url=service_detail_url service_cta_label="View details" homepage_card=True only %}
                         {% endfor %}
                     </div>
                 </div>
