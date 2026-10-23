@@ -3687,3 +3687,36 @@ h2 {
         transform: none;
     }
 }
+
+/* ===== PageSpeed fixes: readable links on white cards in the dark band, 24px tap areas for dots ====== */
+.section--dark .card .text-link,
+.section--dark .svc .text-link {
+    color: var(--color-primary);
+}
+
+.section--dark .card .text-link:hover,
+.section--dark .card .text-link:focus-visible {
+    color: var(--color-primary-strong);
+}
+
+/* The visible dot stays small; the button around it is 24px so it is easy to tap. */
+.category-carousel__dot,
+.pd-gallery__dot {
+    box-sizing: border-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.5rem;
+    background-clip: content-box;
+}
+
+.category-carousel__dot.is-active,
+.category-carousel__dot:hover,
+.category-carousel__dot:focus-visible,
+.pd-gallery__dot.is-active {
+    width: 2.5rem;
+}
+
+.category-carousel__dots,
+.pd-gallery__dots {
+    gap: 0;
+}
