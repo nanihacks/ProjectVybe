@@ -129,7 +129,9 @@
                             {% for gallery_image in gallery_media %}
                                 <figure class="pd-gallery__item">
                                     {% if gallery_image.url %}
-                                        <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt_text }}" width="1200" height="750" loading="lazy" decoding="async">
+                                        <button class="pd-gallery__zoom" type="button" data-lightbox-open="{{ forloop.counter0 }}" aria-label="View image {{ forloop.counter }} larger">
+                                            <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt_text }}" width="1200" height="750" loading="lazy" decoding="async">
+                                        </button>
                                     {% else %}
                                         <div class="media-placeholder" aria-label="{{ gallery_image.alt_text }}">{{ gallery_image.alt_text }}</div>
                                     {% endif %}
@@ -249,6 +251,20 @@
         </section>
     {% endif %}
 </article>
+{% if gallery_media %}
+<div class="lightbox" data-lightbox hidden aria-hidden="true">
+    <div class="lightbox__backdrop" data-lightbox-close></div>
+    <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="Project image viewer">
+        <button class="lightbox__close" type="button" aria-label="Close image viewer" data-lightbox-close>&times;</button>
+        <button class="lightbox__arrow lightbox__arrow--prev" type="button" aria-label="Previous image" data-lightbox-prev>{% icon "arrow-right" 22 %}</button>
+        <figure class="lightbox__figure">
+            <img class="lightbox__img" src="" alt="" data-lightbox-img>
+            <figcaption class="lightbox__caption"><span data-lightbox-caption></span> <span class="lightbox__count" data-lightbox-count></span></figcaption>
+        </figure>
+        <button class="lightbox__arrow lightbox__arrow--next" type="button" aria-label="Next image" data-lightbox-next>{% icon "arrow-right" 22 %}</button>
+    </div>
+</div>
+{% endif %}
 {% if not checkout_url %}{% include "components/forms/project_enquiry_modal.html" with form=enquiry_form selected_project=project thumbnail_url=thumbnail_url %}{% endif %}
 
 {% if youtube_embed_url %}

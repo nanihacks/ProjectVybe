@@ -30,7 +30,7 @@
     <link rel="preload" href="{% static 'fonts/instrument-sans-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'css/base.css' %}?v=20261022-1">
     <link rel="stylesheet" href="{% static 'css/components.css' %}?v=20261021-21">
-    <link rel="stylesheet" href="{% static 'css/redesign.css' %}?v=20261022-1">
+    <link rel="stylesheet" href="{% static 'css/redesign.css' %}?v=20261024-1">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -48,7 +48,7 @@
 
     {% include "components/footer.html" %}
 
-    <script src="{% static 'js/site.js' %}?v=20261021-25" defer></script>
+    <script src="{% static 'js/site.js' %}?v=20261024-1" defer></script>
     {% block extra_js %}{% endblock %}
     {% if structured_data_json %}<script type="application/ld+json">{{ structured_data_json|safe }}</script>{% endif %}
 </body>

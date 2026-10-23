@@ -192,7 +192,7 @@ def project_catalogue(request):
             | Q(features__icontains=query)
         )
 
-    paginator = Paginator(projects, 9)
+    paginator = Paginator(projects, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
     for project in page_obj.object_list:
         project.render_thumbnail_url = _safe_cloudinary_url(project.thumbnail, width=640)
