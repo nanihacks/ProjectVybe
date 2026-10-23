@@ -48,10 +48,10 @@
                             {% endif %}
                         </div>
                         <div class="svc__body">
-                            <h3>{{ item.service.name }}</h3>
+                            <h3><a class="svc__title-link" href="{{ item.detail_url }}">{{ item.service.name }}</a></h3>
                             <p class="muted">{{ item.service.short_description }}</p>
                             {% include "components/price.html" with item=item.service only %}
-                            <a class="button button--primary" href="{{ item.enquiry_url }}">Enquire about this service</a>
+                            <a class="svc__link text-link text-link--arrow" href="{{ item.detail_url }}">View details<span class="visually-hidden"> about {{ item.service.name }}</span></a>
                         </div>
                     </article>
                 {% endfor %}

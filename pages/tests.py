@@ -673,14 +673,40 @@ class ServicesPageTests(TestCase):
             response.content.find(b"Later Service"),
         )
 
-    def test_service_cards_start_service_specific_enquiries(self):
+    def test_service_cards_link_to_their_detail_page(self):
         response = self.client.get(reverse("pages:services"), secure=True)
 
         self.assertContains(
-            response,
-            f'href="{reverse("leads:enquiry")}?service=first-service"',
+            response, f'href="{reverse("pages:service_detail", kwargs={"slug": "first-service"})}"'
         )
+        self.assertContains(response, "View details")
+        self.assertNotContains(response, "Enquire about this service")
+
+    def test_service_detail_page_has_the_enquiry_button(self):
+        response = self.client.get(
+            reverse("pages:service_detail", kwargs={"slug": "first-service"}), secure=True
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "First service details.")
         self.assertContains(response, "Enquire about this service")
+        self.assertContains(response, f'href="{reverse("leads:enquiry")}?service=first-service"')
+        self.assertContains(response, "Later Service")  # listed under other services
+        self.assertNotContains(response, "Hidden Service")
+        self.assertContains(response, '"@type": "Service"')
+
+    def test_hidden_or_unknown_service_is_a_404(self):
+        for slug in ("hidden-service", "nope"):
+            response = self.client.get(
+                reverse("pages:service_detail", kwargs={"slug": slug}), secure=True
+            )
+            self.assertEqual(response.status_code, 404, slug)
+
+    def test_sitemap_lists_active_service_pages_only(self):
+        response = self.client.get("/sitemap.xml", secure=True)
+
+        self.assertContains(response, "/services/first-service/")
+        self.assertNotContains(response, "/services/hidden-service/")
 
     def test_services_navigation_marks_current_page(self):
         response = self.client.get(reverse("pages:services"), secure=True)

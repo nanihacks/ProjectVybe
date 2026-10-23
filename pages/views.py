@@ -103,10 +103,7 @@ def services(request):
             {
                 "service": service,
                 "image_url": _safe_cloudinary_url(service.image, width=640),
-                "enquiry_url": (
-                    f"{reverse('leads:enquiry')}?"
-                    f"{urlencode({'service': service.slug})}"
-                ),
+                "detail_url": reverse("pages:service_detail", kwargs={"slug": service.slug}),
             }
         )
 
@@ -116,6 +113,42 @@ def services(request):
         {
             "service_cards": service_cards,
             "breadcrumbs": [{"label": "Services"}],
+        },
+    )
+
+
+def service_detail(request, slug):
+    service = get_object_or_404(Service, slug=slug, is_active=True)
+    others = list(
+        Service.objects.filter(is_active=True).exclude(pk=service.pk).order_by("ordering", "name")[:3]
+    )
+    image_url = _safe_cloudinary_url(service.image, width=1200)
+    canonical_url = absolute_url(reverse("pages:service_detail", kwargs={"slug": service.slug}))
+    structured_data = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": service.name,
+        "description": service.short_description,
+        "url": canonical_url,
+        "provider": {"@type": "Organization", "name": settings.SITE_NAME, "url": absolute_url("/")},
+    }
+    if image_url:
+        structured_data["image"] = image_url
+    return render(
+        request,
+        "pages/service_detail.html",
+        {
+            "service": service,
+            "image_url": image_url,
+            "other_services": others,
+            "enquiry_url": f"{reverse('leads:enquiry')}?{urlencode({'service': service.slug})}",
+            "canonical_url": canonical_url,
+            "og_image_url": image_url,
+            "structured_data_json": json_ld_string(structured_data),
+            "breadcrumbs": [
+                {"label": "Services", "url": reverse("pages:services")},
+                {"label": service.name},
+            ],
         },
     )
 

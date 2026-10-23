@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load icons textutils faq %}
+
+{% block title %}{{ service.name }} | ProjectVybe{% endblock %}
+{% block meta_description %}{{ service.short_description }}{% endblock %}
+{% block og_title %}{{ service.name }} | ProjectVybe{% endblock %}
+{% block og_description %}{{ service.short_description }}{% endblock %}
+{% block twitter_title %}{{ service.name }} | ProjectVybe{% endblock %}
+{% block twitter_description %}{{ service.short_description }}{% endblock %}
+
+{% block content %}
+{% include "components/breadcrumbs.html" with breadcrumbs=breadcrumbs only %}
+
+<article class="service-detail">
+    <section class="pd-hero" aria-labelledby="service-title">
+        <div class="container">
+            <div class="pd-card">
+                <div class="pd-card__media"{% if image_url %} style="--pd-bg: url('{{ image_url }}')"{% endif %}>
+                    <div class="project-detail__media">
+                        {% if image_url %}
+                            <img src="{{ image_url }}" alt="{{ service.name }}" width="1200" height="750" fetchpriority="high" decoding="async">
+                        {% else %}
+                            <span class="svc__mono svc__mono--large" role="img" aria-label="{{ service.name }}">{{ service.name|initial }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="pd-card__info">
+                    <span class="badge badge--category">Service</span>
+                    <h1 id="service-title">{{ service.name }}</h1>
+                    <p class="project-detail__summary">{{ service.short_description }}</p>
+                    {% include "components/price.html" with item=service only %}
+                    <div class="pd-hero__actions">
+                        <a class="button button--primary button--large" href="{{ enquiry_url }}">Enquire about this service {% icon "arrow-right" 18 %}</a>
+                    </div>
+                    <p class="muted service-detail__note">{% icon "clock" 14 %} We reply within one business day. No payment is taken at this step.</p>
+                </div>
+            </div>
+            <p class="pd-back"><a class="text-link text-link--back" href="{% url 'pages:services' %}">All services</a></p>
+        </div>
+    </section>
+
+    <section class="section pd-body" aria-labelledby="service-about-title">
+        <div class="container pd-stack">
+            <section class="pd-block" data-reveal>
+                <p class="eyebrow">About this service</p>
+                <h2 id="service-about-title">What you get.</h2>
+                <div class="project-detail__prose">{{ service.description|linebreaks }}</div>
+            </section>
+
+            <section class="pd-block" aria-labelledby="service-steps-title" data-reveal>
+                <p class="eyebrow">How it works</p>
+                <h2 id="service-steps-title">Three simple steps.</h2>
+                <ol class="panel-steps service-detail__steps">
+                    <li><span class="panel-steps__icon">{% icon "message" 18 %}</span><div><strong>Tell us what you need</strong><p class="muted">A short message is enough to begin.</p></div></li>
+                    <li><span class="panel-steps__icon">{% icon "file-text" 18 %}</span><div><strong>We agree scope and price</strong><p class="muted">You see both before any work starts.</p></div></li>
+                    <li><span class="panel-steps__icon">{% icon "check-circle" 18 %}</span><div><strong>We deliver</strong><p class="muted">By email, WhatsApp or a shared link.</p></div></li>
+                </ol>
+                <p><a class="button button--primary" href="{{ enquiry_url }}">Enquire about this service</a></p>
+            </section>
+        </div>
+    </section>
+
+    {% if other_services %}
+        <section class="section section--muted" aria-labelledby="other-services-title">
+            <div class="container">
+                <div class="section-head" data-reveal>
+                    <p class="eyebrow">More from ProjectVybe</p>
+                    <h2 id="other-services-title">Other services.</h2>
+                </div>
+                <ul class="related-list" data-reveal="stagger">
+                    {% for other in other_services %}
+                        <li><a class="related-link" href="{% url 'pages:service_detail' other.slug %}"><strong>{{ other.name }}</strong><span class="muted">{{ other.short_description }}</span></a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    {% endif %}
+</article>
+
+{% faq_section "services" heading="About our services" %}
+{% endblock %}
