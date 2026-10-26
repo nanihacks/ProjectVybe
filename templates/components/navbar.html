@@ -26,8 +26,8 @@
         <nav id="site-navigation" class="site-navigation" aria-label="Primary navigation">
             <a class="site-navigation__link{% if request.resolver_match.url_name == 'home' %} is-active{% endif %}" href="{% url 'pages:home' %}"{% if request.resolver_match.url_name == 'home' %} aria-current="page"{% endif %}>Home</a>
             <a class="site-navigation__link{% if request.resolver_match.url_name == 'about' %} is-active{% endif %}" href="{% url 'pages:about' %}"{% if request.resolver_match.url_name == 'about' %} aria-current="page"{% endif %}>About</a>
-            <div class="site-navigation__dropdown{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-current{% endif %}">
-                <button class="site-navigation__link site-navigation__dropdown-toggle{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' %} is-active{% endif %}" type="button" aria-expanded="false" aria-controls="project-category-menu">
+            <div class="site-navigation__dropdown{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' or request.resolver_match.url_name == 'category_detail' %} is-current{% endif %}">
+                <button class="site-navigation__link site-navigation__dropdown-toggle{% if request.resolver_match.url_name == 'project_catalogue' or request.resolver_match.url_name == 'project_detail' or request.resolver_match.url_name == 'category_detail' %} is-active{% endif %}" type="button" aria-expanded="false" aria-controls="project-category-menu">
                     <span>Projects</span>
                     <span class="site-navigation__dropdown-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="m6 9 6 6 6-6"></path></svg></span>
                 </button>

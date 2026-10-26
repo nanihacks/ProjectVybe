@@ -3902,11 +3902,11 @@ html {
 }
 
 .text-link--arrow::after {
-    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' stroke='black' stroke-width='0.7' stroke-linejoin='round'%3E%3Cpath d='M4.5 10.9h7.6V6.4l7.4 5.6-7.4 5.6v-4.5H4.5z'/%3E%3C/svg%3E");
 }
 
 .text-link--back::before {
-    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M11 6l-6 6 6 6'/%3E%3C/svg%3E");
+    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' stroke='black' stroke-width='0.7' stroke-linejoin='round'%3E%3Cpath d='M19.5 10.9h-7.6V6.4L4.5 12l7.4 5.6v-4.5h7.6z'/%3E%3C/svg%3E");
 }
 
 /* Arrows inside links and buttons sit on the text line and keep one size and stroke. */
@@ -4427,5 +4427,214 @@ body:has(.pd-sticky.is-visible) .to-top {
 
     .result-layout > .panel .panel__title {
         font-size: var(--step-1);
+    }
+}
+
+
+/* ===== Compact buttons: tighter padding around the label, arrows centred on the text line ============ */
+.button {
+    min-height: 2.6rem;
+    padding: 0.55rem 1rem;
+    gap: 0.45rem;
+}
+
+.button--large {
+    min-height: 3rem;
+    padding: 0.65rem 1.25rem;
+}
+
+.button--small {
+    min-height: 2.3rem;
+    padding: 0.45rem 0.85rem;
+}
+
+.button .icon,
+.text-link .icon {
+    vertical-align: middle;
+    margin-top: 0;
+}
+
+.text-link--arrow::after,
+.text-link--back::before {
+    vertical-align: -0.17em;
+}
+
+@media (max-width: 41.99rem) {
+    .button {
+        min-height: 2.75rem;
+        padding: 0.55rem 1rem;
+        font-size: 1.02rem;
+    }
+
+    .button--large {
+        min-height: 3rem;
+        padding: 0.65rem 1.2rem;
+        font-size: 1.05rem;
+    }
+
+    .button--small {
+        min-height: 2.4rem;
+    }
+
+    .site-footer__bottom {
+        flex-direction: column;
+        align-items: center;
+        padding-block: 1rem;
+        font-size: 0.85rem;
+        text-align: center;
+    }
+}
+
+/* ===== Navbar: a gradient underline (the logo colours) on hover and for the current page ============== */
+@media (min-width: 52rem) {
+    .site-navigation__link {
+        position: relative;
+    }
+
+    .site-navigation__link::after {
+        content: "";
+        position: absolute;
+        right: 0.85rem;
+        bottom: 0.3rem;
+        left: 0.85rem;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--gradient-brand);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 220ms ease;
+    }
+
+    .site-navigation__link:hover::after,
+    .site-navigation__link:focus-visible::after,
+    .site-navigation__link.is-active::after,
+    .site-navigation__dropdown.is-open > .site-navigation__link::after {
+        transform: scaleX(1);
+    }
+
+    .site-navigation__link:hover,
+    .site-navigation__link.is-active {
+        background: transparent;
+    }
+}
+
+/* ===== Each part of the site has its own eyebrow colour ============================================== */
+:where(body[data-page="pages-about"]) { --eyebrow-color: #7659d9; }
+:where(body[data-page="pages-services"], body[data-page="pages-service_detail"]) { --eyebrow-color: #0e7490; }
+:where(body[data-page="pages-project_catalogue"], body[data-page="pages-project_detail"], body[data-page="pages-category_detail"]) { --eyebrow-color: #0f766e; }
+:where(body[data-page^="courses-"]) { --eyebrow-color: #b45309; }
+:where(body[data-page^="blog-"]) { --eyebrow-color: #be185d; }
+:where(body[data-page^="leads-"]) { --eyebrow-color: #4f46e5; }
+:where(body[data-page^="orders-"]) { --eyebrow-color: #0f766e; }
+
+.eyebrow {
+    color: var(--eyebrow-color, var(--color-primary));
+}
+
+/* ===== Home and About cards: four different icon colours, compact on phones ========================== */
+.why-grid li:nth-child(1) .why-grid__icon {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.why-grid li:nth-child(2) .why-grid__icon {
+    background: var(--color-violet-soft);
+    color: var(--color-secondary);
+}
+
+.why-grid li:nth-child(3) .why-grid__icon {
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+}
+
+.why-grid li:nth-child(4) .why-grid__icon {
+    background: var(--color-warning-soft);
+    color: #b45309;
+}
+
+@media (max-width: 41.99rem) {
+    .why-grid {
+        gap: 0.75rem;
+    }
+
+    .why-grid li {
+        display: grid;
+        grid-template-columns: 2.75rem minmax(0, 1fr);
+        column-gap: 0.9rem;
+        align-items: start;
+        padding: 0.9rem 1rem;
+        border-radius: var(--radius-lg);
+    }
+
+    .why-grid__icon {
+        width: 2.75rem;
+        height: 2.75rem;
+        grid-row: 1 / span 2;
+        margin: 0;
+        border-radius: 0.75rem;
+    }
+
+    .why-grid li h3 {
+        margin: 0.1rem 0 0.15rem;
+        font-size: 1.05rem;
+    }
+
+    .why-grid li p {
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+
+    .why-grid li > h3:only-of-type:last-child {
+        align-self: center;
+        margin: 0;
+    }
+
+    /* About list on phones: icon and arrow at the top of a smaller card. */
+    .area-list {
+        gap: 0.6rem;
+    }
+
+    .area-list__link {
+        grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 0.25rem 0.8rem;
+        padding: 0.8rem 0.9rem;
+    }
+
+    .area-list__media {
+        width: 2.5rem;
+        height: 2.5rem;
+        align-self: start;
+    }
+
+    .area-list__name {
+        font-size: 1.05rem;
+    }
+
+    .area-list__desc {
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .area-list__go {
+        width: 2.1rem;
+        height: 2.1rem;
+        align-self: start;
+    }
+
+    .area-list__count {
+        padding: 0.15rem 0.6rem;
+        font-size: 0.74rem;
+    }
+}
+
+/* Footer on desktop: the logo, "Explore" and "Information" share one horizontal centre line. */
+@media (min-width: 52rem) {
+    .site-footer__grid {
+        align-items: start;
+    }
+
+    .site-footer__nav {
+        padding-top: 1.15rem;
     }
 }
