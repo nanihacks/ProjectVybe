@@ -1,3 +1,4 @@
+{% load icons %}
 <article class="card card--project{% if project_card_variant %} card--project-{{ project_card_variant }}{% endif %}"{% if homepage_card %} data-homepage-card{% endif %}>
     <div class="card__media media-frame media-frame--project">
         {% if project.category %}<span class="badge badge--category card__category-overlay">{{ project.category.name }}</span>{% endif %}
@@ -13,9 +14,9 @@
         {% include "components/price.html" with item=project only %}
         {% if project_url %}
             {% if project_card_variant == "catalogue" %}
-                <a class="button button--secondary project-card__cta" href="{{ project_url }}">{{ project_cta_label|default:"View project" }} <span aria-hidden="true">→</span></a>
+                <a class="button button--secondary project-card__cta" href="{{ project_url }}">{{ project_cta_label|default:"View project" }} {% icon "arrow-right" 16 %}</a>
             {% else %}
-                <a class="button button--secondary" href="{{ project_url }}">{{ project_cta_label|default:"Explore projects" }} <span aria-hidden="true">→</span></a>
+                <a class="button button--secondary" href="{{ project_url }}">{{ project_cta_label|default:"Explore projects" }} {% icon "arrow-right" 16 %}</a>
             {% endif %}
         {% endif %}
     </div>

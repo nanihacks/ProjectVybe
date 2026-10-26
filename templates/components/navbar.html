@@ -1,5 +1,5 @@
 {% load static %}
-{% load category_assets %}
+{% load category_assets icons %}
 <header class="site-header">
     <div class="container site-header__inner">
         <a class="brand" href="{% url 'pages:home' %}" aria-label="ProjectVybe home">
@@ -34,7 +34,7 @@
                 <div id="project-category-menu" class="site-navigation__dropdown-menu">
                     <div class="site-navigation__dropdown-header">
                         <span class="site-navigation__dropdown-label"><img class="site-navigation__dropdown-brand-icon" src="{% static 'images/brand/projectvybe-icon.webp' %}" alt="" aria-hidden="true" width="192" height="192" loading="lazy"> Browse by category</span>
-                        <a class="site-navigation__dropdown-all" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects <span aria-hidden="true">→</span></a>
+                        <a class="site-navigation__dropdown-all" href="{% url 'pages:project_catalogue' %}#project-results-title">View all projects {% icon "arrow-right" 16 %}</a>
                     </div>
                     <div class="mega__body">
                     {% if navigation_categories %}

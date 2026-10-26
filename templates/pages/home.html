@@ -99,7 +99,7 @@
             {% with displayed_categories=navigation_categories|slice:":6" %}
                 <div class="category-carousel" data-category-carousel>
                     <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous categories" data-category-prev disabled>
-                        <span aria-hidden="true">&larr;</span>
+                        {% icon "arrow-left" 20 %}
                     </button>
                     <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
                         <div class="category-carousel__track">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                     <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next categories" data-category-next>
-                        <span aria-hidden="true">&rarr;</span>
+                        {% icon "arrow-right" 20 %}
                     </button>
                     <div class="category-carousel__footer">
                         <p class="category-carousel__counter"><span data-category-current>01</span><span aria-hidden="true"> / </span><span data-category-total>01</span></p>
@@ -172,7 +172,7 @@
         {% if services %}
             <div class="category-carousel service-carousel" data-service-carousel>
                 <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous services" data-service-prev disabled>
-                    <span aria-hidden="true">&larr;</span>
+                    {% icon "arrow-left" 20 %}
                 </button>
                 <div class="category-carousel__viewport" data-service-scroller tabindex="0" aria-label="ProjectVybe services">
                     <div class="category-carousel__track">
@@ -183,7 +183,7 @@
                     </div>
                 </div>
                 <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next services" data-service-next>
-                    <span aria-hidden="true">&rarr;</span>
+                    {% icon "arrow-right" 20 %}
                 </button>
                 <div class="category-carousel__footer">
                     <p class="category-carousel__counter"><span data-service-current>01</span><span aria-hidden="true"> / </span><span data-service-total>01</span></p>

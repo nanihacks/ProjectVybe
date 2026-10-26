@@ -10,6 +10,8 @@ register = template.Library()
 # Stroke icons on a 24 x 24 grid.
 STROKE = {
     "arrow-right": "M5 12h14M13 6l6 6-6 6",
+    "arrow-left": "M19 12H5M11 6l-6 6 6 6",
+    "arrow-up": "M12 19V5M6 11l6-6 6 6",
     "arrow-up-right": "M7 17 17 7M8 7h9v9",
     "check": "m5 12.5 4.5 4.5L19 7.5",
     "check-circle": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM8 12.3l2.6 2.6L16 9.5",

@@ -42,7 +42,7 @@
                 </div>
             {% endif %}
 
-            <form class="{% if project_enquiry %}project-enquiry-form{% endif %}" method="post" action="{% url 'leads:enquiry' %}"{% if project_enquiry %} data-start-step="{% if form.errors and not form.name.errors and not form.email.errors and not form.phone.errors and not form.consent_contact.errors and not form.consent_age.errors %}2{% else %}1{% endif %}"{% endif %}>
+            <form class="{% if project_enquiry %}project-enquiry-form{% endif %}" method="post" novalidate data-validate action="{% url 'leads:enquiry' %}"{% if project_enquiry %} data-start-step="{% if form.errors and not form.name.errors and not form.email.errors and not form.phone.errors and not form.consent_contact.errors and not form.consent_age.errors %}2{% else %}1{% endif %}"{% endif %}>
                 {% csrf_token %}
                 {% if form.non_field_errors %}
                     <div class="form-errors" role="alert">

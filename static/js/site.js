@@ -331,14 +331,7 @@
     if (nextButton) {
         nextButton.addEventListener("click", function () {
             const firstStep = form.querySelector('[data-enquiry-step="1"]');
-            const requiredFields = firstStep.querySelectorAll("input[required], select[required], textarea[required]");
-
-            for (const field of requiredFields) {
-                if (!field.checkValidity()) {
-                    field.reportValidity();
-                    return;
-                }
-            }
+            if (window.pvValidate && !window.pvValidate(firstStep)) return;
 
             showStep(2);
         });
@@ -841,4 +834,126 @@
         if (event.key === "ArrowLeft") show(index - 1);
         if (event.key === "ArrowRight") show(index + 1);
     });
+})();
+
+
+/* Inline "this field is required" messages for forms marked data-validate. The server still re-checks everything. */
+(function () {
+    const forms = document.querySelectorAll("form[data-validate]");
+    if (!forms.length) return;
+
+    const holderFor = function (el) {
+        return el.closest(".consent__item, .form-field") || el.parentElement;
+    };
+
+    const messageFor = function (el) {
+        const v = el.validity;
+        if (el.type === "checkbox") return "Please tick this box to continue.";
+        if (el.type === "radio") return "Please choose one option.";
+        if (v.valueMissing) return "This field is required.";
+        if (v.typeMismatch && el.type === "email") return "Enter a valid email address, like name@example.com.";
+        if (v.patternMismatch) return el.title || "Enter a valid value.";
+        if (v.tooShort) return "Add a little more detail (at least " + el.minLength + " characters).";
+        return el.validationMessage || "Please check this field.";
+    };
+
+    const clearError = function (el) {
+        const holder = holderFor(el);
+        holder.querySelectorAll("[data-js-error]").forEach(function (node) { node.remove(); });
+        holder.classList.remove("form-field--error", "consent__item--error");
+        holder.querySelectorAll("[aria-invalid]").forEach(function (node) { node.removeAttribute("aria-invalid"); });
+        el.removeAttribute("aria-invalid");
+    };
+
+    const showError = function (el) {
+        const holder = holderFor(el);
+        clearError(el);
+        const box = document.createElement("div");
+        box.setAttribute("data-js-error", "");
+        box.setAttribute("role", "alert");
+        const text = document.createElement("p");
+        text.className = "form-error";
+        text.textContent = messageFor(el);
+        box.appendChild(text);
+        const id = (el.id || el.name || "field") + "_js_error";
+        box.id = id;
+        holder.appendChild(box);
+        holder.classList.add(el.closest(".consent__item") ? "consent__item--error" : "form-field--error");
+        el.setAttribute("aria-invalid", "true");
+        const described = (el.getAttribute("aria-describedby") || "").split(" ").filter(Boolean);
+        if (described.indexOf(id) === -1) described.push(id);
+        el.setAttribute("aria-describedby", described.join(" "));
+    };
+
+    const candidates = function (scope) {
+        return Array.from(scope.querySelectorAll("input, select, textarea")).filter(function (el) {
+            return !el.disabled && el.type !== "hidden" && el.type !== "submit" && el.type !== "button"
+                && !el.closest(".form-honeypot") && !el.closest("[hidden]");
+        });
+    };
+
+    const validateScope = function (scope) {
+        const seenGroups = {};
+        let first = null;
+        candidates(scope).forEach(function (el) { clearError(el); });
+        candidates(scope).forEach(function (el) {
+            if (el.checkValidity()) return;
+            if (el.type === "radio") {
+                if (seenGroups[el.name]) return;
+                seenGroups[el.name] = true;
+            }
+            showError(el);
+            if (!first) first = el;
+        });
+        if (first) first.focus({ preventScroll: false });
+        return !first;
+    };
+    window.pvValidate = validateScope;
+
+    forms.forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            if (!validateScope(form)) event.preventDefault();
+        });
+        const recheck = function (event) {
+            const el = event.target;
+            if (!el.matches || !el.matches("input, select, textarea")) return;
+            if (!holderFor(el).querySelector("[data-js-error]")) return;
+            if (el.type === "radio") {
+                form.querySelectorAll('input[type="radio"][name="' + el.name + '"]').forEach(clearError);
+            } else if (el.checkValidity()) {
+                clearError(el);
+            }
+        };
+        form.addEventListener("input", recheck);
+        form.addEventListener("change", recheck);
+    });
+})();
+
+(function () {
+    const button = document.querySelector("[data-to-top]");
+    if (!button) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let ticking = false;
+
+    const update = function () {
+        ticking = false;
+        const show = window.scrollY > 600;
+        if (show && button.hidden) button.hidden = false;
+        button.classList.toggle("is-visible", show);
+        if (!show && !button.hidden) {
+            window.setTimeout(function () { if (!button.classList.contains("is-visible")) button.hidden = true; }, 220);
+        }
+    };
+
+    window.addEventListener("scroll", function () {
+        if (!ticking) {
+            ticking = true;
+            window.requestAnimationFrame(update);
+        }
+    }, { passive: true });
+
+    button.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: reduced.matches ? "auto" : "smooth" });
+    });
+    update();
 })();
