@@ -3777,3 +3777,33 @@ h2 {
 .enquiry-modal .enquiry-wizard__actions .button--primary {
     background: var(--gradient-button);
 }
+
+/* About page area list: name over description with the arrow on the right (phones), one row on larger screens. */
+.area-list__link {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "name go"
+        "desc go";
+    align-items: center;
+}
+
+.area-list__name {
+    grid-area: name;
+}
+
+.area-list__link > .muted {
+    grid-area: desc;
+}
+
+.area-list__go {
+    grid-area: go;
+    align-self: center;
+}
+
+@media (min-width: 52rem) {
+    .area-list__link {
+        grid-template-columns: 16rem minmax(0, 1fr) auto;
+        grid-template-areas: "name desc go";
+        align-items: baseline;
+    }
+}
