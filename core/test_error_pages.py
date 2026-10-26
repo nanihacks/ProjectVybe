@@ -30,11 +30,13 @@ def make_project(title, slug, category, **fields):
 
 
 class FaviconTests(TestCase):
-    def test_root_favicon_redirects_to_the_real_icon(self):
+    def test_root_favicon_is_served_directly(self):
         response = self.client.get("/favicon.ico", secure=True)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response["Location"].endswith("images/brand/favicon.ico"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "image/x-icon")
+        self.assertIn("max-age", response["Cache-Control"])
+        self.assertGreater(len(response.content), 100)
 
 
 class ServerErrorPageTests(TestCase):

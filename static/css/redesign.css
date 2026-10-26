@@ -4671,16 +4671,16 @@ body:has(.pd-sticky.is-visible) .to-top {
     }
 }
 
-/* Arrows sit a touch higher so they line up with the middle of the letters. */
+/* Arrows are centred on the middle of the lowercase letters (not the cap line, which sits higher). */
 .button .icon {
-    transform: translateY(-0.07em);
+    transform: translateY(0.1em);
 }
 
 .text-link .icon {
-    vertical-align: -0.12em;
+    vertical-align: -0.3em;
 }
 
 .text-link--arrow::after,
 .text-link--back::before {
-    vertical-align: -0.1em;
+    vertical-align: -0.28em;
 }
