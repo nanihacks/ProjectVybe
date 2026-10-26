@@ -4638,3 +4638,49 @@ body:has(.pd-sticky.is-visible) .to-top {
         padding-top: 1.15rem;
     }
 }
+
+/* Projects menu: the underline runs under the word only, not the chevron. */
+@media (min-width: 52rem) {
+    .site-navigation__dropdown-toggle::after {
+        content: none;
+    }
+
+    .site-navigation__dropdown-toggle > span:first-child {
+        position: relative;
+    }
+
+    .site-navigation__dropdown-toggle > span:first-child::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -0.3rem;
+        left: 0;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--gradient-brand);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 220ms ease;
+    }
+
+    .site-navigation__dropdown-toggle:hover > span:first-child::after,
+    .site-navigation__dropdown-toggle:focus-visible > span:first-child::after,
+    .site-navigation__dropdown-toggle.is-active > span:first-child::after,
+    .site-navigation__dropdown-toggle[aria-expanded="true"] > span:first-child::after {
+        transform: scaleX(1);
+    }
+}
+
+/* Arrows sit a touch higher so they line up with the middle of the letters. */
+.button .icon {
+    transform: translateY(-0.07em);
+}
+
+.text-link .icon {
+    vertical-align: -0.12em;
+}
+
+.text-link--arrow::after,
+.text-link--back::before {
+    vertical-align: -0.1em;
+}

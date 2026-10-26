@@ -509,7 +509,8 @@
     min-width: 0;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
-    scroll-behavior: smooth;
+    /* No CSS smooth scrolling here: with snapping it stopped Chrome reporting the Largest Contentful
+       Paint on the home page. The arrow buttons ask for smooth scrolling in site.js instead. */
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
 }
@@ -669,10 +670,6 @@
     .about-areas-carousel .card--category:hover .card__media img,
     .about-areas-carousel .card--category:focus-within .card__media img {
         transform: none;
-    }
-
-    .category-carousel__viewport {
-        scroll-behavior: auto;
     }
 }
 
