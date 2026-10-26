@@ -121,7 +121,7 @@ class HomePageContentTests(TestCase):
         self.assertContains(response, 'data-category-next')
         self.assertContains(
             response,
-            f'href="{reverse("pages:project_catalogue")}?category=active-category#project-results-title"',
+            f'href="{reverse("pages:category_detail", kwargs={"slug": "active-category"})}"',
         )
         self.assertContains(response, "Published Featured Project")
         self.assertNotContains(response, "Published Non Featured Project")
@@ -147,7 +147,7 @@ class HomePageContentTests(TestCase):
         self.assertContains(response, "Browse by category")
         self.assertContains(
             response,
-            f'href="{reverse("pages:project_catalogue")}?category=active-category#project-results-title"',
+            f'href="{reverse("pages:category_detail", kwargs={"slug": "active-category"})}"',
         )
         self.assertNotContains(response, "inactive-category")
 
@@ -264,11 +264,17 @@ class ProjectCatalogueTests(TestCase):
         self.assertEqual(response.json(), {"query": "", "results": []})
 
     def test_category_filter_and_invalid_category_are_safe(self):
-        response = self.client.get(
+        # The old filter link now redirects permanently to the category page.
+        old_link = self.client.get(
             reverse("pages:project_catalogue"),
             {"category": self.active_category.slug},
             secure=True,
         )
+        self.assertEqual(old_link.status_code, 301)
+        category_page = reverse("pages:category_detail", kwargs={"slug": self.active_category.slug})
+        self.assertEqual(old_link["Location"], category_page)
+
+        response = self.client.get(category_page, secure=True)
 
         self.assertEqual(response.context["page_obj"].paginator.count, 14)
         self.assertContains(response, "Catalogue Project 09")
@@ -771,7 +777,7 @@ class AboutPageTests(TestCase):
         )
         self.assertContains(
             response,
-            f'href="{reverse("pages:project_catalogue")}?category=active-about-category#project-results-title"',
+            f'href="{reverse("pages:category_detail", kwargs={"slug": "active-about-category"})}"',
         )
 
     def test_about_navigation_marks_current_page(self):
@@ -1306,3 +1312,80 @@ class SiteWideUiTests(TestCase):
             html = self.client.get(reverse(name), secure=True).content.decode()
             self.assertNotIn("&rarr;", html, name)
             self.assertNotIn("&larr;", html, name)
+
+
+class AboutAreaListTests(TestCase):
+    def test_each_area_shows_its_published_project_count_and_an_arrow_icon(self):
+        category = Category.objects.create(name="Counted Area", slug="counted-area", is_active=True)
+        for index in range(2):
+            Project.objects.create(
+                title=f"Counted Project {index}",
+                slug=f"counted-project-{index}",
+                short_description="x",
+                description="x",
+                category=category,
+                is_published=True,
+            )
+        Project.objects.create(
+            title="Draft Project", slug="draft-project", short_description="x", description="x", category=category
+        )
+
+        response = self.client.get(reverse("pages:about"), secure=True)
+
+        self.assertContains(response, "2 projects")
+        self.assertContains(response, "area-list__media")
+        self.assertContains(response, "area-list__go")
+
+
+class CategoryPageTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(
+            name="Seo Area", slug="seo-area", description="Projects about the seo area.", is_active=True
+        )
+        self.empty = Category.objects.create(name="Empty Area", slug="empty-area", is_active=True)
+        self.hidden = Category.objects.create(name="Hidden Area", slug="hidden-area", is_active=False)
+        Project.objects.create(
+            title="Seo Project", slug="seo-project", short_description="x", description="x",
+            category=self.category, is_published=True,
+        )
+        Project.objects.create(
+            title="Seo Draft", slug="seo-draft", short_description="x", description="x", category=self.category
+        )
+
+    def url(self, category):
+        return reverse("pages:category_detail", kwargs={"slug": category.slug})
+
+    def test_category_page_is_indexable_and_lists_only_published_projects(self):
+        response = self.client.get(self.url(self.category), secure=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Seo Area projects")
+        self.assertContains(response, "Seo Project")
+        self.assertNotContains(response, "Seo Draft")
+        self.assertContains(response, 'name="robots" content="index, follow"')
+        self.assertContains(response, f'rel="canonical" href="http://testserver{self.url(self.category)}"'.replace("http://testserver", "http://localhost:8000"))
+        self.assertContains(response, '"@type": "CollectionPage"')
+        self.assertContains(response, "Empty Area")  # linked under other areas
+
+    def test_empty_category_page_is_noindex(self):
+        response = self.client.get(self.url(self.empty), secure=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="robots" content="noindex, follow"')
+
+    def test_inactive_category_page_is_404(self):
+        self.assertEqual(self.client.get(self.url(self.hidden), secure=True).status_code, 404)
+
+    def test_sitemap_lists_categories_that_have_published_projects(self):
+        response = self.client.get("/sitemap.xml", secure=True)
+
+        self.assertContains(response, self.url(self.category))
+        self.assertNotContains(response, self.url(self.empty))
+        self.assertNotContains(response, self.url(self.hidden))
+
+    def test_project_page_breadcrumb_links_to_its_category_page(self):
+        response = self.client.get(
+            reverse("pages:project_detail", kwargs={"slug": "seo-project"}), secure=True
+        )
+
+        self.assertContains(response, f'href="{self.url(self.category)}"')

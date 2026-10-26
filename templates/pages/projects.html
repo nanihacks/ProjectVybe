@@ -26,7 +26,7 @@
                 </li>
                 {% for category in active_categories %}
                     <li>
-                        <a class="filter-chip{% if category == selected_category %} is-active{% endif %}" href="{% url 'pages:project_catalogue' %}?category={{ category.slug }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}#project-results-title"{% if category == selected_category %} aria-current="page"{% endif %}>{{ category.name }}</a>
+                        <a class="filter-chip{% if category == selected_category %} is-active{% endif %}" href="{% if query %}{% url 'pages:project_catalogue' %}?category={{ category.slug }}&amp;q={{ query|urlencode }}#project-results-title{% else %}{% url 'pages:category_detail' category.slug %}{% endif %}"{% if category == selected_category %} aria-current="page"{% endif %}>{{ category.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
