@@ -30,11 +30,11 @@
         <nav class="site-footer__nav" aria-label="Footer navigation">
             <p class="site-footer__heading">Explore</p>
             <a href="{% url 'pages:home' %}">Home</a>
+            <a href="{% url 'pages:about' %}">About</a>
             <a href="{% url 'pages:project_catalogue' %}">Projects</a>
             <a href="{% url 'pages:services' %}">Services</a>
             <a href="{% url 'courses:list' %}">Courses</a>
             <a href="{% url 'blog:list' %}">Blog</a>
-            <a href="{% url 'pages:about' %}">About</a>
             <a href="{% url 'leads:enquiry' %}">Contact</a>
         </nav>
 
@@ -47,7 +47,7 @@
         </nav>
     </div>
     <div class="container site-footer__bottom">
-        <p>&copy; {% now "Y" %} {{ site_settings.legal_name|default:"ProjectVybe" }}{% if site_settings.gstin %} &middot; GSTIN {{ site_settings.gstin }}{% endif %}</p>
+        <p>&copy; {% now "Y" %} {{ site_settings.legal_name|default:"ProjectVybe" }}. All rights reserved.{% if site_settings.gstin %} &middot; GSTIN {{ site_settings.gstin }}{% endif %}</p>
         <p>{{ site_settings.footer_tagline }}</p>
     </div>
 </footer>

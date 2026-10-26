@@ -3720,3 +3720,90 @@ h2 {
 .pd-gallery__dots {
     gap: 0;
 }
+
+/* ===== Round 5: no sideways scroll, icon-only menu button, logo-gradient buttons ===================== */
+
+/* Screen-reader text inside carousel cards must stay inside its card, or it widens the whole page. */
+.category-carousel__track > * {
+    position: relative;
+}
+
+/* Phones: round icon-only buttons with a clear gap between search and menu. */
+.menu-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+    justify-content: center;
+    padding: 0;
+}
+
+.site-header__inner {
+    gap: var(--space-2);
+}
+
+@media (max-width: 51.99rem) {
+    .site-navigation__search--mobile {
+        margin-left: auto;
+    }
+}
+
+/* Primary buttons use the logo's blue-to-violet gradient. */
+:root {
+    --gradient-button: linear-gradient(120deg, #2f5bea 0%, #5a4fe0 55%, #8b46e6 100%);
+    --gradient-button-hover: linear-gradient(120deg, #2549c4 0%, #4a3fc7 55%, #7636d0 100%);
+}
+
+.button--primary,
+.site-navigation__cta,
+.device__search-go {
+    border-color: transparent;
+    background: var(--gradient-button);
+    color: #fff;
+}
+
+.button--primary:hover,
+.button--primary:focus-visible,
+.site-navigation__cta:hover,
+.site-navigation__cta:focus-visible,
+.device__search-go:hover,
+.device__search-go:focus-visible {
+    background: var(--gradient-button-hover);
+    color: #fff;
+}
+
+.button--primary {
+    box-shadow: 0 1px 2px rgba(74, 63, 199, 0.3), 0 8px 18px -10px rgba(90, 79, 224, 0.75);
+}
+
+.enquiry-modal .enquiry-wizard__actions .button--primary {
+    background: var(--gradient-button);
+}
+
+/* About page area list: name over description with the arrow on the right (phones), one row on larger screens. */
+.area-list__link {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "name go"
+        "desc go";
+    align-items: center;
+}
+
+.area-list__name {
+    grid-area: name;
+}
+
+.area-list__link > .muted {
+    grid-area: desc;
+}
+
+.area-list__go {
+    grid-area: go;
+    align-self: center;
+}
+
+@media (min-width: 52rem) {
+    .area-list__link {
+        grid-template-columns: 16rem minmax(0, 1fr) auto;
+        grid-template-areas: "name desc go";
+        align-items: baseline;
+    }
+}
