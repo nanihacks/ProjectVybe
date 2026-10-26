@@ -3822,12 +3822,10 @@ h2 {
 }
 
 
-/* Thin scrollbar, with the same space kept free on the left, so the page is centred in the window. */
+/* Thin scrollbar; the page fills the window edge to edge. */
 html {
     scrollbar-width: thin;
     scrollbar-color: #b6c2d6 transparent;
-    scrollbar-gutter: stable both-edges;
-    background: var(--color-background);
 }
 
 /* ===== Radio and tick-box option lists: the control sits beside its label, as a tidy row ============= */
