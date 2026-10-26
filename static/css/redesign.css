@@ -4157,3 +4157,13 @@ body:has(.pd-sticky.is-visible) .to-top {
 .pillars--row h2 {
     font-size: var(--step-2);
 }
+
+/* Long descriptions are justified on phones too; hyphenation keeps the word gaps even on narrow lines. */
+.project-detail__prose,
+.project-detail__prose p {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    overflow-wrap: break-word;
+}
