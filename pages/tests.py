@@ -1257,3 +1257,26 @@ class HomeHeroSearchTests(TestCase):
         self.assertContains(response, 'name="q"')
         self.assertContains(response, 'action="/projects/#project-results-title"')
         self.assertContains(response, 'class="device__tile-link"')
+
+
+class NavigationOrderTests(TestCase):
+    def test_navbar_and_footer_list_pages_in_the_same_order(self):
+        response = self.client.get(reverse("pages:home"), secure=True)
+        html = response.content.decode()
+        nav = html[html.index('id="site-navigation"'):]
+        positions = [nav.index(f">{label}</a>") for label in ("Home", "About", "Services", "Courses", "Blog", "Contact")]
+        self.assertEqual(positions, sorted(positions))
+        self.assertLess(nav.index(">About</a>"), nav.index("<span>Projects</span>"))
+        self.assertLess(nav.index("<span>Projects</span>"), nav.index(">Services</a>"))
+
+        footer = html[html.index('class="site-footer__nav"'):]
+        order = [footer.index(f">{label}</a>") for label in ("Home", "About", "Projects", "Services", "Courses", "Blog", "Contact")]
+        self.assertEqual(order, sorted(order))
+
+    def test_footer_has_all_rights_reserved(self):
+        response = self.client.get(reverse("pages:home"), secure=True)
+        self.assertContains(response, "All rights reserved.")
+
+    def test_menu_button_is_icon_only_with_an_accessible_name(self):
+        response = self.client.get(reverse("pages:home"), secure=True)
+        self.assertContains(response, 'aria-label="Open menu"')
