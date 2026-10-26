@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static icons textutils faq %}
+{% load static icons textutils faq category_assets %}
 
 {% block title %}AI, ML &amp; Software Projects | ProjectVybe{% endblock %}
 {% block meta_description %}ProjectVybe brings together practical technology projects, learning support, mentorship, and software services.{% endblock %}
@@ -15,7 +15,7 @@
             <p class="hero2__lead">{{ site_settings.hero_text }}</p>
             <div class="hero2__actions">
                 <a class="button button--primary button--large" href="{{ site_settings.hero_primary_url|default:projects_anchor }}">{{ site_settings.hero_primary_label }} {% icon "arrow-right" 18 %}</a>
-                <a class="button button--outline button--large" href="{{ site_settings.hero_secondary_url|default:services_url }}">{{ site_settings.hero_secondary_label }}</a>
+                <a class="text-link text-link--arrow hero2__secondary" href="{{ site_settings.hero_secondary_url|default:services_url }}">{{ site_settings.hero_secondary_label }}</a>
             </div>
             {% if site_settings.hero_note %}
                 <ul class="chip-row" aria-label="What we cover">
@@ -37,18 +37,17 @@
                     </form>
                     <ul class="device__tiles">
                         {% for category in navigation_categories|slice:":4" %}
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:category_detail' category.slug %}">{{ category.name }}</a></strong><i aria-hidden="true"></i></li>
+                            {% category_logo_url category as tile_logo %}
+                            <li>{% if tile_logo %}<img class="device__tile-logo" src="{{ tile_logo }}" alt="" width="36" height="36" loading="lazy" decoding="async">{% else %}<span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span>{% endif %}<strong><a class="device__tile-link" href="{% url 'pages:category_detail' category.slug %}">{{ category.name }}</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
                         {% empty %}
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "cpu" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">AI &amp; ML</a></strong><i aria-hidden="true"></i></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "globe" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Web</a></strong><i aria-hidden="true"></i></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "shield" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Security</a></strong><i aria-hidden="true"></i></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "phone-mobile" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Mobile</a></strong><i aria-hidden="true"></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "cpu" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">AI &amp; ML</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "globe" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Web</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "shield" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Security</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "phone-mobile" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Mobile</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
-            <div class="float-chip float-chip--one" aria-hidden="true">{% icon "file-text" 16 %} Documentation included</div>
-            <div class="float-chip float-chip--two" aria-hidden="true">{% icon "users" 16 %} Mentor guidance</div>
         </div>
     </div>
 </section>
