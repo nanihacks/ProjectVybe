@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlencode, urlsplit
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Prefetch, Q
+from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -155,7 +155,12 @@ def service_detail(request, slug):
 
 def about(request):
     category_cards = []
-    for category in Category.objects.filter(is_active=True).order_by("name"):
+    categories = (
+        Category.objects.filter(is_active=True)
+        .annotate(project_count=Count("projects", filter=Q(projects__is_published=True)))
+        .order_by("name")
+    )
+    for category in categories:
         category_cards.append(
             {
                 "category": category,

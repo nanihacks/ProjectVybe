@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load icons %}
+{% load icons category_assets %}
 
 {% block title %}About ProjectVybe | Build. Learn. Grow.{% endblock %}
 {% block meta_description %}Learn how ProjectVybe brings together practical technology projects, learning support, and software services.{% endblock %}
@@ -78,9 +78,18 @@
                 {% for item in category_cards %}
                     <li>
                         <a class="area-list__link" href="{{ item.category_url }}">
-                            <span class="area-list__name">{{ item.category.name }}</span>
-                            {% if item.category.description %}<span class="muted">{{ item.category.description }}</span>{% endif %}
-                            <span class="area-list__go">{% icon "arrow-right" 18 %}</span>
+                            {% category_logo_url item.category as area_logo %}
+                            <span class="area-list__media" aria-hidden="true">
+                                {% if area_logo %}<img src="{{ area_logo }}" alt="" width="48" height="48" loading="lazy" decoding="async">{% else %}{% icon "code" 22 %}{% endif %}
+                            </span>
+                            <span class="area-list__text">
+                                <span class="area-list__name">{{ item.category.name }}</span>
+                                {% if item.category.description %}<span class="area-list__desc">{{ item.category.description }}</span>{% endif %}
+                            </span>
+                            <span class="area-list__meta">
+                                {% if item.category.project_count %}<span class="area-list__count">{{ item.category.project_count }} project{{ item.category.project_count|pluralize }}</span>{% endif %}
+                                <span class="area-list__go" aria-hidden="true">{% icon "arrow-right" 18 %}</span>
+                            </span>
                         </a>
                     </li>
                 {% endfor %}

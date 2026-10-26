@@ -1306,3 +1306,26 @@ class SiteWideUiTests(TestCase):
             html = self.client.get(reverse(name), secure=True).content.decode()
             self.assertNotIn("&rarr;", html, name)
             self.assertNotIn("&larr;", html, name)
+
+
+class AboutAreaListTests(TestCase):
+    def test_each_area_shows_its_published_project_count_and_an_arrow_icon(self):
+        category = Category.objects.create(name="Counted Area", slug="counted-area", is_active=True)
+        for index in range(2):
+            Project.objects.create(
+                title=f"Counted Project {index}",
+                slug=f"counted-project-{index}",
+                short_description="x",
+                description="x",
+                category=category,
+                is_published=True,
+            )
+        Project.objects.create(
+            title="Draft Project", slug="draft-project", short_description="x", description="x", category=category
+        )
+
+        response = self.client.get(reverse("pages:about"), secure=True)
+
+        self.assertContains(response, "2 projects")
+        self.assertContains(response, "area-list__media")
+        self.assertContains(response, "area-list__go")
