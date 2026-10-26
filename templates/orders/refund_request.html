@@ -21,7 +21,7 @@
         <div class="form-card">
             <div>
                 <h2 id="refund-form-title" class="visually-hidden">Refund request form</h2>
-                <form method="post" action="{% url 'orders:refund_request' %}">
+                <form method="post" action="{% url 'orders:refund_request' %}" novalidate data-validate>
                     {% csrf_token %}
                     {% if form.non_field_errors %}
                         <div class="form-errors" role="alert">

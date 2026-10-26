@@ -1,4 +1,4 @@
-{% load category_assets %}
+{% load category_assets icons %}
 {% if homepage_image %}
     {% category_home_image_url category as category_logo %}
 {% else %}
@@ -14,7 +14,7 @@
         <h3 class="card__title">{{ category.name }}</h3>
         {% if category.description %}<p class="card__summary">{{ category.description }}</p>{% endif %}
         {% if category_url %}
-            <a class="text-link" href="{{ category_url }}">Explore projects <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="{{ category_url }}">Explore projects {% icon "arrow-right" 16 %}</a>
         {% endif %}
     </div>
 </article>

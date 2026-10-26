@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <form class="project-enquiry-form" method="post" action="{% url 'leads:enquiry' %}" data-start-step="1">
+        <form class="project-enquiry-form" method="post" action="{% url 'leads:enquiry' %}" data-start-step="1" novalidate data-validate>
             {% csrf_token %}
             <input type="hidden" name="project" value="{{ selected_project.pk }}">
             <input type="hidden" name="project_wizard" value="1">

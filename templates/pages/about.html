@@ -7,9 +7,9 @@
 {% block og_description %}Learn how ProjectVybe brings together practical technology projects, learning support, and software services.{% endblock %}
 
 {% block content %}
-<section class="page-hero" aria-labelledby="about-title">
-    <div class="container page-hero__grid">
-        <div>
+<section class="page-hero page-hero--center" aria-labelledby="about-title">
+    <div class="container">
+        <div class="about-hero__intro">
             <p class="pill">{% icon "spark" 16 %} About ProjectVybe</p>
             <h1 id="about-title">Build. Learn. Grow.</h1>
             <p class="page-hero__lead">ProjectVybe is a practical technology and project platform for people turning ideas into focused software work and useful learning experiences.</p>
@@ -18,7 +18,7 @@
                 <a class="button button--outline button--large" href="{% url 'leads:enquiry' %}">Start a conversation</a>
             </div>
         </div>
-        <ul class="pillars" aria-label="Build, learn, grow">
+        <ul class="pillars pillars--row" aria-label="Build, learn, grow">
             <li>
                 <span class="pillars__icon">{% icon "code" 22 %}</span>
                 <div><h2>Build</h2><p class="muted">Explore project directions and software work you can learn from and build on.</p></div>
@@ -80,7 +80,7 @@
                         <a class="area-list__link" href="{{ item.category_url }}">
                             <span class="area-list__name">{{ item.category.name }}</span>
                             {% if item.category.description %}<span class="muted">{{ item.category.description }}</span>{% endif %}
-                            <span class="area-list__go" aria-hidden="true">&rarr;</span>
+                            <span class="area-list__go">{% icon "arrow-right" 18 %}</span>
                         </a>
                     </li>
                 {% endfor %}

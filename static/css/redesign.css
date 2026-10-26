@@ -3888,3 +3888,272 @@ html {
 .site-footer .brand__logo {
     transform: translateX(-5.2%);
 }
+
+/* ===== One arrow style everywhere: the same stroke icon in buttons, links, cards and carousels ======== */
+.text-link--arrow::after,
+.text-link--back::before {
+    content: "";
+    width: 1.05em;
+    height: 1.05em;
+    vertical-align: -0.2em;
+    background: currentColor;
+    -webkit-mask: var(--arrow-mask) center / contain no-repeat;
+    mask: var(--arrow-mask) center / contain no-repeat;
+}
+
+.text-link--arrow::after {
+    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+}
+
+.text-link--back::before {
+    --arrow-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M11 6l-6 6 6 6'/%3E%3C/svg%3E");
+}
+
+/* Arrows inside links and buttons sit on the text line and keep one size and stroke. */
+.text-link .icon,
+.button .icon,
+.site-navigation__dropdown-all .icon {
+    flex: none;
+    vertical-align: -0.2em;
+}
+
+.text-link .icon {
+    margin-left: 0.3em;
+    transition: transform 160ms ease;
+}
+
+.text-link:hover .icon,
+.text-link:focus-visible .icon {
+    transform: translateX(3px);
+}
+
+.area-list__go .icon {
+    display: block;
+}
+
+/* ===== Back-to-top button (laptop and phone) ======================================================== */
+.to-top {
+    position: fixed;
+    z-index: 18;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--gradient-button);
+    box-shadow: 0 0.5rem 1.2rem rgba(74, 63, 199, 0.35);
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition: opacity 200ms ease, transform 200ms ease, bottom 200ms ease;
+    pointer-events: none;
+}
+
+.to-top[hidden] {
+    display: none;
+}
+
+.to-top.is-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+.to-top:hover,
+.to-top:focus-visible {
+    background: var(--gradient-button-hover);
+}
+
+.to-top:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+/* On project pages, stay above the sticky buy bar. */
+body:has(.pd-sticky.is-visible) .to-top {
+    bottom: 5.5rem;
+}
+
+@media (max-width: 41.99rem) {
+    .to-top {
+        right: 1rem;
+        bottom: 1rem;
+        width: 3.25rem;
+        height: 3.25rem;
+    }
+
+    body:has(.pd-sticky.is-visible) .to-top {
+        bottom: 5.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .to-top {
+        transition: none;
+    }
+}
+
+/* ===== Icon tiles get a thin border in the icon's own colour ======================================== */
+.feature-card__icon,
+.why-grid__icon,
+.pillars__icon,
+.panel-steps__icon,
+.contact-list__icon,
+.addon2__icon,
+.device__tile-icon,
+.result-card__icon {
+    border: 1px solid color-mix(in srgb, currentColor 32%, transparent);
+}
+
+/* ===== Phones: slightly larger buttons, text and arrows =========================================== */
+@media (max-width: 41.99rem) {
+    .button {
+        min-height: 3rem;
+        padding-inline: 1.25rem;
+        font-size: 1.02rem;
+    }
+
+    .button--large {
+        min-height: 3.25rem;
+        font-size: 1.08rem;
+    }
+
+    .button--small {
+        min-height: 2.6rem;
+        font-size: 0.95rem;
+    }
+
+    .button .icon {
+        width: 1.3em;
+        height: 1.3em;
+    }
+
+    .text-link {
+        font-size: 1.05rem;
+    }
+
+    .text-link .icon {
+        width: 1.2em;
+        height: 1.2em;
+    }
+
+    .text-link--arrow::after,
+    .text-link--back::before {
+        width: 1.2em;
+        height: 1.2em;
+    }
+}
+
+/* ===== One spacing system for the whole site ======================================================== */
+:root {
+    --section-y: clamp(3rem, 6vw, 4.5rem);
+    --head-gap: 2.5rem;
+}
+
+.section,
+.section.service-section,
+.section.faq-section,
+.section.cta-band-wrap,
+.section.pd-body {
+    padding-block: var(--section-y);
+}
+
+.page-hero,
+.page-hero--compact {
+    padding-bottom: var(--section-y);
+}
+
+/* The heading block and what follows it always have the same gap. */
+.section-head {
+    margin-bottom: var(--head-gap);
+}
+
+.section-head > :last-child {
+    margin-bottom: 0;
+}
+
+.section-head h2 {
+    margin-bottom: var(--space-3);
+}
+
+.section-head .eyebrow {
+    margin-bottom: var(--space-2);
+}
+
+.pd-stack {
+    gap: var(--section-y);
+}
+
+.pd-block h2 {
+    margin-bottom: var(--space-4);
+}
+
+.project-gallery {
+    margin-top: 0;
+}
+
+.faq-section .section-head {
+    margin-bottom: var(--head-gap);
+}
+
+/* ===== About hero: centred intro, then the three pillars as equal cards (the home hero is unchanged) === */
+.page-hero--center .about-hero__intro {
+    max-width: 52rem;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.page-hero--center .about-hero__intro h1 {
+    max-width: none;
+    font-size: clamp(2.8rem, 1.6rem + 5vw, 5rem);
+}
+
+.page-hero--center .about-hero__intro .page-hero__lead {
+    max-width: 40rem;
+    margin-inline: auto;
+    font-size: var(--step-1);
+}
+
+.page-hero--center .hero2__actions {
+    justify-content: center;
+}
+
+.pillars--row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--head-gap);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+@media (min-width: 52rem) {
+    .pillars--row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.pillars--row li {
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow: var(--shadow-lift);
+}
+
+.pillars--row li + li {
+    border-top: 1px solid var(--color-hairline);
+}
+
+.pillars--row h2 {
+    font-size: var(--step-2);
+}

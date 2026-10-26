@@ -1280,3 +1280,29 @@ class NavigationOrderTests(TestCase):
     def test_menu_button_is_icon_only_with_an_accessible_name(self):
         response = self.client.get(reverse("pages:home"), secure=True)
         self.assertContains(response, 'aria-label="Open menu"')
+
+
+class SiteWideUiTests(TestCase):
+    def test_back_to_top_button_is_on_every_page(self):
+        for name in ("pages:home", "pages:about", "pages:services"):
+            response = self.client.get(reverse(name), secure=True)
+            self.assertContains(response, "data-to-top", msg_prefix=name)
+
+    def test_enquiry_and_waitlist_forms_show_inline_required_messages(self):
+        response = self.client.get(reverse("leads:enquiry"), secure=True)
+        self.assertContains(response, "data-validate")
+        self.assertContains(response, "novalidate")
+
+    def test_about_hero_is_the_centred_layout_and_home_is_unchanged(self):
+        about = self.client.get(reverse("pages:about"), secure=True)
+        home = self.client.get(reverse("pages:home"), secure=True)
+        self.assertContains(about, "page-hero--center")
+        self.assertContains(about, "pillars--row")
+        self.assertContains(home, "hero2")
+        self.assertNotContains(home, "page-hero--center")
+
+    def test_arrows_use_the_shared_icon_not_text_glyphs(self):
+        for name in ("pages:home", "pages:about"):
+            html = self.client.get(reverse(name), secure=True).content.decode()
+            self.assertNotIn("&rarr;", html, name)
+            self.assertNotIn("&larr;", html, name)
