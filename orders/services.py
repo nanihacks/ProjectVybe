@@ -184,6 +184,21 @@ def confirm_with_gateway(order, payment_id, signature, gateway=None):
         payment = gateway.fetch_payment(payment_id)
     except GatewayError:
         return False, "unreachable"
+    # With manual capture, or just before auto-capture finishes, the payment is "authorized".
+    # Its order, currency and amount are checked first; then we capture it ourselves.
+    if (
+        payment.get("status") == "authorized"
+        and payment.get("order_id") == order.razorpay_order_id
+        and payment.get("currency") == "INR"
+        and int(payment.get("amount", -1)) == to_paise(order.total)
+    ):
+        try:
+            payment = gateway.capture_payment(payment_id, to_paise(order.total))
+        except GatewayError:
+            try:
+                payment = gateway.fetch_payment(payment_id)
+            except GatewayError:
+                return False, "unreachable"
     if (
         payment.get("order_id") != order.razorpay_order_id
         or payment.get("status") != "captured"

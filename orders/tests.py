@@ -41,6 +41,7 @@ class FakeGateway(RazorpayGateway):
         self.payment = {}
         self.fail_create = False
         self.refunds = []
+        self.captures = []
 
     def _request(self, method, path, payload=None):
         if path == "/orders":
@@ -50,6 +51,10 @@ class FakeGateway(RazorpayGateway):
         if path.startswith("/payments/") and path.endswith("/refund"):
             self.refunds.append((path, payload))
             return {"id": "rfnd_1"}
+        if path.startswith("/payments/") and path.endswith("/capture"):
+            self.captures.append(path)
+            self.payment = {**self.payment, "status": "captured"}
+            return self.payment
         if path.startswith("/payments/"):
             return self.payment
         raise AssertionError(path)
@@ -406,11 +411,24 @@ class PaymentVerificationTests(OrdersTestCase):
 
     def test_uncaptured_or_wrong_order_payment_is_not_paid(self):
         order = self.make_order()
-        for override in ({"status": "authorized"}, {"order_id": "order_OTHER"}, {"currency": "USD"}):
+        for override in ({"order_id": "order_OTHER"}, {"currency": "USD"}):
             with self.subTest(override=override):
                 self.payment(order, **override)
                 self.assertEqual(self.verify(order).status_code, 400)
                 self.assertEqual(Order.objects.get().status, Order.Status.CREATED)
+
+    def test_authorized_payment_is_captured_then_paid(self):
+        order = self.make_order()
+        self.payment(order, status="authorized")
+        self.assertEqual(self.verify(order).status_code, 200)
+        self.assertEqual(self.gateway.captures, ["/payments/pay_1/capture"])
+        self.assertEqual(Order.objects.get().status, Order.Status.PAID)
+
+    def test_authorized_payment_with_wrong_amount_is_not_captured(self):
+        order = self.make_order()
+        self.payment(order, status="authorized", amount=100)
+        self.assertEqual(self.verify(order).status_code, 400)
+        self.assertEqual(self.gateway.captures, [])
 
     def test_unknown_order_is_rejected(self):
         response = self.client.post(reverse("orders:verify"), {"razorpay_order_id": "order_NOPE", "razorpay_payment_id": "p", "razorpay_signature": "s"})
