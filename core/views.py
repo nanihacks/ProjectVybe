@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
 from django.shortcuts import redirect, render
 from django.templatetags.static import static
@@ -35,8 +36,17 @@ def _standalone(template_name, response_class, context=None):
 
 
 def favicon(request):
-    """Browsers ask for /favicon.ico at the site root whatever the page says."""
-    return redirect(static("images/brand/favicon.ico"))
+    """Browsers ask for /favicon.ico at the site root whatever the page says.
+
+    The icon is sent straight back, so there is no redirect hop on every first visit.
+    """
+    path = finders.find("images/brand/favicon.ico")
+    if not path:
+        return redirect(static("images/brand/favicon.ico"))
+    with open(path, "rb") as icon_file:
+        response = HttpResponse(icon_file.read(), content_type="image/x-icon")
+    response["Cache-Control"] = "public, max-age=86400"
+    return response
 
 
 def error_404(request, exception):
