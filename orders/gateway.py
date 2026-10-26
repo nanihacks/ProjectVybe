@@ -72,6 +72,11 @@ class RazorpayGateway:
     def fetch_payment(self, payment_id):
         return self._request("GET", f"/payments/{payment_id}")
 
+    def capture_payment(self, payment_id, amount_paise):
+        return self._request(
+            "POST", f"/payments/{payment_id}/capture", {"amount": amount_paise, "currency": "INR"}
+        )
+
     def refund(self, payment_id, amount_paise, notes=None):
         return self._request(
             "POST", f"/payments/{payment_id}/refund", {"amount": amount_paise, "notes": notes or {}}
