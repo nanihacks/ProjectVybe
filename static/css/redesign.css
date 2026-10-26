@@ -4221,17 +4221,25 @@ body:has(.pd-sticky.is-visible) .to-top {
     height: 3.25rem;
     grid-area: auto;
     place-items: center;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
-    border-radius: 0.9rem;
-    background: var(--color-primary-soft);
     color: var(--color-primary);
 }
 
+/* The category icons are already rounded colour tiles, so no second frame around them. */
 .area-list__media img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    border-radius: 0.8rem;
+    object-fit: cover;
+    box-shadow: 0 0.35rem 0.8rem -0.45rem rgba(12, 24, 48, 0.4);
+}
+
+/* The fallback icon (no category image) keeps a soft tile of its own. */
+.area-list__media > svg {
+    width: 100%;
+    height: 100%;
+    padding: 0.75rem;
+    border-radius: 0.8rem;
+    background: var(--color-primary-soft);
 }
 
 .area-list__text {
@@ -4337,5 +4345,13 @@ body:has(.pd-sticky.is-visible) .to-top {
     .area-list__link:hover,
     .area-list__link:hover .area-list__go {
         transform: none;
+    }
+}
+
+/* Category pages show three projects per row on desktop, two on tablets, one on phones. */
+@media (min-width: 68rem) {
+    .project-catalogue-grid--three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: var(--space-5);
     }
 }
