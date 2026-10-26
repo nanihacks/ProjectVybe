@@ -146,8 +146,10 @@ def mark_paid(order_id, payment_id, method=""):
     from .emails import queue_paid_emails
 
     with transaction.atomic():
+        # Lock only the order row: the project link can be empty, and Postgres cannot lock
+        # the nullable side of the join.
         order = (
-            Order.objects.select_for_update().select_related("project").get(pk=order_id)
+            Order.objects.select_for_update(of=("self",)).select_related("project").get(pk=order_id)
         )
         if order.is_paid:
             return order, False
