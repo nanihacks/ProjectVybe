@@ -167,7 +167,7 @@
                                                 <input class="addon2__input" type="checkbox" value="{{ item.addon.pk }}" data-price="{{ item.amount }}" data-addon-name="{{ item.addon.name }}">
                                                 <span class="addon2__box">
                                                     <span class="addon2__top">
-                                                        <span class="addon2__icon">{% icon item.addon.name|addon_icon 20 %}</span>
+                                                        <span class="addon2__icon addon2__icon--{{ item.addon.name|addon_icon }}">{% icon item.addon.name|addon_icon 20 %}</span>
                                                         {% if item.addon.is_popular %}<span class="addon2__badge">Popular</span>{% endif %}
                                                         <span class="addon2__check" aria-hidden="true">{% icon "check" 14 %}</span>
                                                     </span>
@@ -188,7 +188,7 @@
                                             <article class="addon2 addon2--static">
                                                 <span class="addon2__box">
                                                     <span class="addon2__top">
-                                                        <span class="addon2__icon">{% icon item.addon.name|addon_icon 20 %}</span>
+                                                        <span class="addon2__icon addon2__icon--{{ item.addon.name|addon_icon }}">{% icon item.addon.name|addon_icon 20 %}</span>
                                                         {% if item.addon.is_popular %}<span class="addon2__badge">Popular</span>{% endif %}
                                                     </span>
                                                     <strong class="addon2__name">{{ item.addon.name }}</strong>

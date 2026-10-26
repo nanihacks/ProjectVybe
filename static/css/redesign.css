@@ -4684,3 +4684,65 @@ body:has(.pd-sticky.is-visible) .to-top {
 .text-link--back::before {
     vertical-align: -0.28em;
 }
+
+/* Each add-on type has its own icon colour. */
+.addon2__icon--file-text {
+    background: #e8efff;
+    color: #2f55d4;
+}
+
+.addon2__icon--presentation {
+    background: #f0e9ff;
+    color: #7048d9;
+}
+
+.addon2__icon--book-open {
+    background: #dcf6f2;
+    color: #0f766e;
+}
+
+.addon2__icon--users {
+    background: #fff0d6;
+    color: #b45309;
+}
+
+.addon2__icon--code {
+    background: #e2f4fb;
+    color: #0e7490;
+}
+
+.addon2__icon--video {
+    background: #ffe6ee;
+    color: #be185d;
+}
+
+.addon2__icon--rocket {
+    background: #ffe9dc;
+    color: #c2410c;
+}
+
+.addon2__icon--wrench {
+    background: #e9edf3;
+    color: #475569;
+}
+
+.addon2__icon--award {
+    background: #fff6cc;
+    color: #a16207;
+}
+
+.addon2__icon--chart {
+    background: #e1f6e8;
+    color: #15803d;
+}
+
+.addon2__icon--shield {
+    background: #dff7fb;
+    color: #0891b2;
+}
+
+.addon2__icon--layers {
+    background: #e8e9ff;
+    color: #4f46e5;
+}
+
