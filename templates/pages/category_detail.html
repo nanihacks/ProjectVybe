@@ -24,7 +24,7 @@
         <h2 id="category-results-title" class="visually-hidden">{{ category.name }} projects</h2>
 
         {% if page_obj.object_list %}
-            <div class="grid grid--cards project-catalogue-grid" data-reveal="stagger">
+            <div class="grid grid--cards project-catalogue-grid project-catalogue-grid--three" data-reveal="stagger">
                 {% for project in page_obj %}
                     {% url 'pages:project_detail' project.slug as project_detail_url %}
                     {% include "components/cards/project_card.html" with project=project project_image_url=project.render_thumbnail_url project_url=project_detail_url project_cta_label="View project" project_card_variant="catalogue" only %}
