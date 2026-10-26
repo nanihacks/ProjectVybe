@@ -10,9 +10,13 @@
 <section class="section result-section" aria-labelledby="order-title">
     <div class="container result-layout">
         <div class="result-card result-card--wide">
-            <span class="result-card__icon result-card__icon--success">{% icon "check" 30 %}</span>
-            <p class="eyebrow">Payment received</p>
-            <h1 id="order-title">Thank you, {{ order.customer_name }}.</h1>
+            <div class="result-card__head">
+                <span class="result-card__icon result-card__icon--success">{% icon "check" 30 %}</span>
+                <div>
+                    <p class="eyebrow">Payment received</p>
+                    <h1 id="order-title">Thank you, {{ order.customer_name }}.</h1>
+                </div>
+            </div>
             <p class="result-card__lead">Your order <strong>{{ order.reference }}</strong> is confirmed. We will deliver by <strong>{{ order.get_delivery_channel_display }}</strong>, {{ deadline_text }}.</p>
 
             {% if order.status == "delivered" %}

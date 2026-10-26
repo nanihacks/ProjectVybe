@@ -4381,3 +4381,51 @@ body:has(.pd-sticky.is-visible) .to-top {
     font-size: 0.78rem;
     font-weight: 600;
 }
+
+/* Order confirmation on desktop: icon beside the heading, calmer type, tidy side panel. */
+@media (min-width: 62rem) {
+    .result-card--wide {
+        padding: 2.5rem 2.75rem;
+    }
+
+    .result-card--wide .result-card__head {
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        margin-bottom: var(--space-4);
+    }
+
+    .result-card--wide .result-card__icon {
+        flex: none;
+        width: 4.25rem;
+        height: 4.25rem;
+        margin: 0;
+    }
+
+    .result-card--wide .eyebrow {
+        margin-bottom: 0.25rem;
+    }
+
+    .result-card--wide h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 1rem + 1.2vw, 2.1rem);
+        text-wrap: nowrap;
+    }
+
+    .result-card--wide .result-card__lead {
+        max-width: 38rem;
+        margin-bottom: var(--space-5);
+        font-size: var(--step-0);
+        line-height: 1.65;
+    }
+
+    .result-layout > .panel {
+        position: sticky;
+        top: 6rem;
+        padding: 2rem;
+    }
+
+    .result-layout > .panel .panel__title {
+        font-size: var(--step-1);
+    }
+}
