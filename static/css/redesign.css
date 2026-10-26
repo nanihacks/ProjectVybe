@@ -3881,3 +3881,12 @@ html {
         transition: none;
     }
 }
+
+/* The logo image has about 5% empty space on its left; shift it so the artwork lines up with the page content. */
+.brand__logo {
+    transform: translateX(-5%);
+}
+
+.site-footer .brand__logo {
+    transform: translateX(-5.2%);
+}
