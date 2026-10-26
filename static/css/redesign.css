@@ -3820,3 +3820,10 @@ h2 {
         overflow-wrap: break-word;
     }
 }
+
+/* Keep long descriptions at a comfortable line length (about 100 characters). */
+@media (min-width: 42rem) {
+    .project-detail__prose {
+        max-width: 64rem;
+    }
+}
