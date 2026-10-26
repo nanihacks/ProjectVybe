@@ -4355,3 +4355,29 @@ body:has(.pd-sticky.is-visible) .to-top {
         column-gap: var(--space-5);
     }
 }
+
+/* Hero: one main action, real category logos in the tiles, no decorative placeholders. */
+.hero2__actions {
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+}
+
+.hero2__secondary {
+    font-weight: 600;
+}
+
+.device__tile-logo {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.6rem;
+    object-fit: cover;
+}
+
+.device__tile-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-primary);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
