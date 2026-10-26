@@ -9,9 +9,6 @@ register = template.Library()
 
 # Stroke icons on a 24 x 24 grid.
 STROKE = {
-    "arrow-right": "M5 12h14M13 6l6 6-6 6",
-    "arrow-left": "M19 12H5M11 6l-6 6 6 6",
-    "arrow-up": "M12 19V5M6 11l6-6 6 6",
     "arrow-up-right": "M7 17 17 7M8 7h9v9",
     "check": "m5 12.5 4.5 4.5L19 7.5",
     "check-circle": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM8 12.3l2.6 2.6L16 9.5",
@@ -65,6 +62,10 @@ ADDON_ICONS = (
 
 # Filled brand glyphs (simplified shapes).
 FILLED = {
+    # Solid block arrows, drawn symmetrically about the centre of the 24 grid so they sit centred in buttons.
+    "arrow-right": "M4.5 10.9h7.6V6.4l7.4 5.6-7.4 5.6v-4.5H4.5z",
+    "arrow-left": "M19.5 10.9h-7.6V6.4L4.5 12l7.4 5.6v-4.5h7.6z",
+    "arrow-up": "M10.9 19.5v-7.6H6.4L12 4.5l5.6 7.4h-4.5v7.6z",
     "linkedin": "M4 9h4v11H4zM6 3.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM10.2 9h3.8v1.6c.6-1.1 1.9-1.9 3.7-1.9 3.3 0 4.3 2.1 4.3 5.1V20h-4v-5.5c0-1.4-.4-2.4-1.8-2.4s-2 1-2 2.5V20h-4z",
     "x": "M4 4h4.2l4.3 5.8L17.6 4H20l-6.4 7.4L20.5 20h-4.2l-4.7-6.3L6.2 20H3.8l7-8.1z",
     "quote": "M4 13.5C4 9.4 6.3 6.3 10 5l.8 1.6C8.9 7.6 8 9 8 10.5h2.8V17H4zM13.2 13.5c0-4.1 2.3-7.2 6-8.5l.8 1.6c-1.9 1-2.8 2.4-2.8 3.9H20V17h-6.8z",
@@ -94,7 +95,8 @@ def addon_icon(name):
 def icon(name, size=20, css_class=""):
     """An inline SVG icon. Decorative: hidden from screen readers (put the label on the parent)."""
     if name in FILLED:
-        paths, fill, stroke = FILLED[name], "currentColor", "none"
+        # A thin matching outline rounds the corners of the solid arrows.
+        paths, fill, stroke = FILLED[name], "currentColor", "currentColor" if name.startswith("arrow-") else "none"
     elif name in STROKE:
         paths, fill, stroke = STROKE[name], "none", "currentColor"
     elif name in BRAND_STROKE:
@@ -103,7 +105,7 @@ def icon(name, size=20, css_class=""):
         return ""
     return format_html(
         '<svg class="icon icon--{} {}" viewBox="0 0 24 24" width="{}" height="{}" fill="{}" stroke="{}" '
-        'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+        'stroke-width="{}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
         '<path d="{}"></path></svg>',
         name,
         css_class,
@@ -111,5 +113,6 @@ def icon(name, size=20, css_class=""):
         size,
         fill,
         stroke,
+        "0.7" if name.startswith("arrow-") else "1.7",
         mark_safe(paths),
     )
