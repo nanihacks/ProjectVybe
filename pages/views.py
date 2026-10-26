@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Count, Prefetch, Q
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from catalog.models import Category, Project, ProjectAddon, ProjectImage, Review, Service
@@ -164,10 +164,7 @@ def about(request):
         category_cards.append(
             {
                 "category": category,
-                "category_url": (
-                    f"{reverse('pages:project_catalogue')}?"
-                    f"{urlencode({'category': category.slug})}#project-results-title"
-                ),
+                "category_url": reverse("pages:category_detail", kwargs={"slug": category.slug}),
             }
         )
 
@@ -201,6 +198,14 @@ def robots_txt(request):
 def project_catalogue(request):
     query = request.GET.get("q", "").strip()
     category_slug = request.GET.get("category", "").strip()
+
+    # The old "?category=" filter now lives on its own page, which Google can index.
+    if category_slug and not query and Category.objects.filter(is_active=True, slug=category_slug).exists():
+        target = reverse("pages:category_detail", kwargs={"slug": category_slug})
+        page = request.GET.get("page", "").strip()
+        if page.isdigit() and int(page) > 1:
+            target = f"{target}?page={page}"
+        return redirect(target, permanent=True)
 
     active_categories = Category.objects.filter(is_active=True).order_by("name")
     selected_category = (
@@ -259,6 +264,83 @@ def project_catalogue(request):
             "breadcrumbs": [{"label": "Projects"}],
             "canonical_url": absolute_url(canonical_path),
             "robots_directive": "noindex, follow" if has_filter else "index, follow",
+        },
+    )
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug, is_active=True)
+    projects = (
+        Project.objects.filter(is_published=True, category=category)
+        .select_related("category")
+        .order_by("-featured", "-created_at", "-pk")
+    )
+    paginator = Paginator(projects, 12)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    for project in page_obj.object_list:
+        project.render_thumbnail_url = _safe_cloudinary_url(project.thumbnail, width=640)
+
+    other_categories = list(
+        Category.objects.filter(is_active=True)
+        .exclude(pk=category.pk)
+        .annotate(project_count=Count("projects", filter=Q(projects__is_published=True)))
+        .order_by("name")
+    )
+    canonical_path = reverse("pages:category_detail", kwargs={"slug": category.slug})
+    if page_obj.number > 1:
+        canonical_path = f"{canonical_path}?page={page_obj.number}"
+    canonical_url = absolute_url(canonical_path)
+    description = " ".join((category.description or "").split())
+    if not description:
+        description = f"Browse {category.name} projects with source code, documentation and mentor support."
+
+    structured_data = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "name": f"{category.name} projects",
+                "description": description,
+                "url": canonical_url,
+                "isPartOf": {"@type": "WebSite", "name": settings.SITE_NAME, "url": absolute_url("/")},
+            },
+            {
+                "@type": "ItemList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": index,
+                        "name": project.title,
+                        "url": absolute_url(reverse("pages:project_detail", kwargs={"slug": project.slug})),
+                    }
+                    for index, project in enumerate(page_obj.object_list, start=1)
+                ],
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": absolute_url("/")},
+                    {"@type": "ListItem", "position": 2, "name": "Projects", "item": absolute_url(reverse("pages:project_catalogue"))},
+                    {"@type": "ListItem", "position": 3, "name": category.name, "item": canonical_url},
+                ],
+            },
+        ],
+    }
+    return render(
+        request,
+        "pages/category_detail.html",
+        {
+            "category": category,
+            "page_obj": page_obj,
+            "other_categories": other_categories,
+            "meta_description": description[:155],
+            "breadcrumbs": [
+                {"label": "Projects", "url": reverse("pages:project_catalogue")},
+                {"label": category.name},
+            ],
+            "canonical_url": canonical_url,
+            "robots_directive": "index, follow" if page_obj.paginator.count else "noindex, follow",
+            "structured_data_json": json_ld_string(structured_data),
         },
     )
 
@@ -489,6 +571,7 @@ def project_detail(request, slug):
             ),
             "breadcrumbs": [
                 {"label": "Projects", "url": reverse("pages:project_catalogue")},
+                {"label": project.category.name, "url": reverse("pages:category_detail", kwargs={"slug": project.category.slug})},
                 {"label": project.title},
             ],
         },

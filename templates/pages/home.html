@@ -37,7 +37,7 @@
                     </form>
                     <ul class="device__tiles">
                         {% for category in navigation_categories|slice:":4" %}
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}?category={{ category.slug|urlencode }}#project-results-title">{{ category.name }}</a></strong><i aria-hidden="true"></i></li>
+                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:category_detail' category.slug %}">{{ category.name }}</a></strong><i aria-hidden="true"></i></li>
                         {% empty %}
                             <li><span class="device__tile-icon" aria-hidden="true">{% icon "cpu" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">AI &amp; ML</a></strong><i aria-hidden="true"></i></li>
                             <li><span class="device__tile-icon" aria-hidden="true">{% icon "globe" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Web</a></strong><i aria-hidden="true"></i></li>
@@ -104,7 +104,8 @@
                     <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
                         <div class="category-carousel__track">
                             {% for category in displayed_categories %}
-                                {% with category_url=project_catalogue_url|add:"?category="|add:category.slug|add:"#project-results-title" %}
+                                {% url 'pages:category_detail' category.slug as category_url %}
+                                {% with category_url=category_url %}
                                     {% include "components/cards/category_card.html" with category=category category_url=category_url homepage_image=True homepage_card=True only %}
                                 {% endwith %}
                             {% endfor %}

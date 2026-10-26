@@ -41,7 +41,7 @@
                         <ul class="site-navigation__category-list">
                             {% for category in navigation_categories %}
                                 <li>
-                                    <a class="site-navigation__category-link" href="{% url 'pages:project_catalogue' %}?category={{ category.slug|urlencode }}#project-results-title">
+                                    <a class="site-navigation__category-link" href="{% url 'pages:category_detail' category.slug %}">
                                         {% category_logo_url category as category_logo %}
                                         {% if category_logo %}
                                             <img class="site-navigation__category-icon" src="{{ category_logo }}" alt="" width="44" height="44" loading="lazy" decoding="async">
