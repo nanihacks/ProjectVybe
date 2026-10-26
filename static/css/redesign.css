@@ -3821,3 +3821,72 @@ h2 {
     }
 }
 
+
+/* Thin scrollbar, with the same space kept free on the left, so the page is centred in the window. */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #b6c2d6 transparent;
+    scrollbar-gutter: stable both-edges;
+    background: var(--color-background);
+}
+
+/* ===== Radio and tick-box option lists: the control sits beside its label, as a tidy row ============= */
+.form-field input[type="radio"],
+.form-field input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    min-height: 0;
+    flex: none;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--color-primary);
+}
+
+.form-field > div[id] {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.form-field > div[id] > div > label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 1.35;
+    transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.form-field > div[id] > div > label:hover {
+    border-color: var(--color-primary);
+}
+
+.form-field > div[id] > div > label:has(input:checked) {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.form-field > div[id] > div > label:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-field > div[id] > div > label {
+        transition: none;
+    }
+}
+
+/* The logo image has about 5% empty space on its left; shift it so the artwork lines up with the page content. */
+.brand__logo {
+    transform: translateX(-5%);
+}
+
+.site-footer .brand__logo {
+    transform: translateX(-5.2%);
+}
