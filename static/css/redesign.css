@@ -3807,3 +3807,16 @@ h2 {
         align-items: baseline;
     }
 }
+
+/* Long descriptions (project, service) are justified on wider screens, with hyphenation to keep word gaps even.
+   Phones stay left-aligned, where justified text leaves ugly gaps. */
+@media (min-width: 42rem) {
+    .project-detail__prose,
+    .project-detail__prose p {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        overflow-wrap: break-word;
+    }
+}
