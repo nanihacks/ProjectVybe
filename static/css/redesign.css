@@ -4806,3 +4806,10 @@ body:has(.pd-sticky.is-visible) .to-top {
         display: none;
     }
 }
+
+/* The card starts level with the main heading (below the small "Build. Learn. Grow." pill), not the pill. */
+@media (min-width: 62rem) {
+    .hero2__visual {
+        margin-top: 3.2rem;
+    }
+}
