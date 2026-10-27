@@ -63,9 +63,9 @@ ADDON_ICONS = (
 # Filled brand glyphs (simplified shapes).
 FILLED = {
     # Solid block arrows, drawn symmetrically about the centre of the 24 grid so they sit centred in buttons.
-    "arrow-right": "M4.5 10.9h7.6V6.4l7.4 5.6-7.4 5.6v-4.5H4.5z",
-    "arrow-left": "M19.5 10.9h-7.6V6.4L4.5 12l7.4 5.6v-4.5h7.6z",
-    "arrow-up": "M10.9 19.5v-7.6H6.4L12 4.5l5.6 7.4h-4.5v7.6z",
+    "arrow-right": "M3 10.9h9.4V6.4l8.1 5.6-8.1 5.6v-4.5H3z",
+    "arrow-left": "M21 10.9h-9.4V6.4L3.5 12l8.1 5.6v-4.5H21z",
+    "arrow-up": "M10.9 21v-9.4H6.4L12 3.5l5.6 8.1h-4.5V21z",
     "linkedin": "M4 9h4v11H4zM6 3.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM10.2 9h3.8v1.6c.6-1.1 1.9-1.9 3.7-1.9 3.3 0 4.3 2.1 4.3 5.1V20h-4v-5.5c0-1.4-.4-2.4-1.8-2.4s-2 1-2 2.5V20h-4z",
     "x": "M4 4h4.2l4.3 5.8L17.6 4H20l-6.4 7.4L20.5 20h-4.2l-4.7-6.3L6.2 20H3.8l7-8.1z",
     "quote": "M4 13.5C4 9.4 6.3 6.3 10 5l.8 1.6C8.9 7.6 8 9 8 10.5h2.8V17H4zM13.2 13.5c0-4.1 2.3-7.2 6-8.5l.8 1.6c-1.9 1-2.8 2.4-2.8 3.9H20V17h-6.8z",
