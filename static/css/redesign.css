@@ -4759,3 +4759,50 @@ body:has(.pd-sticky.is-visible) .to-top {
 .hero2__visual {
     padding: 0;
 }
+
+/* Hero card on desktop: its spacing, type and icons shrink with the window height so it never grows
+   taller than the text beside it. */
+@media (min-width: 62rem) {
+    .device__body {
+        gap: clamp(0.5rem, 1.5vh, 0.85rem);
+        padding: clamp(1rem, 2.6vh, 1.75rem);
+    }
+
+    .device__title {
+        font-size: clamp(1.15rem, 3.2vh, 1.7rem);
+    }
+
+    .device__search {
+        padding: clamp(0.45rem, 1.2vh, 0.7rem) 0.85rem;
+    }
+
+    .device__tiles {
+        gap: clamp(0.5rem, 1.4vh, 0.8rem);
+    }
+
+    .device__tiles li {
+        gap: clamp(0.3rem, 0.9vh, 0.5rem);
+        padding: clamp(0.55rem, 1.5vh, 0.85rem);
+    }
+
+    .device__tiles strong {
+        font-size: clamp(0.78rem, 0.62rem + 0.25vw, 0.92rem);
+        line-height: 1.25;
+    }
+
+    .device__tile-logo,
+    .device__tile-icon {
+        width: clamp(1.6rem, 4.2vh, 2.25rem);
+        height: clamp(1.6rem, 4.2vh, 2.25rem);
+    }
+
+    .device__tile-go {
+        font-size: clamp(0.7rem, 0.55rem + 0.2vw, 0.8rem);
+    }
+}
+
+@media (min-width: 62rem) and (max-height: 820px) {
+    .device__bar {
+        display: none;
+    }
+}
