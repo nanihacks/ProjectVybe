@@ -3990,10 +3990,6 @@ body.is-project-search-open {
     text-decoration: none;
 }
 
-.area-list li:last-child .area-list__link {
-    border-bottom: 1px solid var(--color-border);
-}
-
 @media (min-width: 52rem) {
     .area-list__link {
         grid-template-columns: 16rem minmax(0, 1fr) auto;
