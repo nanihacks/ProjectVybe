@@ -4,6 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8TKJVPL10"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-M8TKJVPL10');
+    </script>
     <meta name="description" content="{% block meta_description %}{{ site_description }}{% endblock %}">
     <meta name="robots" content="{% block robots %}{{ robots_directive }}{% endblock %}">
     <link rel="canonical" href="{% block canonical_url %}{{ canonical_url }}{% endblock %}">
