@@ -4716,3 +4716,49 @@ body:has(.pd-sticky.is-visible) .to-top {
         margin-top: 3.2rem;
     }
 }
+
+/* ===== Round 2, type: restrained headings and mono labels =================================================== */
+.hero2 h1,
+.page-hero h1 {
+    max-width: 16em;
+    font-size: clamp(2.25rem, 1.5rem + 2.6vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+@media (min-width: 62rem) {
+    .hero2 h1 {
+        font-size: clamp(2.25rem, min(1.5rem + 2.6vw, 8vh), 3.5rem);
+    }
+}
+
+.eyebrow,
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.eyebrow {
+    color: var(--eyebrow-color, var(--color-text-muted));
+}
+
+.price,
+.price *,
+.device__caption span,
+.category-carousel__counter,
+.steps__dot {
+    font-variant-numeric: tabular-nums;
+}
