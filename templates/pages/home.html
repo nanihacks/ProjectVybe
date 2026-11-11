@@ -10,148 +10,159 @@
 <section class="hero2" aria-labelledby="hero-title">
     <div class="container hero2__grid">
         <div class="hero2__content">
-            <p class="pill">{% icon "spark" 16 %} {{ site_settings.hero_eyebrow }}</p>
+            <p class="eyebrow">{{ site_settings.hero_eyebrow }}</p>
             <h1 id="hero-title">{{ site_settings.hero_heading }}</h1>
             <p class="hero2__lead">{{ site_settings.hero_text }}</p>
             <div class="hero2__actions">
-                <a class="button button--primary button--large" href="{{ site_settings.hero_primary_url|default:projects_anchor }}">{{ site_settings.hero_primary_label }} {% icon "arrow-right" 18 %}</a>
-                <a class="text-link text-link--arrow hero2__secondary" href="{{ site_settings.hero_secondary_url|default:services_url }}">{{ site_settings.hero_secondary_label }}</a>
+                <a class="button button--primary button--large" href="{{ site_settings.hero_primary_url|default:enquiry_url }}">{{ site_settings.hero_primary_label }}</a>
+                <a class="button button--outline button--large" href="{{ site_settings.hero_secondary_url|default:projects_anchor }}">{{ site_settings.hero_secondary_label }}</a>
             </div>
             {% if site_settings.hero_note %}
-                <ul class="chip-row" aria-label="What we cover">
-                    {% for chip in site_settings.hero_note|split_dots %}<li>{% icon "check" 14 %} {{ chip }}</li>{% endfor %}
+                <ul class="hero2__note" aria-label="What you get">
+                    {% for item in site_settings.hero_note|split_dots %}<li>{{ item }}</li>{% endfor %}
                 </ul>
             {% endif %}
         </div>
 
+        {% if featured_projects %}
         <div class="hero2__visual">
-            <div class="device">
-                <div class="device__bar" aria-hidden="true"><span></span><span></span><span></span><em>projectvybe.com/projects</em></div>
-                <div class="device__body">
-                    <p class="device__title">Find your next project</p>
-                    <form class="device__search" method="get" action="{% url 'pages:project_catalogue' %}#project-results-title" role="search">
-                        <label class="visually-hidden" for="hero-project-search">Search projects</label>
-                        {% icon "search" 16 %}
-                        <input id="hero-project-search" name="q" type="search" placeholder="Search by topic or technology" autocomplete="off" maxlength="80">
-                        <button class="device__search-go" type="submit" aria-label="Search projects">{% icon "arrow-right" 16 %}</button>
-                    </form>
-                    <ul class="device__tiles">
-                        {% for category in navigation_categories|slice:":4" %}
-                            {% category_logo_url category as tile_logo %}
-                            <li>{% if tile_logo %}<img class="device__tile-logo" src="{{ tile_logo }}" alt="" width="36" height="36" loading="lazy" decoding="async">{% else %}<span class="device__tile-icon" aria-hidden="true">{% icon "code" 18 %}</span>{% endif %}<strong><a class="device__tile-link" href="{% url 'pages:category_detail' category.slug %}">{{ category.name }}</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
-                        {% empty %}
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "cpu" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">AI &amp; ML</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "globe" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Web</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "shield" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Security</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
-                            <li><span class="device__tile-icon" aria-hidden="true">{% icon "phone-mobile" 18 %}</span><strong><a class="device__tile-link" href="{% url 'pages:project_catalogue' %}">Mobile</a></strong><span class="device__tile-go" aria-hidden="true">View projects {% icon "arrow-right" 14 %}</span></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+            <ul class="shots" aria-label="Recent projects">
+                {% for project in featured_projects %}
+                    <li class="shots__item shots__item--{{ forloop.counter }}">
+                        <a href="{% url 'pages:project_detail' project.slug %}">
+                            {% if project.thumbnail %}
+                                <img src="{{ project.render_thumbnail_url|default:project.thumbnail.url }}" alt="{{ project.title }} screenshot" width="640" height="400"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">
+                            {% else %}
+                                <span class="shots__blank">{{ project.category.name }}</span>
+                            {% endif %}
+                            <span class="shots__caption"><strong>{{ project.title }}</strong>{% if project.stack_tags %}<span>{{ project.stack_tags|slice:":3"|join:" · " }}</span>{% endif %}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
+        {% endif %}
     </div>
 </section>
+
+{% if proof_points %}
+<section class="glance" aria-label="ProjectVybe at a glance">
+    <div class="container">
+        <dl class="glance__list">
+            {% for value, label in proof_points %}
+                <div class="glance__item"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+            {% endfor %}
+        </dl>
+    </div>
+</section>
+{% endif %}
 
 <section class="section" aria-labelledby="offers-title">
     <div class="container">
         <div class="section-head" data-reveal>
-            <p class="eyebrow">What we do</p>
-            <h2 id="offers-title">Support for the work behind the idea.</h2>
-            <p class="muted">Project development, technology learning and practical software support in one place.</p>
+            <p class="eyebrow">01 / What we do</p>
+            <h2 id="offers-title">Three ways to work with ProjectVybe</h2>
         </div>
-        <ul class="feature-cards" data-reveal="stagger">
-            <li class="feature-card">
-                <span class="feature-card__icon">{% icon "code" 24 %}</span>
-                <h3>Project development</h3>
-                <p>AI/ML, computer science, final-year and software projects you can learn from and build on.</p>
-                <a class="text-link text-link--arrow" href="{{ projects_anchor }}">Browse projects</a>
-            </li>
-            <li class="feature-card">
-                <span class="feature-card__icon feature-card__icon--violet">{% icon "book" 24 %}</span>
-                <h3>Learn with clarity</h3>
-                <p>Training, mentorship, documentation and presentation support around real project work.</p>
-                <a class="text-link text-link--arrow" href="{{ services_url }}">See how we help</a>
-            </li>
-            <li class="feature-card">
-                <span class="feature-card__icon feature-card__icon--cyan">{% icon "layers" 24 %}</span>
-                <h3>Software services</h3>
-                <p>A focused starting point for software development and other technology work.</p>
+        <ol class="rows" data-reveal="stagger">
+            <li class="rows__item">
+                <span class="rows__num" aria-hidden="true">01</span>
+                <div class="rows__text">
+                    <h3>Software services</h3>
+                    <p>Web, mobile and AI software built for your business or your idea.</p>
+                </div>
                 <a class="text-link text-link--arrow" href="{{ services_url }}">View services</a>
             </li>
-        </ul>
+            <li class="rows__item">
+                <span class="rows__num" aria-hidden="true">02</span>
+                <div class="rows__text">
+                    <h3>Projects</h3>
+                    <p>Working AI/ML, web and software projects with source code and documentation.</p>
+                </div>
+                <a class="text-link text-link--arrow" href="{{ projects_anchor }}">Browse projects</a>
+            </li>
+            <li class="rows__item">
+                <span class="rows__num" aria-hidden="true">03</span>
+                <div class="rows__text">
+                    <h3>Courses</h3>
+                    <p>Hands-on technology courses, opening soon. Join the waitlist.</p>
+                </div>
+                <a class="text-link text-link--arrow" href="{% url 'courses:list' %}">See courses</a>
+            </li>
+        </ol>
     </div>
 </section>
 
-{% if site_settings.show_categories_section %}
-<section id="projects" class="section section--muted" aria-labelledby="categories-title">
+{% if site_settings.show_featured_section %}
+<section id="projects" class="section section--tight" aria-labelledby="featured-title">
     <div class="container">
         <div class="section-head section-head--row" data-reveal>
             <div>
-                <p class="eyebrow">Explore by area</p>
-                <h2 id="categories-title">Find a direction for your next project.</h2>
+                <p class="eyebrow">02 / Recent projects</p>
+                <h2 id="featured-title">Recent projects</h2>
             </div>
-            <p class="muted">Practical project directions across AI/ML, cybersecurity, mobile and web development.</p>
+            <a class="text-link text-link--arrow" href="{% url 'pages:project_catalogue' %}">All projects</a>
         </div>
 
-        {% if navigation_categories %}
-            {% url 'pages:project_catalogue' as project_catalogue_url %}
-            {% with displayed_categories=navigation_categories|slice:":6" %}
-                <div class="category-carousel" data-category-carousel>
-                    <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous categories" data-category-prev disabled>
-                        {% icon "arrow-left" 20 %}
-                    </button>
-                    <div class="category-carousel__viewport" data-category-scroller tabindex="0" aria-label="Project categories">
-                        <div class="category-carousel__track">
-                            {% for category in displayed_categories %}
-                                {% url 'pages:category_detail' category.slug as category_url %}
-                                {% with category_url=category_url %}
-                                    {% include "components/cards/category_card.html" with category=category category_url=category_url homepage_image=True homepage_card=True only %}
-                                {% endwith %}
-                            {% endfor %}
+        {% if featured_projects %}
+            <ol class="feature-rows">
+                {% for project in featured_projects %}
+                    <li class="feature-row" data-reveal>
+                        <a class="feature-row__media" href="{% url 'pages:project_detail' project.slug %}" tabindex="-1" aria-hidden="true">
+                            {% if project.thumbnail %}
+                                <img src="{{ project.render_thumbnail_url|default:project.thumbnail.url }}" alt="" width="640" height="400" loading="lazy" decoding="async">
+                            {% else %}
+                                <span class="shots__blank">{{ project.category.name }}</span>
+                            {% endif %}
+                        </a>
+                        <div class="feature-row__body">
+                            <p class="eyebrow">{{ project.category.name }}</p>
+                            <h3><a href="{% url 'pages:project_detail' project.slug %}">{{ project.title }}</a></h3>
+                            <p>{{ project.short_description }}</p>
+                            {% if project.stack_tags %}
+                                <ul class="tags" aria-label="Technology">
+                                    {% for tag in project.stack_tags %}<li>{{ tag }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                            <a class="text-link text-link--arrow" href="{% url 'pages:project_detail' project.slug %}">View project<span class="visually-hidden">: {{ project.title }}</span></a>
                         </div>
-                    </div>
-                    <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next categories" data-category-next>
-                        {% icon "arrow-right" 20 %}
-                    </button>
-                    <div class="category-carousel__footer">
-                        <p class="category-carousel__counter"><span data-category-current>01</span><span aria-hidden="true"> / </span><span data-category-total>01</span></p>
-                        <div class="category-carousel__dots" data-category-dots role="tablist" aria-label="Choose category slide"></div>
-                        <a class="category-carousel__view-all text-link text-link--arrow" href="{% url 'pages:project_catalogue' %}">View all</a>
-                    </div>
-                </div>
-            {% endwith %}
+                    </li>
+                {% endfor %}
+            </ol>
         {% else %}
             <div class="empty-state" role="status">
-                <h3>Project areas are coming soon.</h3>
-                <p class="muted">Tell us what you want to build and we'll point you to the right starting point.</p>
+                <h3>Featured projects are coming soon.</h3>
+                <p class="muted">Tell us what you want to build and we'll suggest where to start.</p>
             </div>
         {% endif %}
     </div>
 </section>
 {% endif %}
 
-{% if site_settings.show_featured_section %}
-<section class="section" aria-labelledby="featured-title">
+{% if site_settings.show_categories_section %}
+<section id="areas" class="section" aria-labelledby="categories-title">
     <div class="container">
-        <div class="section-head section-head--row" data-reveal>
-            <div>
-                <p class="eyebrow">Featured projects</p>
-                <h2 id="featured-title">A closer look at selected work.</h2>
-            </div>
-            <a class="button button--outline" href="{% url 'pages:project_catalogue' %}">All projects {% icon "arrow-right" 16 %}</a>
+        <div class="section-head" data-reveal>
+            <p class="eyebrow">03 / Areas</p>
+            <h2 id="categories-title">Browse projects by area</h2>
         </div>
 
-        {% if featured_projects %}
-            <div class="grid grid--cards grid--three" data-reveal="stagger">
-                {% for project in featured_projects %}
-                    {% url 'pages:project_detail' project.slug as featured_project_url %}
-                    {% include "components/cards/project_card.html" with project=project project_image_url=project.render_thumbnail_url project_url=featured_project_url project_cta_label="View project" homepage_card=True only %}
+        {% if area_index %}
+            <ul class="area-index" data-reveal>
+                {% for area in area_index %}
+                    <li>
+                        <a class="area-index__link" href="{% url 'pages:category_detail' area.slug %}">
+                            <span class="area-index__name">{{ area.name }}</span>
+                            <span class="area-index__desc">{{ area.description|truncatechars:90 }}</span>
+                            <span class="area-index__count">{{ area.project_count }} project{{ area.project_count|pluralize }}</span>
+                            <span class="area-index__go" aria-hidden="true">{% icon "arrow-right" 18 %}</span>
+                        </a>
+                    </li>
                 {% endfor %}
-            </div>
+            </ul>
         {% else %}
             <div class="empty-state" role="status">
-                <h3>Featured projects are coming soon.</h3>
-                <p class="muted">Tell us what you want to build and we'll suggest where to start.</p>
+                <h3>Project areas are coming soon.</h3>
+                <p class="muted">Tell us what you want to build and we'll point you to the right starting point.</p>
             </div>
         {% endif %}
     </div>
@@ -163,34 +174,25 @@
     <div class="container">
         <div class="section-head section-head--row" data-reveal>
             <div>
-                <p class="eyebrow">Services</p>
-                <h2 id="services-title">Practical support for technology work.</h2>
+                <p class="eyebrow">04 / Services</p>
+                <h2 id="services-title">What we build and teach</h2>
             </div>
-            <p class="muted">Training, mentorship, documentation and software support for your next technology project.</p>
+            <a class="text-link text-link--arrow" href="{{ services_url }}">All services</a>
         </div>
 
         {% if services %}
-            <div class="category-carousel service-carousel" data-service-carousel>
-                <button class="category-carousel__control category-carousel__control--prev" type="button" aria-label="Previous services" data-service-prev disabled>
-                    {% icon "arrow-left" 20 %}
-                </button>
-                <div class="category-carousel__viewport" data-service-scroller tabindex="0" aria-label="ProjectVybe services">
-                    <div class="category-carousel__track">
-                        {% for service in services %}
-                            {% url 'pages:service_detail' service.slug as service_detail_url %}
-                            {% include "components/cards/service_card.html" with service=service service_image_url=service.render_image_url service_url=service_detail_url service_cta_label="View details" homepage_card=True only %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <button class="category-carousel__control category-carousel__control--next" type="button" aria-label="Next services" data-service-next>
-                    {% icon "arrow-right" 20 %}
-                </button>
-                <div class="category-carousel__footer">
-                    <p class="category-carousel__counter"><span data-service-current>01</span><span aria-hidden="true"> / </span><span data-service-total>01</span></p>
-                    <div class="category-carousel__dots" data-service-dots role="tablist" aria-label="Choose service slide"></div>
-                    <a class="category-carousel__view-all text-link text-link--arrow" href="{{ services_url }}">View all</a>
-                </div>
-            </div>
+            <ol class="table-rows" data-reveal>
+                {% for service in services %}
+                    <li>
+                        <a class="table-rows__link" href="{% url 'pages:service_detail' service.slug %}">
+                            <span class="table-rows__num" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+                            <span class="table-rows__name">{{ service.name }}</span>
+                            <span class="table-rows__desc">{{ service.short_description }}</span>
+                            <span class="table-rows__go">Details {% icon "arrow-right" 16 %}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
         {% else %}
             <div class="empty-state empty-state--dark" role="status">
                 <h3>Services are coming soon.</h3>
@@ -204,53 +206,29 @@
 {% if site_settings.show_process_section %}
 <section class="section" aria-labelledby="process-title">
     <div class="container">
-        <div class="section-head section-head--center" data-reveal>
-            <p class="eyebrow">How it works</p>
-            <h2 id="process-title">From idea to working project in four steps.</h2>
+        <div class="section-head" data-reveal>
+            <p class="eyebrow">05 / Process</p>
+            <h2 id="process-title">Four steps from first message to delivery</h2>
         </div>
-        <ol class="steps" data-reveal="stagger">
-            <li><span class="steps__dot">1</span><h3>Explore</h3><p class="muted">Browse the projects and services that fit your direction.</p></li>
-            <li><span class="steps__dot">2</span><h3>Choose</h3><p class="muted">Pick the project or support that matches what you need.</p></li>
-            <li><span class="steps__dot">3</span><h3>Connect</h3><p class="muted">Send a short enquiry, or pay online where it is available.</p></li>
-            <li><span class="steps__dot">4</span><h3>Build</h3><p class="muted">Move forward with focused project or service support.</p></li>
+        <ol class="line-steps" data-reveal="stagger">
+            <li><span class="line-steps__num">01</span><h3>Explore</h3><p>Browse the projects and services that fit your direction.</p></li>
+            <li><span class="line-steps__num">02</span><h3>Choose</h3><p>Pick the project or support that matches what you need.</p></li>
+            <li><span class="line-steps__num">03</span><h3>Connect</h3><p>Send a short enquiry, or pay online where it is available.</p></li>
+            <li><span class="line-steps__num">04</span><h3>Build</h3><p>Move forward with focused project or service support.</p></li>
         </ol>
     </div>
 </section>
 {% endif %}
 
-{% if site_settings.show_value_section %}
-<section class="section section--muted" aria-labelledby="value-title">
-    <div class="container">
-        <div class="section-head section-head--center" data-reveal>
-            <p class="eyebrow">Why ProjectVybe</p>
-            <h2 id="value-title">Technology support grounded in practical work.</h2>
-        </div>
-        <ul class="why-grid" data-reveal="stagger">
-            <li><span class="why-grid__icon">{% icon "code" 22 %}</span><h3>Practical project focus</h3><p class="muted">Work you can run, explain and build on.</p></li>
-            <li><span class="why-grid__icon">{% icon "file-text" 22 %}</span><h3>Clear documentation</h3><p class="muted">Reports and presentation support that make sense.</p></li>
-            <li><span class="why-grid__icon">{% icon "users" 22 %}</span><h3>Learning and mentorship</h3><p class="muted">Guidance from people who build software.</p></li>
-            <li><span class="why-grid__icon">{% icon "layers" 22 %}</span><h3>Across domains</h3><p class="muted">AI/ML, web, mobile, security and more.</p></li>
-        </ul>
-    </div>
-</section>
-{% endif %}
-
 {% if reviews and site_settings.show_reviews_section %}
-<section class="section" aria-labelledby="reviews-title">
+<section class="section section--tight" aria-labelledby="reviews-title">
     <div class="container">
-        <div class="section-head section-head--center" data-reveal>
-            <p class="eyebrow">What people say</p>
-            <h2 id="reviews-title">Clear support for practical project work.</h2>
-        </div>
-        <div class="reviews-grid" data-reveal="stagger">
+        <p class="eyebrow" id="reviews-title">06 / What people say</p>
+        <div class="quotes" data-reveal="stagger">
             {% for review in reviews|slice:":3" %}
-                <figure class="review2">
-                    <span class="review2__mark">{% icon "quote" 28 %}</span>
+                <figure class="quote">
                     <blockquote><p>{{ review.message }}</p></blockquote>
-                    <figcaption>
-                        <span class="review2__avatar" aria-hidden="true">{{ review.reviewer_name|initial }}</span>
-                        <span><strong>{{ review.reviewer_name }}</strong>{% if review.reviewer_role %}<small>{{ review.reviewer_role }}</small>{% endif %}</span>
-                    </figcaption>
+                    <figcaption><strong>{{ review.reviewer_name }}</strong>{% if review.reviewer_role %}<span>{{ review.reviewer_role }}</span>{% endif %}</figcaption>
                 </figure>
             {% endfor %}
         </div>
@@ -260,18 +238,12 @@
 
 {% faq_section "home" heading="Questions we hear often" %}
 
-<section id="contact" class="section cta-band-wrap" aria-labelledby="cta-title">
-    <div class="container">
-        <div class="cta-band" data-reveal>
-            <div>
-                <h2 id="cta-title">Tell us what you're building.</h2>
-                <p>Browse the projects, or send a short note and we'll suggest a starting point.</p>
-            </div>
-            <div class="cta-band__actions">
-                <a class="button button--light button--large" href="{% url 'leads:enquiry' %}">Start a conversation</a>
-                <a class="button button--ghost-light button--large" href="{{ projects_anchor }}">Explore projects</a>
-            </div>
-        </div>
+<section id="contact" class="section section--dark cta-dark" aria-labelledby="cta-title">
+    <div class="container cta-dark__inner" data-reveal>
+        <h2 id="cta-title">Tell us what you're building.</h2>
+        <p>Browse the projects, or send a short note and we'll suggest a starting point.</p>
+        <a class="button button--primary button--large" href="{{ enquiry_url }}">Start a conversation</a>
+        {% if public_contact_email %}<p class="cta-dark__contact">Or write to <a href="mailto:{{ public_contact_email }}">{{ public_contact_email }}</a></p>{% endif %}
     </div>
 </section>
 {% endblock %}

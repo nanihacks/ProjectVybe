@@ -120,30 +120,37 @@ class SiteSettings(SingletonModel):
     )
 
     # Homepage
-    hero_eyebrow = models.CharField(max_length=60, default="ProjectVybe")
-    hero_heading = models.CharField(max_length=80, default="Build. Learn. Grow.")
-    hero_text = models.TextField(
-        default="Practical technology projects, training, mentorship, and software services to help you turn ideas into working solutions.",
+    hero_eyebrow = models.CharField(max_length=60, default="Projects · Courses · Software")
+    hero_heading = models.CharField(
+        max_length=80, default="Final-year projects you can run, explain and defend."
     )
-    hero_primary_label = models.CharField(max_length=40, default="Explore projects")
+    hero_text = models.TextField(
+        default="Working AI, ML, web and software projects with full source code, documentation and mentor support, plus software services and hands-on courses.",
+    )
+    hero_primary_label = models.CharField(max_length=40, default="Start a project")
     hero_primary_url = models.CharField(
+        max_length=300,
+        blank=True,
+        validators=[validate_link_target],
+        help_text="Leave blank to open the enquiry form.",
+    )
+    hero_secondary_label = models.CharField(max_length=40, default="Browse projects")
+    hero_secondary_url = models.CharField(
         max_length=300,
         blank=True,
         validators=[validate_link_target],
         help_text="Leave blank to jump to the projects section.",
     )
-    hero_secondary_label = models.CharField(max_length=40, default="Our services")
-    hero_secondary_url = models.CharField(
-        max_length=300,
-        blank=True,
-        validators=[validate_link_target],
-        help_text="Leave blank to open the services page.",
-    )
     hero_note = models.CharField(
         max_length=200,
         blank=True,
-        default="AI/ML · Software · Development · Training · Mentorship · Publications",
+        default="Full source code · Documentation · Mentor support · Viva guidance",
+        help_text="One line under the buttons. Separate items with a middle dot ( · ).",
     )
+    proof_1_value = models.CharField("proof 1 number", max_length=12, blank=True)
+    proof_1_label = models.CharField("proof 1 label", max_length=40, blank=True)
+    proof_2_value = models.CharField("proof 2 number", max_length=12, blank=True)
+    proof_2_label = models.CharField("proof 2 label", max_length=40, blank=True)
     show_categories_section = models.BooleanField(default=True)
     show_featured_section = models.BooleanField(default=True)
     show_services_section = models.BooleanField(default=True)
