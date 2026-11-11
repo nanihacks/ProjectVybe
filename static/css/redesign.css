@@ -5133,15 +5133,59 @@ body:has(.pd-sticky.is-visible) .to-top {
     }
 }
 
-.quotes { display: grid; gap: var(--space-6); margin-top: var(--space-4); }
-.quote { margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
-.quote blockquote { margin: 0 0 var(--space-3); }
-.quote p { margin: 0; font-family: var(--font-display); font-size: var(--step-2); font-weight: 500; line-height: 1.3; text-wrap: balance; }
-.quote figcaption { display: flex; flex-wrap: wrap; gap: 0.2rem 0.75rem; color: var(--color-text-muted); font-size: var(--step--1); }
-.quote figcaption strong { color: var(--color-text); }
+.quotes { display: grid; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+
+.quote {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+.quote__mark {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    margin-bottom: var(--space-4);
+    border-radius: 50%;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.quote blockquote { flex: 1; margin: 0 0 var(--space-5); }
+.quote p { margin: 0; color: var(--color-text); font-size: var(--step-0); line-height: 1.6; text-wrap: pretty; }
+
+.quote figcaption {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-hairline);
+}
+
+.quote__avatar {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-dark);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+}
+
+.quote__who { display: grid; line-height: 1.3; }
+.quote__who strong { color: var(--color-text); font-size: var(--step--1); }
+.quote__who span { color: var(--color-text-muted); font-size: 0.8rem; }
+
 @media (min-width: 60rem) {
-    .quotes { grid-template-columns: repeat(3, 1fr); }
-    .quote p { font-size: var(--step-1); }
+    .quotes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
 }
 
 .cta-dark__inner { max-width: 44rem; text-align: center; }

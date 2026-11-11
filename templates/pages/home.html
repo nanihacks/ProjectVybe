@@ -226,12 +226,19 @@
 {% if reviews and site_settings.show_reviews_section %}
 <section class="section section--tight" aria-labelledby="reviews-title">
     <div class="container">
-        <p class="eyebrow" id="reviews-title">06 / What people say</p>
+        <div class="section-head" data-reveal>
+            <p class="eyebrow">06 / Reviews</p>
+            <h2 id="reviews-title">What people say</h2>
+        </div>
         <div class="quotes" data-reveal="stagger">
             {% for review in reviews|slice:":3" %}
                 <figure class="quote">
+                    <span class="quote__mark" aria-hidden="true">{% icon "quote" 18 %}</span>
                     <blockquote><p>{{ review.message }}</p></blockquote>
-                    <figcaption><strong>{{ review.reviewer_name }}</strong>{% if review.reviewer_role %}<span>{{ review.reviewer_role }}</span>{% endif %}</figcaption>
+                    <figcaption>
+                        <span class="quote__avatar" aria-hidden="true">{{ review.reviewer_name|initial }}</span>
+                        <span class="quote__who"><strong>{{ review.reviewer_name }}</strong>{% if review.reviewer_role %}<span>{{ review.reviewer_role }}</span>{% endif %}</span>
+                    </figcaption>
                 </figure>
             {% endfor %}
         </div>
