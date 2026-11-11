@@ -32,8 +32,8 @@ class HomePageTests(TestCase):
 
     def test_home_page_uses_limited_catalogue_queries(self):
         # Includes reads of the site settings row, footer legal links and the Admin-managed FAQs
-        # (all cached in production).
-        with self.assertNumQueries(7):
+        # (all cached in production), plus the area index and the published-course count.
+        with self.assertNumQueries(9):
             response = self.client.get("/", secure=True)
 
         self.assertEqual(response.status_code, 200)
@@ -114,11 +114,8 @@ class HomePageContentTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Active Category")
         self.assertNotContains(response, "Inactive Category")
-        self.assertContains(response, 'class="card card--category"')
-        self.assertContains(response, 'data-category-carousel')
-        self.assertContains(response, 'data-category-scroller')
-        self.assertContains(response, 'data-category-prev')
-        self.assertContains(response, 'data-category-next')
+        self.assertContains(response, "area-index__link")
+        self.assertNotContains(response, "data-category-carousel")
         self.assertContains(
             response,
             f'href="{reverse("pages:category_detail", kwargs={"slug": "active-category"})}"',
@@ -130,7 +127,7 @@ class HomePageContentTests(TestCase):
         self.assertNotContains(response, "Inactive Service")
         self.assertContains(response, "Published reviewer")
         self.assertContains(response, "ProjectVybe made the next step clear.")
-        self.assertContains(response, 'review2')
+        self.assertContains(response, 'class="quote"')
         self.assertNotContains(response, "Hidden reviewer")
 
     def test_homepage_ctas_point_to_existing_destinations(self):
@@ -1216,16 +1213,16 @@ class NavigationCategoryCacheTests(TestCase):
 
     @override_settings(NAVIGATION_CATEGORIES_CACHE_SECONDS=300)
     def test_navigation_categories_are_cached_and_cleared_on_save(self):
-        self.client.get("/", secure=True)
+        self.client.get("/services/", secure=True)
         # bulk_create skips signals, so the cached list must still be served.
         Category.objects.bulk_create([Category(name="Sneaky", slug="sneaky")])
-        cached = self.client.get("/", secure=True)
+        cached = self.client.get("/services/", secure=True)
         self.assertNotContains(cached, "Sneaky")
 
         self.category.description = "changed"
         self.category.save()
 
-        refreshed = self.client.get("/", secure=True)
+        refreshed = self.client.get("/services/", secure=True)
         self.assertContains(refreshed, "Sneaky")
 
     @override_settings(NAVIGATION_CATEGORIES_CACHE_SECONDS=300)
@@ -1255,14 +1252,75 @@ class AdminUrlTests(TestCase):
             clear_url_caches()
 
 
-class HomeHeroSearchTests(TestCase):
-    def test_hero_has_a_working_project_search_form(self):
+class HomeHeroTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name="Web", slug="web", is_active=True)
+
+    def _project(self, slug, featured=True, stack="Django\nPostgreSQL\nHTMX\nTailwind\nRedis"):
+        return Project.objects.create(
+            title=f"Project {slug}",
+            slug=slug,
+            short_description="Does a useful thing.",
+            description="Longer text.",
+            technology_stack=stack,
+            category=self.category,
+            is_published=True,
+            featured=featured,
+        )
+
+    def test_hero_has_two_buttons_and_a_single_line_of_deliverables(self):
         response = self.client.get(reverse("pages:home"), secure=True)
 
-        self.assertContains(response, 'id="hero-project-search"')
-        self.assertContains(response, 'name="q"')
-        self.assertContains(response, 'action="/projects/#project-results-title"')
-        self.assertContains(response, 'class="device__tile-link"')
+        self.assertContains(response, "Start a project")
+        self.assertContains(response, f'href="{reverse("leads:enquiry")}"')
+        self.assertContains(response, "Browse projects")
+        self.assertContains(response, 'class="hero2__note"')
+        self.assertNotContains(response, "device__tiles")
+
+    def test_hero_shows_featured_projects_with_their_stack(self):
+        for slug in ("a", "b", "c", "d"):
+            self._project(slug)
+
+        response = self.client.get(reverse("pages:home"), secure=True)
+
+        self.assertContains(response, 'class="shots__item shots__item--3"')
+        self.assertNotContains(response, "shots__item--4")
+        self.assertContains(response, "Django · PostgreSQL · HTMX")
+
+    def test_hero_without_featured_projects_has_no_screenshot_stack(self):
+        response = self.client.get(reverse("pages:home"), secure=True)
+
+        self.assertNotContains(response, 'class="shots"')
+
+    def test_proof_strip_counts_published_work_and_hides_when_empty(self):
+        empty = self.client.get(reverse("pages:home"), secure=True)
+        self.assertNotContains(empty, 'class="glance"')
+
+        self._project("one", featured=False)
+        self._project("two", featured=False)
+
+        response = self.client.get(reverse("pages:home"), secure=True)
+
+        self.assertContains(response, 'class="glance"')
+        self.assertContains(response, "<dd>2</dd>")
+        self.assertContains(response, "projects ready to run")
+
+    def test_proof_strip_shows_owner_facts_only_when_both_parts_are_filled(self):
+        self._project("one", featured=False)
+        from core.models import SiteSettings
+
+        settings_row = SiteSettings.get_solo()
+        settings_row.proof_1_value = "120"
+        settings_row.proof_1_label = "students helped"
+        settings_row.proof_2_value = "9"
+        settings_row.save()
+
+        response = self.client.get(reverse("pages:home"), secure=True)
+
+        self.assertContains(response, "students helped")
+        self.assertContains(response, "<dd>120</dd>")
+        self.assertNotContains(response, "<dd>9</dd>")
+
 
 
 class NavigationOrderTests(TestCase):

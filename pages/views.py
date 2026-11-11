@@ -13,6 +13,7 @@ from core.images import cloudinary_url as _safe_cloudinary_url
 from core.ratelimit import is_rate_limited
 from core.seo import absolute_url, json_ld_string
 from core.site import get_site_settings
+from courses.models import Course
 from leads.forms import LeadForm
 from orders import services as orders_services
 
@@ -65,23 +66,52 @@ def home(request):
 
     for project in featured_projects:
         project.render_thumbnail_url = _safe_cloudinary_url(project.thumbnail, width=640)
+        project.stack_tags = [
+            line.strip() for line in project.technology_stack.splitlines() if line.strip()
+        ][:4]
     for service in services:
         service.render_image_url = _safe_cloudinary_url(service.image, width=640)
+
+    # One query gives the area index and the published-project total for the proof strip.
+    area_index = list(
+        Category.objects.filter(is_active=True)
+        .annotate(project_count=Count("projects", filter=Q(projects__is_published=True)))
+        .order_by("name")[:8]
+    )
+    proof_points = []
+    project_total = sum(area.project_count for area in area_index)
+    if project_total:
+        proof_points.append((project_total, "projects ready to run"))
+    if services:
+        proof_points.append((len(services), "software services"))
+    course_total = Course.objects.filter(is_published=True).count()
+    if course_total:
+        proof_points.append((course_total, "courses"))
+    site_settings = get_site_settings(request)
+    for value, label in (
+        (site_settings.proof_1_value, site_settings.proof_1_label),
+        (site_settings.proof_2_value, site_settings.proof_2_label),
+    ):
+        if value and label:
+            proof_points.append((value, label))
 
     return render(
         request,
         "pages/home.html",
         {
+            "area_index": area_index,
+            "proof_points": proof_points[:4],
             "featured_projects": featured_projects,
             "services": services,
             "reviews": reviews,
-            # The #projects anchor only exists while the categories section is shown.
+            # The #projects anchor only exists while the featured section is shown.
             "projects_anchor": (
                 f"{home_url}#projects"
-                if get_site_settings(request).show_categories_section
+                if get_site_settings(request).show_featured_section
                 else reverse("pages:project_catalogue")
             ),
             "services_url": services_url,
+            "enquiry_url": reverse("leads:enquiry"),
             "contact_anchor": f"{home_url}#contact",
             "canonical_url": absolute_url(home_url),
             "structured_data_json": json_ld_string(

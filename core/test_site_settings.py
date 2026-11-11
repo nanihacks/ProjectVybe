@@ -27,10 +27,10 @@ class SiteSettingsDefaultsTests(TestCase):
     def test_defaults_match_the_current_site_copy(self):
         home = self.client.get("/", secure=True)
 
-        self.assertContains(home, "Build. Learn. Grow.")
-        self.assertContains(home, "Practical technology projects, training, mentorship")
-        self.assertContains(home, "Explore projects")
-        self.assertContains(home, "Our services")
+        self.assertContains(home, "Projects · Courses · Software")
+        self.assertContains(home, "Final-year projects you can run, explain and defend.")
+        self.assertContains(home, "Start a project")
+        self.assertContains(home, "Browse projects")
         self.assertContains(home, f'href="{reverse("pages:home")}#projects"')
         self.assertContains(home, "A technology-focused space for thoughtful software projects")
         self.assertNotContains(home, "announcement-bar")
@@ -158,7 +158,6 @@ class HomepageSettingsTests(TestCase):
             "show_featured_section": 'aria-labelledby="featured-title"',
             "show_services_section": 'aria-labelledby="services-title"',
             "show_process_section": 'aria-labelledby="process-title"',
-            "show_value_section": 'aria-labelledby="value-title"',
         }
         home = self.client.get("/", secure=True)
         for marker in sections.values():
@@ -169,8 +168,8 @@ class HomepageSettingsTests(TestCase):
             self.assertNotContains(self.client.get("/", secure=True), marker, msg_prefix=flag)
             update_settings(**{flag: True})
 
-    def test_hero_link_skips_the_missing_anchor_when_categories_are_hidden(self):
-        update_settings(show_categories_section=False)
+    def test_hero_link_skips_the_missing_anchor_when_featured_projects_are_hidden(self):
+        update_settings(show_featured_section=False)
 
         home = self.client.get("/", secure=True)
 
