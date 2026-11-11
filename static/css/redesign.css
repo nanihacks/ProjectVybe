@@ -5218,3 +5218,78 @@ body:has(.pd-sticky.is-visible) .to-top {
 .feature-row__media img {
     height: auto;
 }
+
+/* ===== Polish: hero stack, project hover, services table ================================================= */
+.shots__item {
+    align-self: start;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.shots__item:hover,
+.shots__item:focus-within {
+    z-index: 4;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-6px);
+}
+
+.feature-row__media {
+    transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.feature-row__media img {
+    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.feature-row:hover .feature-row__media,
+.feature-row:focus-within .feature-row__media {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.feature-row:hover .feature-row__media img,
+.feature-row:focus-within .feature-row__media img {
+    transform: scale(1.04);
+}
+
+.feature-row:hover .feature-row__body h3 a { color: var(--color-primary); text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .shots__item,
+    .feature-row__media img { transition: none; }
+    .shots__item:hover,
+    .feature-row:hover .feature-row__media img { transform: none; }
+}
+
+/* Services: even rows, a wider name column and a clear hover state. */
+.table-rows__link {
+    padding-block: var(--space-5);
+    transition: background-color 180ms ease, padding 180ms ease;
+}
+
+.table-rows__name { line-height: 1.25; }
+
+.table-rows__go svg { transition: transform 180ms ease; }
+
+.table-rows__link:hover,
+.table-rows__link:focus-visible {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.table-rows__link:hover .table-rows__name,
+.table-rows__link:focus-visible .table-rows__name { text-decoration: none; color: #fff; }
+
+.table-rows__link:hover .table-rows__go svg,
+.table-rows__link:focus-visible .table-rows__go svg { transform: translateX(0.3rem); }
+
+@media (min-width: 52rem) {
+    .table-rows__link {
+        grid-template-columns: 2.5rem minmax(15rem, 22rem) minmax(0, 1fr) 6rem;
+        column-gap: var(--space-5);
+        padding-inline: var(--space-3);
+    }
+
+    .table-rows__name { white-space: nowrap; font-size: var(--step-1); }
+    .table-rows__desc { max-width: 34rem; }
+    .table-rows__go { justify-content: flex-end; }
+}
