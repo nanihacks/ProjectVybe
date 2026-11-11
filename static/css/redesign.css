@@ -4835,6 +4835,7 @@ body:has(.pd-sticky.is-visible) .to-top {
 }
 
 .shots__item img,
+.feature-row__media img,
 .shots__blank {
     width: 100%;
     aspect-ratio: 16 / 10;
@@ -5083,3 +5084,8 @@ body:has(.pd-sticky.is-visible) .to-top {
 .cta-dark .button--primary:hover,
 .cta-dark .button--primary:focus-visible { background: var(--color-primary-soft); color: var(--color-dark); }
 .cta-dark__contact a { color: #fff; }
+
+.shots__item img,
+.feature-row__media img {
+    height: auto;
+}
