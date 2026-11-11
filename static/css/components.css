@@ -212,16 +212,6 @@
     object-fit: cover;
 }
 
-.site-navigation__category-list li:nth-child(2n) .site-navigation__category-icon {
-    background: var(--color-violet-soft);
-    color: var(--color-secondary);
-}
-
-.site-navigation__category-list li:nth-child(3n) .site-navigation__category-icon {
-    background: var(--color-warning-soft);
-    color: #b45309;
-}
-
 .site-navigation__category-link strong,
 .site-navigation__category-link small {
     display: block;
@@ -1764,16 +1754,6 @@
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.8;
-}
-
-.offer-card:nth-child(2) .offer-card__icon {
-    background: var(--color-violet-soft);
-    color: var(--color-secondary);
-}
-
-.offer-card:nth-child(3) .offer-card__icon {
-    background: var(--color-success-soft);
-    color: var(--color-success);
 }
 
 .offer-card h3 {

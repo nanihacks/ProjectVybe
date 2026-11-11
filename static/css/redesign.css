@@ -8,10 +8,7 @@
     --radius-xl: 1.25rem;
     --shadow-card: 0 1px 2px rgba(12, 24, 48, 0.05), 0 8px 24px -14px rgba(12, 24, 48, 0.18);
     --shadow-lift: 0 2px 4px rgba(12, 24, 48, 0.06), 0 22px 40px -22px rgba(12, 24, 48, 0.32);
-    --navy-gradient:
-        radial-gradient(34rem 18rem at 92% 0%, rgba(118, 89, 217, 0.34), transparent 62%),
-        radial-gradient(26rem 16rem at 0% 100%, rgba(8, 145, 178, 0.22), transparent 60%),
-        linear-gradient(135deg, #0c1830 0%, #14264b 100%);
+    --navy-gradient: var(--color-dark);
 }
 
 /* ---- Base refinements ---------------------------------------------------------------- */
@@ -305,24 +302,7 @@ body {
 .page-hero {
     position: relative;
     overflow: clip;
-    background:
-        radial-gradient(46rem 26rem at 90% -10%, rgba(51, 70, 200, 0.13), transparent 62%),
-        radial-gradient(32rem 20rem at -6% 105%, rgba(8, 145, 178, 0.1), transparent 62%),
-        var(--color-background);
-}
-
-.hero2::before,
-.page-hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(to right, rgba(18, 32, 51, 0.045) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(18, 32, 51, 0.045) 1px, transparent 1px);
-    background-size: 3rem 3rem;
-    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 20%, transparent 75%);
-    mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 20%, transparent 75%);
-    pointer-events: none;
+    background: var(--color-background);
 }
 
 .hero2 > .container,
@@ -640,18 +620,6 @@ body {
     color: var(--color-primary);
 }
 
-.feature-card__icon--violet,
-.pillars__icon--violet {
-    background: var(--color-violet-soft);
-    color: var(--color-secondary);
-}
-
-.feature-card__icon--cyan,
-.pillars__icon--cyan {
-    background: var(--color-accent-soft);
-    color: var(--color-accent);
-}
-
 .feature-card h3,
 .why-grid h3 {
     margin-bottom: var(--space-2);
@@ -757,7 +725,7 @@ body {
     flex: none;
     place-items: center;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    background: var(--color-primary);
     color: #fff;
     font-weight: 700;
 }
@@ -1054,7 +1022,7 @@ body {
     aspect-ratio: 16 / 9;
     place-items: center;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--color-primary-soft), var(--color-accent-soft));
+    background: var(--color-primary-soft);
 }
 
 .svc__media img {
@@ -1603,9 +1571,7 @@ body {
 
 .pd-hero {
     padding-block: var(--space-4) clamp(2.5rem, 5vw, 4rem);
-    background:
-        radial-gradient(40rem 22rem at 100% 0%, rgba(51, 70, 200, 0.1), transparent 62%),
-        var(--color-background);
+    background: var(--color-background);
 }
 
 .pd-hero__grid {
@@ -1924,9 +1890,7 @@ body {
 .result-section,
 .enquiry-success {
     padding-block: clamp(2.5rem, 6vw, 5rem);
-    background:
-        radial-gradient(40rem 22rem at 50% -10%, rgba(51, 70, 200, 0.1), transparent 62%),
-        var(--color-background);
+    background: var(--color-background);
 }
 
 .result-layout {
@@ -3748,8 +3712,8 @@ h2 {
 
 /* Primary buttons use the logo's blue-to-violet gradient. */
 :root {
-    --gradient-button: linear-gradient(120deg, #2f5bea 0%, #5a4fe0 55%, #8b46e6 100%);
-    --gradient-button-hover: linear-gradient(120deg, #2549c4 0%, #4a3fc7 55%, #7636d0 100%);
+    --gradient-button: var(--color-primary);
+    --gradient-button-hover: var(--color-primary-strong);
 }
 
 .button--primary,
@@ -3771,7 +3735,7 @@ h2 {
 }
 
 .button--primary {
-    box-shadow: 0 1px 2px rgba(74, 63, 199, 0.3), 0 8px 18px -10px rgba(90, 79, 224, 0.75);
+    box-shadow: none;
 }
 
 .enquiry-modal .enquiry-wizard__actions .button--primary {
@@ -4515,38 +4479,24 @@ body:has(.pd-sticky.is-visible) .to-top {
 }
 
 /* ===== Each part of the site has its own eyebrow colour ============================================== */
-:where(body[data-page="pages-about"]) { --eyebrow-color: #7659d9; }
-:where(body[data-page="pages-services"], body[data-page="pages-service_detail"]) { --eyebrow-color: #0e7490; }
-:where(body[data-page="pages-project_catalogue"], body[data-page="pages-project_detail"], body[data-page="pages-category_detail"]) { --eyebrow-color: #0f766e; }
-:where(body[data-page^="courses-"]) { --eyebrow-color: #b45309; }
-:where(body[data-page^="blog-"]) { --eyebrow-color: #be185d; }
-:where(body[data-page^="leads-"]) { --eyebrow-color: #4f46e5; }
-:where(body[data-page^="orders-"]) { --eyebrow-color: #0f766e; }
+:where(body[data-page="pages-about"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page="pages-services"], body[data-page="pages-service_detail"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page="pages-project_catalogue"], body[data-page="pages-project_detail"], body[data-page="pages-category_detail"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page^="courses-"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page^="blog-"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page^="leads-"]) { --eyebrow-color: var(--color-primary); }
+:where(body[data-page^="orders-"]) { --eyebrow-color: var(--color-primary); }
 
 .eyebrow {
     color: var(--eyebrow-color, var(--color-primary));
 }
 
-/* ===== Home and About cards: four different icon colours, compact on phones ========================== */
+/* ===== Icon tiles share one colour ===== */
 .why-grid li:nth-child(1) .why-grid__icon {
     background: var(--color-primary-soft);
     color: var(--color-primary);
 }
 
-.why-grid li:nth-child(2) .why-grid__icon {
-    background: var(--color-violet-soft);
-    color: var(--color-secondary);
-}
-
-.why-grid li:nth-child(3) .why-grid__icon {
-    background: var(--color-accent-soft);
-    color: var(--color-accent);
-}
-
-.why-grid li:nth-child(4) .why-grid__icon {
-    background: var(--color-warning-soft);
-    color: #b45309;
-}
 
 @media (max-width: 41.99rem) {
     .why-grid {
